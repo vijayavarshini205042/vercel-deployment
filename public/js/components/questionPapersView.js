@@ -19,6 +19,36 @@ window.QuestionPapersView = {
     let selectedYear = 'all';
     let searchQuery = '';
 
+    // Fetch live question papers from DB so any Admin additions/edits are immediately visible
+    try {
+      if (window.apiService) {
+        const queryParams = new URLSearchParams({
+          deptCode: currentDeptCode,
+          regCode: currentReg
+        });
+        if (selectedSem !== 'all') queryParams.append('semester', selectedSem);
+        if (selectedSubjectId) queryParams.append('subjectId', selectedSubjectId);
+        
+        const res = await window.apiService.get(`/resources/question-papers?${queryParams.toString()}`);
+        if (res && res.success && Array.isArray(res.data) && res.data.length > 0) {
+          if (!Array.isArray(window.AppFallbackData.questionPapers)) {
+            window.AppFallbackData.questionPapers = [];
+          }
+          res.data.forEach(dbQP => {
+            const qpId = dbQP.id || dbQP._id;
+            const existingIdx = window.AppFallbackData.questionPapers.findIndex(q => (q._id && q._id === dbQP._id) || (q.id && q.id === qpId));
+            if (existingIdx !== -1) {
+              window.AppFallbackData.questionPapers[existingIdx] = { ...window.AppFallbackData.questionPapers[existingIdx], ...dbQP };
+            } else {
+              window.AppFallbackData.questionPapers.unshift({ ...dbQP, id: qpId });
+            }
+          });
+        }
+      }
+    } catch (e) {
+      console.warn('Live QP fetch error, using local dataset:', e);
+    }
+
     const renderContent = () => {
       // Ensure questionPapers array exists
       if (!window.AppFallbackData) window.AppFallbackData = {};

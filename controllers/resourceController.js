@@ -76,10 +76,17 @@ exports.createNote = async (req, res, next) => {
 
 exports.updateNote = async (req, res, next) => {
   try {
-    const note = await Note.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true
-    });
+    let note;
+    if (mongoose.Types.ObjectId.isValid(req.params.id)) {
+      note = await Note.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+        runValidators: true
+      });
+    } else {
+      note = await Note.findOneAndUpdate({ id: req.params.id }, req.body, {
+        new: true
+      });
+    }
     if (!note) return res.status(404).json({ success: false, message: 'Note not found' });
     res.status(200).json({ success: true, data: note });
   } catch (err) {
@@ -89,7 +96,12 @@ exports.updateNote = async (req, res, next) => {
 
 exports.deleteNote = async (req, res, next) => {
   try {
-    const note = await Note.findByIdAndDelete(req.params.id);
+    let note;
+    if (mongoose.Types.ObjectId.isValid(req.params.id)) {
+      note = await Note.findByIdAndDelete(req.params.id);
+    } else {
+      note = await Note.findOneAndDelete({ id: req.params.id });
+    }
     if (!note) return res.status(404).json({ success: false, message: 'Note not found' });
     res.status(200).json({ success: true, message: 'Note deleted successfully' });
   } catch (err) {
@@ -193,7 +205,12 @@ exports.updateQuestionPaper = async (req, res, next) => {
       return res.status(200).json({ success: true, data: { _id: req.params.id, ...updateData } });
     }
 
-    const qp = await QuestionPaper.findByIdAndUpdate(req.params.id, updateData, { new: true, runValidators: true });
+    let qp;
+    if (mongoose.Types.ObjectId.isValid(req.params.id)) {
+      qp = await QuestionPaper.findByIdAndUpdate(req.params.id, updateData, { new: true, runValidators: true });
+    } else {
+      qp = await QuestionPaper.findOneAndUpdate({ id: req.params.id }, updateData, { new: true });
+    }
     if (!qp) return res.status(404).json({ success: false, message: 'Question paper not found' });
     res.status(200).json({ success: true, data: qp });
   } catch (err) {
@@ -206,7 +223,12 @@ exports.deleteQuestionPaper = async (req, res, next) => {
     if (mongoose.connection.readyState !== 1) {
       return res.status(200).json({ success: true, message: 'Question paper removed' });
     }
-    const qp = await QuestionPaper.findByIdAndDelete(req.params.id);
+    let qp;
+    if (mongoose.Types.ObjectId.isValid(req.params.id)) {
+      qp = await QuestionPaper.findByIdAndDelete(req.params.id);
+    } else {
+      qp = await QuestionPaper.findOneAndDelete({ id: req.params.id });
+    }
     if (!qp) return res.status(404).json({ success: false, message: 'Question paper not found' });
     res.status(200).json({ success: true, message: 'Question paper removed' });
   } catch (err) {

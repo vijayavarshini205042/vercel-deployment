@@ -21,6 +21,36 @@ window.NotesView = {
     let activeResourceType = 'notes'; // 'notes', 'textbooks', 'labs', 'videos'
     let searchQuery = '';
 
+    // Fetch live notes from DB so any Admin additions/edits are immediately visible to students
+    try {
+      if (window.apiService) {
+        const queryParams = new URLSearchParams({
+          deptCode: currentDeptCode,
+          regCode: currentReg,
+          semester: selectedSem
+        });
+        if (selectedSubjectId) queryParams.append('subjectId', selectedSubjectId);
+        
+        const res = await window.apiService.get(`/resources/notes?${queryParams.toString()}`);
+        if (res && res.success && Array.isArray(res.data) && res.data.length > 0) {
+          if (!Array.isArray(window.AppFallbackData.notes)) {
+            window.AppFallbackData.notes = [];
+          }
+          res.data.forEach(dbNote => {
+            const noteId = dbNote.id || dbNote._id;
+            const existingIdx = window.AppFallbackData.notes.findIndex(n => (n._id && n._id === dbNote._id) || (n.id && n.id === noteId));
+            if (existingIdx !== -1) {
+              window.AppFallbackData.notes[existingIdx] = { ...window.AppFallbackData.notes[existingIdx], ...dbNote };
+            } else {
+              window.AppFallbackData.notes.unshift({ ...dbNote, id: noteId });
+            }
+          });
+        }
+      }
+    } catch (e) {
+      console.warn('Live notes fetch error, using local dataset:', e);
+    }
+
     const renderContent = () => {
       const allSubjects = (window.AppFallbackData?.subjects || []).filter(s => 
         s.deptCode === currentDeptCode && s.regCode === currentReg && s.semester === selectedSem

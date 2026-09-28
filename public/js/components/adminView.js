@@ -634,44 +634,76 @@ window.AdminView = {
       if (e.target === overlay) close();
     });
 
-    form?.addEventListener('submit', (e) => {
+    form?.addEventListener('submit', async (e) => {
       e.preventDefault();
       const newTitle = document.getElementById('edit-res-title-input').value;
       const fileInput = document.getElementById('edit-res-file-input');
       
+      const noteDbId = resource._id || resource.id || id;
+      const updatePayload = {};
+
       if (type === 'note') {
         resource.title = newTitle;
+        updatePayload.title = newTitle;
       } else {
         resource.subjectName = newTitle;
+        updatePayload.subjectName = newTitle;
       }
       
-      if (fileInput.files.length > 0) {
-          const newFileName = fileInput.files[0].name;
-          if (type === 'note') resource.fileName = newFileName;
-          else resource.fileUrl = newFileName;
-          window.Toast.success(`Changes saved. File replaced with "${newFileName}"!`);
-      } else {
-          window.Toast.success(`Changes saved!`);
+      if (fileInput && fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        const newFileName = file.name;
+        if (type === 'note') {
+          resource.fileName = newFileName;
+          resource.fileUrl = `/uploads/notes/${newFileName}`;
+          updatePayload.fileName = newFileName;
+          updatePayload.fileUrl = `/uploads/notes/${newFileName}`;
+        } else {
+          resource.fileUrl = newFileName;
+          updatePayload.fileUrl = newFileName;
+        }
       }
-      
+
+      // Persist to MongoDB backend
+      try {
+        if (window.apiService && noteDbId) {
+          const endpoint = type === 'note' ? `/resources/notes/${noteDbId}` : `/resources/question-papers/${noteDbId}`;
+          await window.apiService.put(endpoint, updatePayload);
+        }
+      } catch (err) {
+        console.warn('Failed to update DB, updated locally:', err);
+      }
+
+      window.Toast.success(`Changes saved successfully!`);
       close();
       window.AdminView.render();
     });
 
-    deleteBtn?.addEventListener('click', () => {
-        if (confirm(`Are you sure you want to permanently delete this resource?`)) {
-            let index = -1;
-            if (type === 'note') {
-                index = window.AppFallbackData.notes.findIndex(n => n.id === id);
-                if(index !== -1) window.AppFallbackData.notes.splice(index, 1);
-            } else {
-                index = window.AppFallbackData.questionPapers.findIndex(qp => qp.id === id);
-                if(index !== -1) window.AppFallbackData.questionPapers.splice(index, 1);
-            }
-            window.Toast.success(`Resource removed successfully from database.`);
-            close();
-            window.AdminView.render();
+    deleteBtn?.addEventListener('click', async () => {
+      if (confirm(`Are you sure you want to permanently delete this resource?`)) {
+        const noteDbId = resource._id || resource.id || id;
+        
+        try {
+          if (window.apiService && noteDbId) {
+            const endpoint = type === 'note' ? `/resources/notes/${noteDbId}` : `/resources/question-papers/${noteDbId}`;
+            await window.apiService.delete(endpoint);
+          }
+        } catch (err) {
+          console.warn('Failed to delete from DB, removed locally:', err);
         }
+
+        let index = -1;
+        if (type === 'note') {
+          index = window.AppFallbackData.notes.findIndex(n => n.id === id || n._id === id);
+          if (index !== -1) window.AppFallbackData.notes.splice(index, 1);
+        } else {
+          index = window.AppFallbackData.questionPapers.findIndex(qp => qp.id === id || qp._id === id);
+          if (index !== -1) window.AppFallbackData.questionPapers.splice(index, 1);
+        }
+        window.Toast.success(`Resource removed successfully from database.`);
+        close();
+        window.AdminView.render();
+      }
     });
   }
 };
