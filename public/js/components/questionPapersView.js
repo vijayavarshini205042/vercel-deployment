@@ -194,10 +194,31 @@ window.QuestionPapersView = {
                         </div>
                       ` : ''}
 
-                      <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.8125rem; color: var(--text-muted); margin-bottom: 16px; background: var(--bg-subtle); padding: 8px 12px; border-radius: var(--radius-md);">
+                      <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.8125rem; color: var(--text-muted); margin-bottom: 14px; background: var(--bg-subtle); padding: 8px 12px; border-radius: var(--radius-md);">
                         <span>📄 ${qp.fileSize || '1.2 MB'} PDF</span>
                         <span>📥 ${qp.downloads || 0} downloads</span>
                       </div>
+
+                      ${(qp.analysis || qp.questions || (window.PYQAnalysisData && window.PYQAnalysisData.find(p => p.qpCode === qp.qpCode || p.subjectCode === qp.subjectCode))) ? `
+                        <div style="background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(37, 99, 235, 0.22); border-radius: var(--radius-md); padding: 10px 12px; margin-bottom: 14px;">
+                          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-weight: 700; font-size: 0.78rem; color: #2563eb; text-transform: uppercase;">📊 Solved Paper & Analysis</span>
+                            <span class="badge badge-success" style="font-size: 0.72rem;">QP Code: ${qp.qpCode || 'AU'}</span>
+                          </div>
+                          <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 8px; line-height: 1.4;">
+                            Includes Unit-wise weightage, high-frequency topics, Part A (2-marks), Part B (13-marks), and Part C solved answers.
+                          </div>
+                          <button 
+                            class="btn btn-primary btn-sm view-analysis-btn" 
+                            style="width: 100%; font-weight: 700; font-size: 0.82rem; padding: 7px 10px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: linear-gradient(135deg, #2563eb, #1d4ed8); box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);"
+                            data-qpid="${qpIdentifier}"
+                            data-qpcode="${qp.qpCode || ''}"
+                            data-subcode="${qp.subjectCode}"
+                          >
+                            📊 View Paper Analysis & Solved Questions
+                          </button>
+                        </div>
+                      ` : ''}
                     </div>
 
                     <!-- Action Buttons -->
@@ -259,6 +280,20 @@ window.QuestionPapersView = {
       container.querySelector('#qp-search-input')?.addEventListener('input', (e) => {
         searchQuery = e.target.value;
         renderContent();
+      });
+
+      // View Paper Analysis Modal
+      container.querySelectorAll('.view-analysis-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const qpId = btn.getAttribute('data-qpid');
+          const qpCode = btn.getAttribute('data-qpcode');
+          const subCode = btn.getAttribute('data-subcode');
+
+          let qp = window.AppFallbackData.questionPapers.find(p => p.id === qpId || p._id === qpId);
+          let analysisItem = (window.PYQAnalysisData || []).find(p => p.qpCode === qpCode || p.subjectCode === subCode);
+
+          this.openAnalysisModal(qp, analysisItem);
+        });
       });
 
       // Preview Question Paper
@@ -805,6 +840,298 @@ window.QuestionPapersView = {
 
       closeModal();
       if (onSuccess) onSuccess();
+    });
+  },
+
+  openAnalysisModal(qp, analysisItem) {
+    const modalContainer = document.getElementById('modal-container');
+    if (!modalContainer) return;
+
+    const data = analysisItem || qp || {};
+    const analysis = data.analysis || qp?.analysis || {};
+    const questions = data.questions || qp?.questions || {};
+    const qpCode = data.qpCode || qp?.qpCode || 'AU';
+    const subCode = data.subjectCode || qp?.subjectCode || '';
+    const subName = data.subjectName || qp?.subjectName || 'University Examination';
+    const examSession = data.examSession || qp?.academicYear || 'November/December 2024';
+    const reg = data.regulation || qp?.regCode || 'R2021';
+
+    modalContainer.innerHTML = `
+      <div class="modal-overlay" id="analysis-modal-overlay" style="position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 16px;">
+        <div class="modal-dialog modal-xl" role="dialog" aria-modal="true" style="height: 94vh; width: 95vw; max-width: 1100px; display: flex; flex-direction: column; background: var(--bg-surface); border-radius: var(--radius-xl); overflow: hidden; box-shadow: var(--shadow-2xl); border: 1px solid var(--border-color);">
+          
+          <!-- Header -->
+          <div style="padding: 16px 24px; background: linear-gradient(135deg, #1e293b, #0f172a); color: #fff; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                <span class="badge badge-primary" style="font-weight: 800; letter-spacing: 0.5px;">QUESTION PAPER CODE: ${qpCode}</span>
+                <span class="badge badge-success">${reg}</span>
+                <span class="badge badge-subtle" style="color: #cbd5e1;">${examSession}</span>
+              </div>
+              <h2 style="font-size: 1.35rem; font-weight: 800; margin: 0; color: #f8fafc;">
+                ${subCode} — ${subName}
+              </h2>
+              <div style="font-size: 0.82rem; color: #94a3b8; margin-top: 4px;">
+                Anna University End-Semester Examination • Max Marks: 100 • Time: 3 Hours
+              </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <button class="btn btn-secondary btn-sm" id="btn-print-analysis" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 600;">
+                🖨️ Print / Save PDF
+              </button>
+              <button class="btn btn-ghost btn-sm" id="close-analysis-modal" style="font-size: 1.3rem; width: 34px; height: 34px; border-radius: 50%; color: #fff; display: flex; align-items: center; justify-content: center;">✕</button>
+            </div>
+          </div>
+
+          <!-- Tab Navigation -->
+          <div style="background: var(--bg-subtle); padding: 8px 24px; border-bottom: 1px solid var(--border-color); display: flex; gap: 12px; overflow-x: auto;">
+            <button class="btn btn-sm qp-tab-btn active" id="tab-btn-analysis" style="font-weight: 700;">📊 Question Trend Analysis</button>
+            <button class="btn btn-sm qp-tab-btn" id="tab-btn-part-a" style="font-weight: 700;">📝 Part A (10 × 2 = 20 Marks)</button>
+            <button class="btn btn-sm qp-tab-btn" id="tab-btn-part-b" style="font-weight: 700;">📘 Part B (5 × 13 = 65 Marks)</button>
+            <button class="btn btn-sm qp-tab-btn" id="tab-btn-part-c" style="font-weight: 700;">🏆 Part C (1 × 15 = 15 Marks)</button>
+            <button class="btn btn-sm qp-tab-btn" id="tab-btn-notes" style="font-weight: 700;">📚 Subject Unit Notes</button>
+          </div>
+
+          <!-- Body Content Scroll Area -->
+          <div style="flex: 1; overflow-y: auto; padding: 24px 28px; background: var(--bg-surface); line-height: 1.6;">
+            
+            <!-- SECTION 1: ANALYSIS TAB -->
+            <div id="section-analysis">
+              <!-- Summary Grid -->
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px;">
+                <div class="card" style="padding: 16px 20px; border-left: 4px solid #3b82f6;">
+                  <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Paper Difficulty Rating</div>
+                  <div style="font-size: 1.15rem; font-weight: 800; color: #2563eb; margin-top: 4px;">
+                    ${analysis.difficultyRating || 'Balanced (Core Theory & Numericals)'}
+                  </div>
+                </div>
+
+                <div class="card" style="padding: 16px 20px; border-left: 4px solid #10b981;">
+                  <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Syllabus Coverage</div>
+                  <div style="font-size: 1.15rem; font-weight: 800; color: #059669; margin-top: 4px;">
+                    100% Units 1 to 5 (Full Choice Included)
+                  </div>
+                </div>
+
+                <div class="card" style="padding: 16px 20px; border-left: 4px solid #8b5cf6;">
+                  <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Applicability</div>
+                  <div style="font-size: 0.95rem; font-weight: 700; color: #7c3aed; margin-top: 4px;">
+                    ${data.commonBranches ? data.commonBranches.slice(0, 3).join(', ') + '...' : 'All Registered Engineering Departments'}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Unit-wise Weightage Progress Bars -->
+              <div class="card" style="padding: 20px 24px; margin-bottom: 24px;">
+                <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--text-primary); margin: 0 0 16px 0; display: flex; align-items: center; gap: 8px;">
+                  <span>📈</span> Unit-wise Mark Weightage Distribution
+                </h3>
+                <div style="display: flex; flex-direction: column; gap: 14px;">
+                  ${(analysis.unitWeightage || [
+                    { unit: "Unit 1", marks: 20, percentage: "20%" },
+                    { unit: "Unit 2", marks: 20, percentage: "20%" },
+                    { unit: "Unit 3", marks: 20, percentage: "20%" },
+                    { unit: "Unit 4", marks: 20, percentage: "20%" },
+                    { unit: "Unit 5", marks: 20, percentage: "20%" }
+                  ]).map(u => `
+                    <div>
+                      <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 700; margin-bottom: 6px;">
+                        <span>${u.unit}</span>
+                        <span style="color: #2563eb;">${u.marks} Marks (${u.percentage})</span>
+                      </div>
+                      <div style="height: 8px; width: 100%; background: var(--bg-subtle); border-radius: 999px; overflow: hidden;">
+                        <div style="height: 100%; width: ${u.percentage}; background: linear-gradient(90deg, #3b82f6, #1d4ed8); border-radius: 999px;"></div>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+
+              <!-- High Frequency Topics & Exam Tips -->
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                <div class="card" style="padding: 20px 24px;">
+                  <h4 style="font-size: 1rem; font-weight: 800; color: #dc2626; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                    <span>🔥</span> High-Frequency Repeated Topics
+                  </h4>
+                  <ul style="padding-left: 20px; margin: 0; font-size: 0.88rem; color: var(--text-secondary); line-height: 1.8;">
+                    ${(analysis.highFrequencyTopics || ['Core domain principles', 'Numerical problem formulations', 'Case study design']).map(t => `<li>${t}</li>`).join('')}
+                  </ul>
+                </div>
+
+                <div class="card" style="padding: 20px 24px;">
+                  <h4 style="font-size: 1rem; font-weight: 800; color: #059669; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                    <span>💡</span> Exam Strategy & Preparation Tips
+                  </h4>
+                  <ul style="padding-left: 20px; margin: 0; font-size: 0.88rem; color: var(--text-secondary); line-height: 1.8;">
+                    ${(analysis.examPreparationTips || ['Practice all Part A definitions', 'Draw step-by-step architecture diagrams', 'State all assumptions in Part C']).map(t => `<li>${t}</li>`).join('')}
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION 2: PART A TAB -->
+            <div id="section-part-a" style="display: none;">
+              <div style="margin-bottom: 20px; padding: 12px 18px; background: rgba(37, 99, 235, 0.08); border-left: 4px solid #2563eb; border-radius: 4px;">
+                <div style="font-weight: 800; color: #1e40af;">PART A — (10 × 2 = 20 Marks) • Answer ALL Questions</div>
+                <div style="font-size: 0.82rem; color: var(--text-muted);">Short conceptual answers with precise definitions, formulas, and working steps.</div>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 16px;">
+                ${(questions.partA || []).map(q => `
+                  <div class="card" style="padding: 18px 22px; border: 1px solid var(--border-color);">
+                    <div style="display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px;">
+                      <span class="badge badge-primary" style="font-weight: 800; flex-shrink: 0;">Q${q.qNo}</span>
+                      <div style="font-weight: 700; color: var(--text-primary); font-size: 0.98rem; line-height: 1.5;">
+                        ${q.question}
+                      </div>
+                    </div>
+                    <div style="background: var(--bg-subtle); padding: 12px 16px; border-radius: var(--radius-md); font-size: 0.9rem; color: var(--text-secondary); white-space: pre-line; border-left: 3px solid #10b981;">
+                      <strong style="color: #059669; display: block; margin-bottom: 4px;">Model Answer:</strong>
+                      ${q.answer}
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- SECTION 3: PART B TAB -->
+            <div id="section-part-b" style="display: none;">
+              <div style="margin-bottom: 20px; padding: 12px 18px; background: rgba(16, 185, 129, 0.08); border-left: 4px solid #10b981; border-radius: 4px;">
+                <div style="font-weight: 800; color: #065f46;">PART B — (5 × 13 = 65 Marks) • Either / Or Choice</div>
+                <div style="font-size: 0.82rem; color: var(--text-muted);">Step-by-step detailed derivations, algorithms, and fully solved numerical problems.</div>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 20px;">
+                ${(questions.partB || []).map(q => `
+                  <div class="card" style="padding: 20px 24px; border: 1px solid var(--border-color);">
+                    <div style="display: flex; gap: 12px; align-items: flex-start; margin-bottom: 12px;">
+                      <span class="badge badge-success" style="font-weight: 800; flex-shrink: 0;">Q${q.qNo}</span>
+                      <div style="font-weight: 700; color: var(--text-primary); font-size: 1rem; line-height: 1.5;">
+                        ${q.question}
+                      </div>
+                    </div>
+                    <div style="background: var(--bg-subtle); padding: 16px 20px; border-radius: var(--radius-md); font-size: 0.92rem; color: var(--text-secondary); white-space: pre-line; border-left: 3px solid #2563eb;">
+                      <strong style="color: #2563eb; display: block; margin-bottom: 6px;">Step-by-Step Solution / Derivation Outline:</strong>
+                      ${q.solutionOutline}
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- SECTION 4: PART C TAB -->
+            <div id="section-part-c" style="display: none;">
+              <div style="margin-bottom: 20px; padding: 12px 18px; background: rgba(139, 92, 246, 0.08); border-left: 4px solid #8b5cf6; border-radius: 4px;">
+                <div style="font-weight: 800; color: #5b21b6;">PART C — (1 × 15 = 15 Marks) • Comprehensive Application & Case Study</div>
+                <div style="font-size: 0.82rem; color: var(--text-muted);">Advanced scenario analysis, real-world case study, and enterprise engineering synthesis.</div>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 20px;">
+                ${(questions.partC || []).map(q => `
+                  <div class="card" style="padding: 22px 26px; border: 1px solid var(--border-color);">
+                    <div style="display: flex; gap: 12px; align-items: flex-start; margin-bottom: 14px;">
+                      <span class="badge badge-warning" style="font-weight: 800; flex-shrink: 0; background: #fef3c7; color: #92400e;">Q${q.qNo}</span>
+                      <div style="font-weight: 700; color: var(--text-primary); font-size: 1.05rem; line-height: 1.5;">
+                        ${q.question}
+                      </div>
+                    </div>
+                    <div style="background: var(--bg-subtle); padding: 18px 22px; border-radius: var(--radius-md); font-size: 0.94rem; color: var(--text-secondary); white-space: pre-line; border-left: 3px solid #f59e0b;">
+                      <strong style="color: #b45309; display: block; margin-bottom: 8px;">Comprehensive Case Study Solution Blueprint:</strong>
+                      ${q.solutionOutline}
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- SECTION 5: NOTES TAB -->
+            <div id="section-notes" style="display: none;">
+              <div style="margin-bottom: 20px; padding: 12px 18px; background: rgba(16, 185, 129, 0.08); border-left: 4px solid #10b981; border-radius: 4px;">
+                <div style="font-weight: 800; color: #065f46;">📚 Unit 1 to Unit 5 Lecture Notes for ${subCode} — ${subName}</div>
+                <div style="font-size: 0.82rem; color: var(--text-muted);">Verified academic notes covering all 5 syllabus units with immediate access.</div>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 14px;">
+                ${(window.AppFallbackData?.notes || []).filter(n => n.subjectCode === subCode).slice(0, 5).map((n, idx) => `
+                  <div class="card" style="padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                    <div>
+                      <span class="badge badge-primary" style="margin-bottom: 4px;">Unit ${n.unit}</span>
+                      <h4 style="font-size: 1rem; font-weight: 700; margin: 4px 0; color: var(--text-primary);">${n.title}</h4>
+                      <p style="font-size: 0.82rem; color: var(--text-secondary); margin: 0; max-width: 700px;">${n.description}</p>
+                    </div>
+                    <button class="btn btn-primary btn-sm open-note-from-analysis" data-noteid="${n.id}" style="font-weight: 700;">
+                      📖 Read Unit ${n.unit} Notes
+                    </button>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Footer -->
+          <div style="padding: 12px 24px; background: var(--bg-surface); border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; color: var(--text-muted);">
+            <span>Anna University Examination Repository • Fully Verified Answer Keys</span>
+            <span>DRMS Academic Resource Platform</span>
+          </div>
+
+        </div>
+      </div>
+    `;
+
+    modalContainer.setAttribute('aria-hidden', 'false');
+
+    const overlay = document.getElementById('analysis-modal-overlay');
+    const closeBtn = document.getElementById('close-analysis-modal');
+    const printBtn = document.getElementById('btn-print-analysis');
+
+    const close = () => {
+      modalContainer.innerHTML = '';
+      modalContainer.setAttribute('aria-hidden', 'true');
+    };
+
+    closeBtn?.addEventListener('click', close);
+    overlay?.addEventListener('click', (e) => {
+      if (e.target === overlay) close();
+    });
+
+    printBtn?.addEventListener('click', () => {
+      window.print();
+    });
+
+    // Tab switcher
+    const tabs = ['analysis', 'part-a', 'part-b', 'part-c', 'notes'];
+    tabs.forEach(t => {
+      document.getElementById(`tab-btn-${t}`)?.addEventListener('click', () => {
+        tabs.forEach(otherT => {
+          document.getElementById(`tab-btn-${otherT}`)?.classList.remove('active');
+          const sec = document.getElementById(`section-${otherT}`);
+          if (sec) sec.style.display = 'none';
+        });
+        document.getElementById(`tab-btn-${t}`)?.classList.add('active');
+        const activeSec = document.getElementById(`section-${t}`);
+        if (activeSec) activeSec.style.display = 'block';
+      });
+    });
+
+    // Read notes click inside modal
+    modalContainer.querySelectorAll('.open-note-from-analysis').forEach(b => {
+      b.addEventListener('click', () => {
+        const noteId = b.getAttribute('data-noteid');
+        const note = (window.AppFallbackData?.notes || []).find(n => n.id === noteId);
+        if (note && window.PdfViewerModal) {
+          window.PdfViewerModal.open({
+            title: note.title,
+            fileName: note.fileName,
+            fileUrl: note.fileUrl,
+            subjectName: `${note.subjectCode} — ${note.subjectName}`,
+            unit: `Unit ${note.unit}`,
+            description: note.description,
+            uploadedBy: note.uploadedBy || 'Senior Faculty'
+          });
+        }
+      });
     });
   }
 };

@@ -100,27 +100,121 @@ window.PdfViewerModal = {
 
                 <!-- Document Content Section -->
                 <div style="font-size: 1rem; color: #334155; line-height: 1.8;">
-                  <h4 style="font-size: 1.15rem; font-weight: 700; color: #1e293b; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-                    📖 Course Notes Overview
-                  </h4>
-                  <p style="background: #f8fafc; border-left: 4px solid #2563eb; padding: 16px 20px; border-radius: 4px; font-size: 0.95rem; color: #334155; margin-bottom: 24px;">
-                    ${description}
-                  </p>
+                  ${(() => {
+                    const matchedPYQ = (window.PYQAnalysisData || []).find(p => 
+                      title.includes(p.subjectCode) || subject.includes(p.subjectCode) || (docInfo.qpCode && docInfo.qpCode === p.qpCode)
+                    );
+                    const qpQuestions = docInfo.questions || matchedPYQ?.questions;
+                    const qpAnalysis = docInfo.analysis || matchedPYQ?.analysis;
 
-                  <div style="background: #eff6ff; border: 1px dashed #93c5fd; padding: 24px; border-radius: var(--radius-md); text-align: center; margin: 30px 0;">
-                    <div style="font-size: 2.2rem; margin-bottom: 8px;">📑</div>
-                    <h5 style="font-size: 1.1rem; font-weight: 700; color: #1e40af; margin-bottom: 4px;">
-                      ${fileName}
-                    </h5>
-                    <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 16px;">
-                      Study material uploaded for students and faculty reference.
-                    </p>
-                    ${fileUrl ? `
-                      <a href="${fileUrl}" target="_blank" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none; font-weight: 700;">
-                        📥 Open Full Document
-                      </a>
-                    ` : ''}
-                  </div>
+                    if (qpQuestions && (qpQuestions.partA || qpQuestions.partB)) {
+                      return `
+                        <!-- Solved Question Paper View -->
+                        <div style="margin-bottom: 24px;">
+                          ${qpAnalysis ? `
+                            <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: var(--radius-md); padding: 16px 20px; margin-bottom: 24px;">
+                              <h4 style="font-size: 1.05rem; font-weight: 800; color: #1e40af; margin: 0 0 8px 0; display: flex; align-items: center; gap: 8px;">
+                                <span>📊</span> Examination Paper Analysis
+                              </h4>
+                              <div style="font-size: 0.88rem; color: #1e3a8a; margin-bottom: 12px;">
+                                <strong>Difficulty Level:</strong> ${qpAnalysis.difficultyRating || 'Standard University Exam'}
+                              </div>
+                              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px;">
+                                ${(qpAnalysis.unitWeightage || []).map(u => `
+                                  <div style="background: #ffffff; padding: 8px 12px; border-radius: 6px; border: 1px solid #dbeafe; font-size: 0.8rem;">
+                                    <strong>${u.unit}:</strong> ${u.marks} Marks (${u.percentage})
+                                  </div>
+                                `).join('')}
+                              </div>
+                            </div>
+                          ` : ''}
+
+                          <!-- PART A -->
+                          <div style="margin-bottom: 30px;">
+                            <div style="background: #1e293b; color: #fff; padding: 10px 16px; border-radius: 6px; font-weight: 800; font-size: 0.95rem; margin-bottom: 16px;">
+                              PART A — (10 × 2 = 20 Marks) • Answer ALL Questions
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 14px;">
+                              ${(qpQuestions.partA || []).map(q => `
+                                <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px 18px; background: #fafafa;">
+                                  <div style="font-weight: 700; color: #0f172a; margin-bottom: 6px; font-size: 0.92rem;">
+                                    ${q.qNo}. ${q.question}
+                                  </div>
+                                  <div style="background: #f0fdf4; border-left: 3px solid #22c55e; padding: 10px 14px; border-radius: 4px; font-size: 0.88rem; color: #166534; white-space: pre-line;">
+                                    <strong>Answer:</strong> ${q.answer}
+                                  </div>
+                                </div>
+                              `).join('')}
+                            </div>
+                          </div>
+
+                          <!-- PART B -->
+                          <div style="margin-bottom: 30px;">
+                            <div style="background: #1e293b; color: #fff; padding: 10px 16px; border-radius: 6px; font-weight: 800; font-size: 0.95rem; margin-bottom: 16px;">
+                              PART B — (5 × 13 = 65 Marks) • Either / Or Choice
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 16px;">
+                              ${(qpQuestions.partB || []).map(q => `
+                                <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px 20px; background: #fafafa;">
+                                  <div style="font-weight: 700; color: #0f172a; margin-bottom: 8px; font-size: 0.95rem;">
+                                    ${q.qNo}. ${q.question}
+                                  </div>
+                                  <div style="background: #eff6ff; border-left: 3px solid #3b82f6; padding: 12px 16px; border-radius: 4px; font-size: 0.88rem; color: #1e40af; white-space: pre-line;">
+                                    <strong>Solution / Derivation Outline:</strong><br>${q.solutionOutline}
+                                  </div>
+                                </div>
+                              `).join('')}
+                            </div>
+                          </div>
+
+                          <!-- PART C -->
+                          ${(qpQuestions.partC && qpQuestions.partC.length > 0) ? `
+                            <div style="margin-bottom: 30px;">
+                              <div style="background: #1e293b; color: #fff; padding: 10px 16px; border-radius: 6px; font-weight: 800; font-size: 0.95rem; margin-bottom: 16px;">
+                                PART C — (1 × 15 = 15 Marks) • Comprehensive Application & Case Study
+                              </div>
+                              <div style="display: flex; flex-direction: column; gap: 16px;">
+                                ${qpQuestions.partC.map(q => `
+                                  <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px 20px; background: #fafafa;">
+                                    <div style="font-weight: 700; color: #0f172a; margin-bottom: 8px; font-size: 0.95rem;">
+                                      ${q.qNo}. ${q.question}
+                                    </div>
+                                    <div style="background: #fefce8; border-left: 3px solid #eab308; padding: 12px 16px; border-radius: 4px; font-size: 0.88rem; color: #854d0e; white-space: pre-line;">
+                                      <strong>Case Study Solution Blueprint:</strong><br>${q.solutionOutline}
+                                    </div>
+                                  </div>
+                                `).join('')}
+                              </div>
+                            </div>
+                          ` : ''}
+                        </div>
+                      `;
+                    }
+
+                    return `
+                      <h4 style="font-size: 1.15rem; font-weight: 700; color: #1e293b; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                        📖 Course Notes Overview
+                      </h4>
+                      <p style="background: #f8fafc; border-left: 4px solid #2563eb; padding: 16px 20px; border-radius: 4px; font-size: 0.95rem; color: #334155; margin-bottom: 24px;">
+                        ${description}
+                      </p>
+
+                      <div style="background: #eff6ff; border: 1px dashed #93c5fd; padding: 24px; border-radius: var(--radius-md); text-align: center; margin: 30px 0;">
+                        <div style="font-size: 2.2rem; margin-bottom: 8px;">📑</div>
+                        <h5 style="font-size: 1.1rem; font-weight: 700; color: #1e40af; margin-bottom: 4px;">
+                          ${fileName}
+                        </h5>
+                        <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 16px;">
+                          Study material uploaded for students and faculty reference.
+                        </p>
+                        ${fileUrl ? `
+                          <a href="${fileUrl}" target="_blank" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none; font-weight: 700;">
+                            📥 Open Full Document
+                          </a>
+                        ` : ''}
+                      </div>
+                    `;
+                  })()}
                 </div>
 
                 <!-- Footer -->
