@@ -52,6 +52,9 @@ window.NotesView = {
     }
 
     const renderContent = () => {
+      const user = window.appState ? (window.appState.state?.user || window.appState.user) : null;
+      const isAdmin = user && user.role === 'admin';
+
       const allSubjects = (window.AppFallbackData?.subjects || []).filter(s => 
         s.deptCode === currentDeptCode && s.regCode === currentReg && s.semester === selectedSem
       );
@@ -212,16 +215,18 @@ window.NotesView = {
                           </button>
                         `).join('')}
                       </div>
-                      <button class="btn btn-sm btn-primary trigger-upload-note-modal" data-unit="${selectedUnit || 1}" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 600; padding: 6px 14px; border-radius: var(--radius-md);">
-                        ➕ Add Unit Note
-                      </button>
+                      ${isAdmin ? `
+                        <button class="btn btn-sm btn-primary trigger-upload-note-modal" data-unit="${selectedUnit || 1}" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 600; padding: 6px 14px; border-radius: var(--radius-md);">
+                          ➕ Add Unit Note
+                        </button>
+                      ` : ''}
                     </div>
                   ` : ''}
                 </div>
               ` : ''}
 
               <!-- Content Renderer based on active tab -->
-              ${activeResourceType === 'notes' ? this.renderNotesList(allNotes, selectedUnit, currentSubject) : ''}
+              ${activeResourceType === 'notes' ? this.renderNotesList(allNotes, selectedUnit, currentSubject, isAdmin) : ''}
               ${activeResourceType === 'textbooks' ? this.renderTextbooksList(allTextbooks) : ''}
               ${activeResourceType === 'labs' ? this.renderLabsList(allLabs) : ''}
               ${activeResourceType === 'videos' ? this.renderVideosList(allVideos) : ''}
@@ -251,7 +256,7 @@ window.NotesView = {
     renderContent();
   },
 
-  renderNotesList(notes, selectedUnit, currentSubject) {
+  renderNotesList(notes, selectedUnit, currentSubject, isAdmin) {
     const targetUnit = selectedUnit || 1;
     const unitLabel = selectedUnit ? `Unit ${selectedUnit}` : 'Unit 1';
 
@@ -265,9 +270,15 @@ window.NotesView = {
           <div class="empty-state-desc" style="color: var(--text-secondary); margin-bottom: 20px; font-size: 0.9rem;">
             No notes found for this filter selection.
           </div>
-          <button class="btn btn-primary trigger-upload-note-modal" data-unit="${targetUnit}" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 700; padding: 10px 22px; border-radius: var(--radius-md); box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);">
-            📤 + Upload Notes for ${unitLabel}
-          </button>
+          ${isAdmin ? `
+            <button class="btn btn-primary trigger-upload-note-modal" data-unit="${targetUnit}" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 700; padding: 10px 22px; border-radius: var(--radius-md); box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);">
+              📤 + Upload Notes for ${unitLabel}
+            </button>
+          ` : `
+            <div style="font-size: 0.85rem; color: var(--text-muted); background: var(--bg-subtle); padding: 8px 18px; border-radius: 9999px; display: inline-block;">
+              📖 Study notes for this unit will be uploaded by department faculty soon.
+            </div>
+          `}
         </div>
       `;
     }
@@ -307,7 +318,16 @@ window.NotesView = {
                   <span>📄 ${note.fileSize}</span> • <span>📥 ${note.downloads} Downloads</span>
                 </div>
 
-                <div style="display: flex; gap: 8px;">
+                <div style="display: flex; gap: 8px; align-items: center;">
+                  ${isAdmin ? `
+                    <button class="btn btn-danger btn-sm admin-delete-note-btn" 
+                      data-noteid="${note.id || note._id}" 
+                      data-title="${note.title}"
+                      style="display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; font-weight: 700; border-radius: var(--radius-md); background: #ef4444; border-color: #dc2626; color: #fff; cursor: pointer;" 
+                      title="Permanently Delete Note (Admin Only)">
+                      🗑️ Delete
+                    </button>
+                  ` : ''}
                   <button class="btn btn-secondary btn-sm preview-note-btn" 
                     data-title="${note.title}" 
                     data-file="${note.fileName}" 
@@ -515,6 +535,34 @@ window.NotesView = {
           if (window.Toast) window.Toast.show('Saved to Bookmarks!', 'success');
         }
         renderContent();
+      });
+    });
+
+    // Admin Instant Delete Note Trigger
+    container.querySelectorAll('.admin-delete-note-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const noteId = btn.dataset.noteid;
+        const noteTitle = btn.dataset.title;
+        if (confirm(`⚠️ Admin Action:\nAre you sure you want to permanently delete this note:\n"${noteTitle}"?`)) {
+          // Remove locally immediately
+          if (window.AppFallbackData && Array.isArray(window.AppFallbackData.notes)) {
+            const idx = window.AppFallbackData.notes.findIndex(n => n.id === noteId || n._id === noteId);
+            if (idx !== -1) window.AppFallbackData.notes.splice(idx, 1);
+          }
+
+          // Delete from MongoDB Atlas in background
+          try {
+            if (window.apiService && noteId) {
+              await window.apiService.delete(`/resources/notes/${noteId}`);
+            }
+          } catch (err) {
+            console.warn('API delete note error:', err);
+          }
+
+          if (window.Toast) window.Toast.success(`Note "${noteTitle}" deleted!`);
+          renderContent();
+        }
       });
     });
 
@@ -757,15 +805,46 @@ window.NotesView = {
         createdAt: new Date().toISOString().split('T')[0]
       };
 
-      // Add to local dataset for immediate reactivity
+      // Double submission guard
+      const submitBtn = document.getElementById('modal-submit-btn');
+      if (submitBtn) {
+        if (submitBtn.disabled) return;
+        submitBtn.disabled = true;
+        submitBtn.textContent = '⏳ Saving...';
+      }
+
+      // Upsert into local dataset (replace if matching unit exists to prevent duplicate cards)
       if (window.AppFallbackData) {
         if (!Array.isArray(window.AppFallbackData.notes)) {
           window.AppFallbackData.notes = [];
         }
-        window.AppFallbackData.notes.unshift(newNote);
+        const existingIdx = window.AppFallbackData.notes.findIndex(n => 
+          (n.deptCode || '').toUpperCase() === context.deptCode.toUpperCase() && 
+          (n.regCode || '').toUpperCase() === context.regCode.toUpperCase() && 
+          (n.subjectCode || '').toUpperCase() === subCode.toUpperCase() && 
+          n.unit === unitNum
+        );
+        if (existingIdx !== -1) {
+          window.AppFallbackData.notes[existingIdx] = { 
+            ...window.AppFallbackData.notes[existingIdx], 
+            ...newNote, 
+            id: window.AppFallbackData.notes[existingIdx].id 
+          };
+        } else {
+          window.AppFallbackData.notes.unshift(newNote);
+        }
       }
 
-      // Try sending to live MongoDB backend via API
+      // Close modal and refresh UI immediately for instantaneous feedback
+      closeModal();
+      if (window.Toast) {
+        window.Toast.show(`✅ Notes for Unit ${unitNum} saved successfully!`, 'success');
+      }
+      if (typeof onSuccess === 'function') {
+        onSuccess(newNote);
+      }
+
+      // Asynchronously persist to MongoDB Atlas backend
       try {
         if (window.apiService && window.apiService.post) {
           if (fileObj) {
@@ -781,26 +860,13 @@ window.NotesView = {
             fd.append('semester', context.semester);
             fd.append('unit', unitNum);
             fd.append('uploadedBy', author);
-            await window.apiService.post('/resources/notes', fd).catch(err => {
-              console.warn('Backend upload notice:', err.message);
-            });
+            await window.apiService.post('/resources/notes', fd);
           } else {
-            await window.apiService.post('/resources/notes', newNote).catch(err => {
-              console.warn('Backend upload notice:', err.message);
-            });
+            await window.apiService.post('/resources/notes', newNote);
           }
         }
       } catch (err) {
-        console.warn('Backend sync:', err.message);
-      }
-
-      closeModal();
-      if (window.Toast) {
-        window.Toast.show(`✅ Notes for Unit ${unitNum} published successfully!`, 'success');
-      }
-
-      if (typeof onSuccess === 'function') {
-        onSuccess(newNote);
+        console.warn('Backend note save notice:', err.message);
       }
     });
   }

@@ -502,8 +502,18 @@ window.AdminView = {
       if (e.target === overlay) close();
     });
 
+    let isSubmitting = false;
     form?.addEventListener('submit', async (e) => {
       e.preventDefault();
+      if (isSubmitting) return;
+      isSubmitting = true;
+
+      const submitBtn = form.querySelector('button[type="submit"]');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = '⏳ Publishing...';
+      }
+
       const title = document.getElementById('res-title-input').value;
       const dept = document.getElementById('res-dept-select').value;
       const sem = parseInt(document.getElementById('res-sem-select').value || 1);
@@ -537,17 +547,29 @@ window.AdminView = {
       if (!Array.isArray(window.AppFallbackData.notes)) {
         window.AppFallbackData.notes = [];
       }
-      window.AppFallbackData.notes.unshift(newNote);
+      
+      const existingIdx = window.AppFallbackData.notes.findIndex(n => 
+        (n.deptCode || '').toUpperCase() === dept.toUpperCase() && 
+        (n.subjectCode || '').toUpperCase() === subCodePart.toUpperCase() && 
+        n.unit === unit
+      );
+      if (existingIdx !== -1) {
+        window.AppFallbackData.notes[existingIdx] = { ...window.AppFallbackData.notes[existingIdx], ...newNote, id: window.AppFallbackData.notes[existingIdx].id };
+      } else {
+        window.AppFallbackData.notes.unshift(newNote);
+      }
+
+      close();
+      window.Toast.success(`Unit ${unit} Notes "${title}" published!`);
+      window.AdminView.render();
 
       try {
         if (window.apiService && window.apiService.post) {
-          await window.apiService.post('/resources/notes', newNote).catch(() => {});
+          await window.apiService.post('/resources/notes', newNote);
         }
-      } catch (err) {}
-
-      window.Toast.success(`Unit ${unit} Notes "${title}" published!`);
-      close();
-      window.AdminView.render();
+      } catch (err) {
+        console.warn('Admin post note background sync:', err);
+      }
     });
   },
 

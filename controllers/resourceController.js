@@ -53,20 +53,40 @@ exports.createNote = async (req, res, next) => {
         fileUrl,
         fileName,
         fileSize,
-        uploadedBy: req.user ? req.user.name || req.user.email : 'Faculty Member',
+        uploadedBy: req.user ? req.user.name || req.user.email : (req.body.uploadedBy || 'Faculty Member'),
         createdAt: new Date().toISOString()
       };
       return res.status(201).json({ success: true, data: offlineDoc });
     }
 
-    const note = await Note.create({
+    const deptCode = (req.body.deptCode || '').toUpperCase();
+    const regCode = (req.body.regCode || '').toUpperCase();
+    const subjectCode = (req.body.subjectCode || '').toUpperCase();
+    const unit = parseInt(req.body.unit || 1);
+
+    const noteData = {
       ...req.body,
+      deptCode,
+      regCode,
+      subjectCode,
+      unit,
       fileUrl,
       fileName,
       fileSize,
-      uploadedBy: req.user ? req.user.name || req.user.email : 'Faculty Member',
+      uploadedBy: req.user ? req.user.name || req.user.email : (req.body.uploadedBy || 'Faculty Member'),
       uploadedById: req.user ? req.user._id : null
-    });
+    };
+
+    let note;
+    if (deptCode && regCode && subjectCode && unit) {
+      note = await Note.findOneAndUpdate(
+        { deptCode, regCode, subjectCode, unit },
+        noteData,
+        { upsert: true, new: true }
+      );
+    } else {
+      note = await Note.create(noteData);
+    }
 
     res.status(201).json({ success: true, data: note });
   } catch (err) {
