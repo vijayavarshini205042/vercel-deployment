@@ -108,14 +108,18 @@ const startServer = async () => {
       await seedAdmin();
     }
 
-    app.listen(PORT, () => {
-      console.log(`\n🚀 DRMS Server running at http://localhost:${PORT}`);
-      console.log(`📚 Flow: Login → Regulation → Department → Semester → Subject → Resources`);
-      console.log(`🌐 Environment: ${process.env.NODE_ENV || 'development'}\n`);
-    });
+    if (!process.env.VERCEL) {
+      app.listen(PORT, () => {
+        console.log(`\n🚀 DRMS Server running at http://localhost:${PORT}`);
+        console.log(`📚 Flow: Login → Regulation → Department → Semester → Subject → Resources`);
+        console.log(`🌐 Environment: ${process.env.NODE_ENV || 'development'}\n`);
+      });
+    }
   } catch (err) {
     console.error('❌ Fatal server error:', err);
-    process.exit(1);
+    if (!process.env.VERCEL) {
+      process.exit(1);
+    }
   }
 };
 
