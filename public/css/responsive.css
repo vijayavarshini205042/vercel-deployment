@@ -1,0 +1,149 @@
+/* ==========================================================================
+   Responsive Stylesheet: Breakpoints, Mobile Bottom Navigation, Touch UI
+   ========================================================================== */
+
+/* Mobile Bottom Navigation */
+.mobile-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--mobile-nav-height);
+  background-color: var(--bg-surface);
+  border-top: 1px solid var(--border-color);
+  display: none;
+  align-items: center;
+  justify-content: space-around;
+  z-index: 99;
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.mobile-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.mobile-nav-item.active {
+  color: var(--color-primary-600);
+}
+
+.mobile-nav-item svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* Tablet & Mobile Breakpoints */
+@media (max-width: 1024px) {
+  :root {
+    --sidebar-width: 220px;
+  }
+
+  .dashboard-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .main-content {
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .dept-hero {
+    padding: var(--space-6);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-4);
+  }
+}
+
+@media (max-width: 768px) {
+  .app-sidebar {
+    display: none !important;
+  }
+
+  .mobile-bottom-nav {
+    display: flex;
+  }
+
+  .app-body {
+    padding-bottom: var(--mobile-nav-height);
+  }
+
+  .header-search {
+    display: none;
+  }
+
+  .app-header {
+    padding: 0 var(--space-4);
+  }
+
+  .brand-subtitle {
+    display: none;
+  }
+
+  .context-breadcrumbs {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.5rem;
+  }
+
+  .context-pill {
+    padding: 0.1rem 0.35rem;
+    font-size: 0.75rem;
+  }
+
+  .core-resource-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .roadmap-flow::before {
+    left: 20px;
+  }
+
+  .step-node {
+    width: 44px;
+    height: 44px;
+    font-size: 0.9rem;
+  }
+
+  .step-card {
+    padding: var(--space-4);
+  }
+
+  .modal-dialog {
+    margin: var(--space-2);
+    max-height: 95vh;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dept-hero-title {
+    font-size: 1.5rem;
+  }
+
+  .modal-footer {
+    flex-direction: column-reverse;
+  }
+
+  .modal-footer .btn {
+    width: 100%;
+  }
+}

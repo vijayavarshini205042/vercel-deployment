@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Department Resource Management System - A centralized academic and career learning portal for engineering students and faculty.">
+  <meta name="theme-color" content="#1e3a8a">
+  <title>Department Resource Management System | EduResource Portal</title>
+  
+  <!-- Modern Inter & JetBrains Mono Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/roadmaps.css">
+  <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="css/flow.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+  <!-- Skip link for keyboard accessibility -->
+  <a href="#main-content" class="skip-to-content">Skip to main content</a>
+
+  <!-- Application Shell -->
+  <div id="app" class="app-layout">
+    
+    <!-- Top Global Header -->
+    <header id="app-header" class="app-header" role="banner"></header>
+
+    <!-- App Body with Desktop Sidebar + Main Content -->
+    <div class="app-body">
+      <!-- Desktop Left Sidebar -->
+      <aside id="app-sidebar" class="app-sidebar" aria-label="Department Navigation" hidden></aside>
+
+      <!-- Dynamic Main Content Region -->
+      <main id="main-content" class="main-content" role="main" tabindex="-1">
+        <!-- Rendered view container -->
+        <div id="view-container" class="view-container">
+          <!-- Loading skeleton initial state -->
+          <div class="skeleton-loader-container">
+            <div class="skeleton-box skeleton-header"></div>
+            <div class="skeleton-grid">
+              <div class="skeleton-box skeleton-card"></div>
+              <div class="skeleton-box skeleton-card"></div>
+              <div class="skeleton-box skeleton-card"></div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <nav id="mobile-bottom-nav" class="mobile-bottom-nav" aria-label="Mobile Navigation" hidden></nav>
+
+    <!-- Global Modals & Overlays -->
+    <div id="modal-container" class="modal-container" aria-hidden="true"></div>
+
+    <!-- Global Toast Notification Center -->
+    <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+  </div>
+
+  <!-- Client Application Scripts -->
+  <script src="js/data/fallbackData.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/components/toast.js"></script>
+  <script src="js/components/header.js"></script>
+  <script src="js/components/navigation.js"></script>
+  <script src="js/components/regulationSelect.js"></script>
+  <script src="js/components/departmentSelect.js"></script>
+  <script src="js/components/semesterSelectView.js"></script>
+  <script src="js/components/subjectSelectView.js"></script>
+  <script src="js/components/dashboardView.js"></script>
+  <script src="js/components/notesView.js"></script>
+  <script src="js/components/questionPapersView.js"></script>
+  <script src="js/components/jobRolesView.js"></script>
+  <script src="js/components/roadmapsView.js"></script>
+  <script src="js/components/projectsView.js"></script>
+  <script src="js/components/projectDetailModal.js"></script>
+  <script src="js/components/certificationsView.js"></script>
+  <script src="js/data/careerData.js"></script>
+  <script src="js/components/skillMapView.js"></script>
+  <script src="js/components/deptRolesView.js"></script>
+  <script src="js/components/roleDetailView.js"></script>
+  <script src="js/components/bookmarksView.js"></script>
+  <script src="js/components/adminView.js"></script>
+  <script src="js/components/pdfViewerModal.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
