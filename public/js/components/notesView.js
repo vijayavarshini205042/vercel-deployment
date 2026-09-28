@@ -59,8 +59,16 @@ window.NotesView = {
         s.deptCode === currentDeptCode && s.regCode === currentReg && s.semester === selectedSem
       );
 
+      // Auto-select first subject in current semester if none selected or subject not in this semester
+      if ((!selectedSubjectId || !allSubjects.some(s => s.id === selectedSubjectId || s.code === selectedSubjectId)) && allSubjects.length > 0) {
+        selectedSubjectId = allSubjects[0].id || allSubjects[0].code;
+      }
+
       // Get current subject
-      const currentSubject = selectedSubjectId ? allSubjects.find(s => s.id === selectedSubjectId || s.code === selectedSubjectId) : null;
+      const currentSubject = selectedSubjectId ? allSubjects.find(s => s.id === selectedSubjectId || s.code === selectedSubjectId) : (allSubjects.length > 0 ? allSubjects[0] : null);
+      if (currentSubject && !selectedSubjectId) {
+        selectedSubjectId = currentSubject.id || currentSubject.code;
+      }
 
       // Filter notes strictly by subjectId or subjectCode
       let allNotes = (window.AppFallbackData?.notes || []).filter(n => {

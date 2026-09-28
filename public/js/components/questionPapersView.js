@@ -72,9 +72,27 @@ window.QuestionPapersView = {
         return matchesSubject && matchesDept && matchesReg && matchesSem && matchesYear && matchesSearch;
       });
 
-      // If no QPs exist for this subject, dynamically generate past university exam series
-      if (allQPs.length === 0 && currentSubject && window.FreeStudyPortals) {
-        const generatedQPs = window.FreeStudyPortals.generateQuestionPapers(currentSubject);
+      // If no QPs exist for this subject or selection, dynamically generate past university exam series
+      if (allQPs.length === 0 && window.FreeStudyPortals) {
+        let subjectsToGenerate = [];
+        if (currentSubject) {
+          subjectsToGenerate = [currentSubject];
+        } else {
+          // Find subjects matching current department and semester
+          const deptSubjects = (window.AppFallbackData?.subjects || []).filter(s => {
+            const matchesDept = s.deptCode && s.deptCode.toUpperCase() === currentDeptCode.toUpperCase();
+            const matchesReg = s.regCode && s.regCode.toUpperCase() === currentReg.toUpperCase();
+            const matchesSem = selectedSem === 'all' || s.semester === selectedSem;
+            return matchesDept && matchesReg && matchesSem;
+          });
+          subjectsToGenerate = deptSubjects.length > 0 ? deptSubjects : (window.AppFallbackData?.subjects || []).filter(s => s.deptCode && s.deptCode.toUpperCase() === currentDeptCode.toUpperCase());
+        }
+
+        const generatedQPs = [];
+        subjectsToGenerate.forEach(sub => {
+          generatedQPs.push(...window.FreeStudyPortals.generateQuestionPapers(sub));
+        });
+
         allQPs = generatedQPs.filter(qp => {
           const matchesYear = selectedYear === 'all' || (qp.academicYear && qp.academicYear.includes(selectedYear));
           const matchesSearch = !searchQuery || 
@@ -244,11 +262,11 @@ window.QuestionPapersView = {
 
                       <!-- Direct Portal Download Links -->
                       <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; padding: 6px 10px; background: var(--bg-surface-elevated); border-radius: var(--radius-sm); border: 1px dashed var(--border-color); align-items: center;">
-                        <span style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted);">Portals:</span>
-                        <a href="https://www.padeepz.net/?s=${encodeURIComponent(qp.subjectCode)}" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(217,119,6,0.08); color: #d97706; text-decoration: none; font-size: 0.68rem; padding: 2px 6px;">Padeepz ↗</a>
-                        <a href="https://www.enggtree.com/?s=${encodeURIComponent(qp.subjectCode)}" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(5,150,105,0.08); color: #059669; text-decoration: none; font-size: 0.68rem; padding: 2px 6px;">EnggTree ↗</a>
-                        <a href="https://www.brainkart.com/search/?q=${encodeURIComponent(qp.subjectCode + ' question paper')}" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(37,99,235,0.08); color: #2563eb; text-decoration: none; font-size: 0.68rem; padding: 2px 6px;">BrainKart ↗</a>
-                        <a href="https://www.eduengineering.net/?s=${encodeURIComponent(qp.subjectCode)}" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(124,58,237,0.08); color: #7c3aed; text-decoration: none; font-size: 0.68rem; padding: 2px 6px;">EduEngg ↗</a>
+                        <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; gap: 4px;">🌐 Free Portals:</span>
+                        <a href="${qp.portals?.brainkart || 'https://www.brainkart.com/search/?q=' + encodeURIComponent((qp.subjectCode || '') + ' question paper anna university')}" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(37,99,235,0.08); color: #2563eb; text-decoration: none; font-size: 0.7rem; padding: 3px 8px; border-radius: 4px; font-weight: 600;">📚 BrainKart ↗</a>
+                        <a href="${qp.portals?.enggtree || 'https://www.enggtree.com/?s=' + encodeURIComponent(qp.subjectCode || '')}" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(5,150,105,0.08); color: #059669; text-decoration: none; font-size: 0.7rem; padding: 3px 8px; border-radius: 4px; font-weight: 600;">🌲 EnggTree ↗</a>
+                        <a href="${qp.portals?.padeepz || 'https://www.padeepz.net/?s=' + encodeURIComponent(qp.subjectCode || '')}" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(217,119,6,0.08); color: #d97706; text-decoration: none; font-size: 0.7rem; padding: 3px 8px; border-radius: 4px; font-weight: 600;">⚡ Padeepz ↗</a>
+                        <a href="${qp.portals?.eduengineering || 'https://www.eduengineering.net/?s=' + encodeURIComponent(qp.subjectCode || '')}" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(124,58,237,0.08); color: #7c3aed; text-decoration: none; font-size: 0.7rem; padding: 3px 8px; border-radius: 4px; font-weight: 600;">🎓 EduEngineering ↗</a>
                       </div>
 
                       ${(qp.analysis || qp.questions || (window.PYQAnalysisData && window.PYQAnalysisData.find(p => p.qpCode === qp.qpCode || p.subjectCode === qp.subjectCode))) ? `
