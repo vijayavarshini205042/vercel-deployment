@@ -54,9 +54,11 @@ window.QuestionPapersView = {
       if (!window.AppFallbackData) window.AppFallbackData = {};
       if (!window.AppFallbackData.questionPapers) window.AppFallbackData.questionPapers = [];
 
+      const currentSubject = (window.AppFallbackData?.subjects || []).find(s => s.id === selectedSubjectId || s.code === selectedSubjectId);
+
       // Filter question papers
-      const allQPs = window.AppFallbackData.questionPapers.filter(qp => {
-        const matchesSubject = selectedSubjectId ? qp.subjectId === selectedSubjectId : true;
+      let allQPs = window.AppFallbackData.questionPapers.filter(qp => {
+        const matchesSubject = selectedSubjectId ? (qp.subjectId === selectedSubjectId || qp.subjectCode === currentSubject?.code) : true;
         const matchesDept = qp.deptCode ? qp.deptCode.toUpperCase() === currentDeptCode.toUpperCase() : true;
         const matchesReg = qp.regCode ? qp.regCode.toUpperCase() === currentReg.toUpperCase() : true;
         const matchesSem = selectedSem === 'all' || qp.semester === selectedSem;
@@ -69,6 +71,19 @@ window.QuestionPapersView = {
 
         return matchesSubject && matchesDept && matchesReg && matchesSem && matchesYear && matchesSearch;
       });
+
+      // If no QPs exist for this subject, dynamically generate past university exam series
+      if (allQPs.length === 0 && currentSubject && window.FreeStudyPortals) {
+        const generatedQPs = window.FreeStudyPortals.generateQuestionPapers(currentSubject);
+        allQPs = generatedQPs.filter(qp => {
+          const matchesYear = selectedYear === 'all' || (qp.academicYear && qp.academicYear.includes(selectedYear));
+          const matchesSearch = !searchQuery || 
+            (qp.subjectName && qp.subjectName.toLowerCase().includes(searchQuery.toLowerCase())) || 
+            (qp.subjectCode && qp.subjectCode.toLowerCase().includes(searchQuery.toLowerCase())) ||
+            (qp.academicYear && qp.academicYear.toLowerCase().includes(searchQuery.toLowerCase()));
+          return matchesYear && matchesSearch;
+        });
+      }
 
       container.innerHTML = `
         <div style="max-width: 1200px; margin: 0 auto; width: 100%;">
@@ -127,10 +142,38 @@ window.QuestionPapersView = {
             </span>
             <div style="display: flex; gap: 8px; flex-wrap: wrap;">
               <button class="chip qp-year-chip ${selectedYear === 'all' ? 'active' : ''}" data-year="all">All Years</button>
+              <button class="chip qp-year-chip ${selectedYear === '2025' ? 'active' : ''}" data-year="2025">2025</button>
               <button class="chip qp-year-chip ${selectedYear === '2024' ? 'active' : ''}" data-year="2024">2024</button>
               <button class="chip qp-year-chip ${selectedYear === '2023' ? 'active' : ''}" data-year="2023">2023</button>
               <button class="chip qp-year-chip ${selectedYear === '2022' ? 'active' : ''}" data-year="2022">2022</button>
-              <button class="chip qp-year-chip ${selectedYear === '2021' ? 'active' : ''}" data-year="2021">2021</button>
+            </div>
+          </div>
+
+          <!-- Free Question Paper Portals (BrainKart, EnggTree, Padeepz, EduEngineering) -->
+          <div class="card" style="padding: 16px 20px; margin-bottom: 24px; background: var(--bg-surface); border: 1px solid var(--border-color);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+              <div style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
+                <span>📑</span> <strong>Anna University Question Papers — Free Study Portals</strong>
+              </div>
+              <span class="badge badge-success" style="font-size: 0.72rem;">100% Free Solved Papers & Question Banks</span>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;">
+              <a href="https://www.padeepz.net/?s=${encodeURIComponent(currentSubject ? currentSubject.code : currentDeptCode + ' question paper')}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; padding: 10px 14px; border-radius: var(--radius-md); background: rgba(217, 119, 6, 0.08); border: 1px solid rgba(217, 119, 6, 0.25); color: #d97706; font-weight: 600; font-size: 0.82rem; display: flex; align-items: center; justify-content: space-between;">
+                <span>⚡ Padeepz QP Archive</span>
+                <span>↗</span>
+              </a>
+              <a href="https://www.enggtree.com/?s=${encodeURIComponent(currentSubject ? currentSubject.code : currentDeptCode + ' question paper')}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; padding: 10px 14px; border-radius: var(--radius-md); background: rgba(5, 150, 105, 0.08); border: 1px solid rgba(5, 150, 105, 0.25); color: #059669; font-weight: 600; font-size: 0.82rem; display: flex; align-items: center; justify-content: space-between;">
+                <span>🌲 EnggTree Question Papers</span>
+                <span>↗</span>
+              </a>
+              <a href="https://www.brainkart.com/search/?q=${encodeURIComponent(currentSubject ? currentSubject.code + ' question paper' : currentDeptCode + ' question paper')}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; padding: 10px 14px; border-radius: var(--radius-md); background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(37, 99, 235, 0.25); color: #2563eb; font-weight: 600; font-size: 0.82rem; display: flex; align-items: center; justify-content: space-between;">
+                <span>📚 BrainKart Question Banks</span>
+                <span>↗</span>
+              </a>
+              <a href="https://www.eduengineering.net/?s=${encodeURIComponent(currentSubject ? currentSubject.code : currentDeptCode + ' question paper')}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; padding: 10px 14px; border-radius: var(--radius-md); background: rgba(124, 58, 237, 0.08); border: 1px solid rgba(124, 58, 237, 0.25); color: #7c3aed; font-weight: 600; font-size: 0.82rem; display: flex; align-items: center; justify-content: space-between;">
+                <span>🎓 EduEngineering Solved QPs</span>
+                <span>↗</span>
+              </a>
             </div>
           </div>
 
@@ -194,9 +237,18 @@ window.QuestionPapersView = {
                         </div>
                       ` : ''}
 
-                      <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.8125rem; color: var(--text-muted); margin-bottom: 14px; background: var(--bg-subtle); padding: 8px 12px; border-radius: var(--radius-md);">
+                      <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.8125rem; color: var(--text-muted); margin-bottom: 10px; background: var(--bg-subtle); padding: 8px 12px; border-radius: var(--radius-md);">
                         <span>📄 ${qp.fileSize || '1.2 MB'} PDF</span>
                         <span>📥 ${qp.downloads || 0} downloads</span>
+                      </div>
+
+                      <!-- Direct Portal Download Links -->
+                      <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; padding: 6px 10px; background: var(--bg-surface-elevated); border-radius: var(--radius-sm); border: 1px dashed var(--border-color); align-items: center;">
+                        <span style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted);">Portals:</span>
+                        <a href="https://www.padeepz.net/?s=${encodeURIComponent(qp.subjectCode)}" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(217,119,6,0.08); color: #d97706; text-decoration: none; font-size: 0.68rem; padding: 2px 6px;">Padeepz ↗</a>
+                        <a href="https://www.enggtree.com/?s=${encodeURIComponent(qp.subjectCode)}" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(5,150,105,0.08); color: #059669; text-decoration: none; font-size: 0.68rem; padding: 2px 6px;">EnggTree ↗</a>
+                        <a href="https://www.brainkart.com/search/?q=${encodeURIComponent(qp.subjectCode + ' question paper')}" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(37,99,235,0.08); color: #2563eb; text-decoration: none; font-size: 0.68rem; padding: 2px 6px;">BrainKart ↗</a>
+                        <a href="https://www.eduengineering.net/?s=${encodeURIComponent(qp.subjectCode)}" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(124,58,237,0.08); color: #7c3aed; text-decoration: none; font-size: 0.68rem; padding: 2px 6px;">EduEngg ↗</a>
                       </div>
 
                       ${(qp.analysis || qp.questions || (window.PYQAnalysisData && window.PYQAnalysisData.find(p => p.qpCode === qp.qpCode || p.subjectCode === qp.subjectCode))) ? `

@@ -59,20 +59,32 @@ window.NotesView = {
         s.deptCode === currentDeptCode && s.regCode === currentReg && s.semester === selectedSem
       );
 
-      // Remove fallback that selects the first subject automatically
-      const currentSubject = selectedSubjectId ? allSubjects.find(s => s.id === selectedSubjectId) : null;
+      // Get current subject
+      const currentSubject = selectedSubjectId ? allSubjects.find(s => s.id === selectedSubjectId || s.code === selectedSubjectId) : null;
 
-      // Filter notes strictly by subjectId
-      const allNotes = (window.AppFallbackData?.notes || []).filter(n => {
-        const matchesSubject = selectedSubjectId ? n.subjectId === selectedSubjectId : false;
+      // Filter notes strictly by subjectId or subjectCode
+      let allNotes = (window.AppFallbackData?.notes || []).filter(n => {
+        const matchesSubject = currentSubject ? (n.subjectId === currentSubject.id || n.subjectCode === currentSubject.code) : false;
         const matchesUnit = !selectedUnit || n.unit === selectedUnit;
         const matchesSearch = !searchQuery || 
           n.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
           n.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          n.subjectName.toLowerCase().includes(searchQuery.toLowerCase());
+          (n.subjectName && n.subjectName.toLowerCase().includes(searchQuery.toLowerCase()));
         
         return matchesSubject && matchesUnit && matchesSearch;
       });
+
+      // If no pre-baked notes exist for this subject, use FreeStudyPortals generator for Unit 1 to 5
+      if (allNotes.length === 0 && currentSubject && window.FreeStudyPortals) {
+        const generatedNotes = window.FreeStudyPortals.generateUnitNotes(currentSubject);
+        allNotes = generatedNotes.filter(n => {
+          const matchesUnit = !selectedUnit || n.unit === selectedUnit;
+          const matchesSearch = !searchQuery || 
+            n.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+            n.description.toLowerCase().includes(searchQuery.toLowerCase());
+          return matchesUnit && matchesSearch;
+        });
+      }
 
       // Filter Textbooks
       const allTextbooks = (window.AppFallbackData?.textbooks || []).filter(tb => 
@@ -183,6 +195,24 @@ window.NotesView = {
                       <p style="font-size: 0.8125rem; color: var(--text-muted); margin-top: 2px;">
                         Code: <strong>${currentSubject.code}</strong> • Credits: ${currentSubject.credits} • Regulation: ${currentReg}
                       </p>
+                    </div>
+                  </div>
+
+                  <!-- Free Educational Portals Integration (BrainKart, EnggTree, Padeepz, EduEngineering) -->
+                  <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 12px 16px; margin: 10px 0 16px 0;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
+                      <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 6px;">
+                        <span>🌐</span> <strong>Official Free Study Portals for ${currentSubject.code} – ${currentSubject.name}</strong>
+                      </div>
+                      <span class="badge badge-success" style="font-size: 0.72rem;">100% Free Materials</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+                      ${(window.FreeStudyPortals ? window.FreeStudyPortals.getPortalsForSubject(currentSubject) : []).map(p => `
+                        <a href="${p.url}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: ${p.bgColor}; border: 1px solid ${p.borderColor}; border-radius: var(--radius-sm); color: ${p.tagColor}; font-weight: 600; font-size: 0.82rem; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                          <span style="display: flex; align-items: center; gap: 6px;">${p.icon} ${p.name}</span>
+                          <span style="font-size: 0.75rem;">↗</span>
+                        </a>
+                      `).join('')}
                     </div>
                   </div>
 
@@ -309,9 +339,26 @@ window.NotesView = {
                 </button>
               </div>
 
-              <p style="font-size: 0.875rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 16px;">
+              <p style="font-size: 0.875rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 12px;">
                 ${note.description}
               </p>
+
+              <!-- Direct Unit-wise Free Site Portal Links -->
+              <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; padding: 8px 12px; background: var(--bg-surface-elevated); border-radius: var(--radius-sm); border: 1px dashed var(--border-color); align-items: center;">
+                <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted);">🌐 Unit ${note.unit} Free Sites:</span>
+                <a href="${note.portals?.brainkart || 'https://www.brainkart.com/search/?q=' + encodeURIComponent((note.subjectCode || '') + ' unit ' + note.unit)}" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(37,99,235,0.08); color: #2563eb; text-decoration: none; font-size: 0.7rem; padding: 3px 8px; border-radius: 4px;">
+                  📚 BrainKart (Unit ${note.unit} Q&A) ↗
+                </a>
+                <a href="${note.portals?.enggtree || 'https://www.enggtree.com/?s=' + encodeURIComponent(note.subjectCode || '')}" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(5,150,105,0.08); color: #059669; text-decoration: none; font-size: 0.7rem; padding: 3px 8px; border-radius: 4px;">
+                  🌲 EnggTree Notes ↗
+                </a>
+                <a href="${note.portals?.padeepz || 'https://www.padeepz.net/?s=' + encodeURIComponent(note.subjectCode || '')}" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(217,119,6,0.08); color: #d97706; text-decoration: none; font-size: 0.7rem; padding: 3px 8px; border-radius: 4px;">
+                  ⚡ Padeepz PDF ↗
+                </a>
+                <a href="${note.portals?.eduengineering || 'https://www.eduengineering.net/?s=' + encodeURIComponent(note.subjectCode || '')}" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(124,58,237,0.08); color: #7c3aed; text-decoration: none; font-size: 0.7rem; padding: 3px 8px; border-radius: 4px;">
+                  🎓 EduEngineering ↗
+                </a>
+              </div>
 
               <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 14px; border-top: 1px solid var(--border-subtle); flex-wrap: wrap; gap: 10px;">
                 <div style="font-size: 0.8125rem; color: var(--text-muted);">

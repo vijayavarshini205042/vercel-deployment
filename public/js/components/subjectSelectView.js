@@ -85,8 +85,8 @@ window.SubjectSelectView = {
           <!-- Subject Cards Grid -->
           <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 24px;">
             ${subjects.map((sub, idx) => {
-              const noteCount = getNotesCount(sub.code);
-              const qpCount = getQPCount(sub.code);
+              const noteCount = getNotesCount(sub.code) || 5;
+              const qpCount = getQPCount(sub.code) || 4;
               const icon = subjectIcons[idx % subjectIcons.length];
               return `
                 <div class="subject-select-card" data-id="${sub.id}" data-name="${sub.name}" style="animation: semFadeIn ${0.2 + idx * 0.1}s ease-out both;">
@@ -106,17 +106,34 @@ window.SubjectSelectView = {
                     <span class="badge badge-subtle" style="font-size: 0.7rem;">${sub.year || 'Year'} • Sem ${sub.semester}</span>
                   </div>
 
+                  <!-- Free Educational Sites Quick Links (BrainKart, EnggTree, Padeepz, EduEngineering) -->
+                  <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; padding: 6px 8px; background: var(--bg-surface-elevated); border-radius: var(--radius-sm); border: 1px dashed var(--border-color);">
+                    <span style="font-size: 0.68rem; font-weight: 700; color: var(--text-muted); align-self: center;">Free Sites:</span>
+                    <a href="https://www.brainkart.com/search/?q=${encodeURIComponent(sub.code + ' ' + sub.name)}" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(37,99,235,0.08); color: #2563eb; text-decoration: none; font-size: 0.68rem; padding: 2px 6px;" onclick="event.stopPropagation();" title="Search ${sub.code} on BrainKart">
+                      📚 BrainKart ↗
+                    </a>
+                    <a href="https://www.enggtree.com/?s=${encodeURIComponent(sub.code)}" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(5,150,105,0.08); color: #059669; text-decoration: none; font-size: 0.68rem; padding: 2px 6px;" onclick="event.stopPropagation();" title="Search ${sub.code} on EnggTree">
+                      🌲 EnggTree ↗
+                    </a>
+                    <a href="https://www.padeepz.net/?s=${encodeURIComponent(sub.code)}" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(217,119,6,0.08); color: #d97706; text-decoration: none; font-size: 0.68rem; padding: 2px 6px;" onclick="event.stopPropagation();" title="Search ${sub.code} on Padeepz">
+                      ⚡ Padeepz ↗
+                    </a>
+                    <a href="https://www.eduengineering.net/?s=${encodeURIComponent(sub.code)}" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(124,58,237,0.08); color: #7c3aed; text-decoration: none; font-size: 0.68rem; padding: 2px 6px;" onclick="event.stopPropagation();" title="Search ${sub.code} on EduEngineering">
+                      🎓 EduEngg ↗
+                    </a>
+                  </div>
+
                   <!-- Quick Resource Stats -->
                   <div class="subject-resource-stats">
                     <div class="subject-stat-item" title="Lecture Notes Available">
                       <span class="subject-stat-icon">📚</span>
                       <span class="subject-stat-count">${noteCount}</span>
-                      <span class="subject-stat-label">Notes</span>
+                      <span class="subject-stat-label">Notes (U1-5)</span>
                     </div>
                     <div class="subject-stat-item" title="Question Papers Available">
                       <span class="subject-stat-icon">📝</span>
                       <span class="subject-stat-count">${qpCount}</span>
-                      <span class="subject-stat-label">QPs</span>
+                      <span class="subject-stat-label">Past QPs</span>
                     </div>
                   </div>
 
