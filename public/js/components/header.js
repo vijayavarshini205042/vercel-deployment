@@ -68,6 +68,11 @@ window.HeaderComponent = {
 
       <!-- Right: Actions, Theme, Notifications & User Profile -->
       <div class="header-actions">
+        <!-- Project Presentation Modal Trigger -->
+        <button class="btn btn-outline btn-sm" id="header-presentation-btn" title="View Capstone Project Presentation Deck" style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; font-weight: 600; font-size: 0.8rem; border-color: rgba(99, 102, 241, 0.4); background: rgba(99, 102, 241, 0.08); color: var(--color-primary-400); cursor: pointer;">
+          📽️ <span>Presentation</span>
+        </button>
+
         <!-- Theme Switcher -->
         <button class="theme-toggle-btn" id="theme-toggle-btn" aria-label="Toggle dark/light theme" title="Toggle dark/light theme">
           ${state.theme === 'dark' ? '☀️' : '🌙'}
@@ -201,6 +206,14 @@ window.HeaderComponent = {
     document.getElementById('menu-logout-btn')?.addEventListener('click', () => {
       window.Auth.logout();
     });
+    document.getElementById('header-presentation-btn')?.addEventListener('click', () => {
+      if (window.PresentationModal) {
+        window.PresentationModal.show();
+      } else {
+        window.open('/presentation.html', '_blank');
+      }
+    });
+
     document.getElementById('header-login-btn')?.addEventListener('click', () => {
       window.Auth.showAuthModal('login');
     });

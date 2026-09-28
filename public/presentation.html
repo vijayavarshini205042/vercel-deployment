@@ -361,16 +361,20 @@
 
         <div style="display: flex; gap: 32px; flex-wrap: wrap; padding-top: 24px; border-top: 1px solid var(--border);">
           <div>
-            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Project Domain</div>
-            <div style="font-size: 1rem; font-weight: 600; color: #fff;">Full-Stack EdTech / Educational Systems</div>
+            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Developer / Presenter</div>
+            <div style="font-size: 1.05rem; font-weight: 700; color: #38bdf8;">Vijayavarshini S</div>
           </div>
           <div>
-            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Target Users</div>
-            <div style="font-size: 1rem; font-weight: 600; color: #fff;">Students, Faculty Members & Administrators</div>
+            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Deployment & DB</div>
+            <div style="font-size: 1rem; font-weight: 600; color: #fff;">Vercel Edge Cloud + MongoDB Atlas</div>
+          </div>
+          <div>
+            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Curriculum Scope</div>
+            <div style="font-size: 1rem; font-weight: 600; color: #fff;">19 Departments • Regulations R2021 & R2025</div>
           </div>
           <div>
             <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Architecture</div>
-            <div style="font-size: 1rem; font-weight: 600; color: #fff;">Modern SPA + Express REST API + MongoDB</div>
+            <div style="font-size: 1rem; font-weight: 600; color: #fff;">Vanilla SPA + Express API + Serverless</div>
           </div>
         </div>
       </div>
@@ -816,8 +820,8 @@
     <section class="slide" data-slide="12">
       <div>
         <div class="slide-category">⚙️ Technology Stack & Architecture</div>
-        <h2 class="slide-title">End-to-End System Architecture</h2>
-        <p class="slide-subtitle">Engineered for security, high throughput, and zero-downtime scalability.</p>
+        <h2 class="slide-title">End-to-End Cloud System Architecture</h2>
+        <p class="slide-subtitle">Engineered for security, high throughput, and zero-downtime scalability on modern cloud platforms.</p>
       </div>
 
       <div class="slide-grid-3">
@@ -833,23 +837,31 @@
           </div>
           <div class="list-item">
             <span class="bullet-icon">▸</span>
-            <span>Mobile-First Bottom Bar & Touch Layout</span>
+            <span>In-App Project Presentation & PDF Viewer Modals</span>
+          </div>
+          <div class="list-item">
+            <span class="bullet-icon">▸</span>
+            <span>Zero build-step client caching & instant responsiveness</span>
           </div>
         </div>
 
         <div class="card">
-          <h4 class="card-title" style="color: var(--accent-purple);">Backend API Layer</h4>
+          <h4 class="card-title" style="color: var(--accent-purple);">Backend & Cloud Hosting</h4>
           <div class="list-item">
             <span class="bullet-icon">▸</span>
-            <span>Node.js & Express RESTful Controllers</span>
+            <span>Node.js & Express RESTful API</span>
           </div>
           <div class="list-item">
             <span class="bullet-icon">▸</span>
-            <span>JWT Session Management & Bcrypt 12 Rounds</span>
+            <span>Hosted on Vercel Global Edge Network with CI/CD</span>
           </div>
           <div class="list-item">
             <span class="bullet-icon">▸</span>
-            <span>Multer File Uploads with Strict MIME Validation</span>
+            <span>Dual-Engine: @vercel/static CDN + @vercel/node Serverless</span>
+          </div>
+          <div class="list-item">
+            <span class="bullet-icon">▸</span>
+            <span>JWT Auth & Bcrypt 12 Rounds + Rate Limiting</span>
           </div>
         </div>
 
@@ -857,15 +869,19 @@
           <h4 class="card-title" style="color: var(--accent-emerald);">Database Layer</h4>
           <div class="list-item">
             <span class="bullet-icon">▸</span>
-            <span>MongoDB with Mongoose ODM</span>
+            <span>MongoDB Atlas M0 Managed Cloud Cluster</span>
           </div>
           <div class="list-item">
             <span class="bullet-icon">▸</span>
-            <span>12 Normalized Collections with Indexes</span>
+            <span>12 Normalized Collections with Compound Indexes</span>
           </div>
           <div class="list-item">
             <span class="bullet-icon">▸</span>
-            <span>Automated Seeder & Fallback Resilience</span>
+            <span>Live Sync: Admin Edits Instantly Visible to Students</span>
+          </div>
+          <div class="list-item">
+            <span class="bullet-icon">▸</span>
+            <span>Resilient Fallback Mode for Offline / Demo Integrity</span>
           </div>
         </div>
       </div>
@@ -875,8 +891,8 @@
     <section class="slide" data-slide="13">
       <div>
         <div class="slide-category">🛡️ Security & Defensive Engineering</div>
-        <h2 class="slide-title">Multi-Layer Security Hardening</h2>
-        <p class="slide-subtitle">Zero-trust backend authorization ensuring complete integrity of institutional assets.</p>
+        <h2 class="slide-title">Multi-Layer Security & Role-Based Access Control</h2>
+        <p class="slide-subtitle">Zero-trust authorization ensuring strict integrity of institutional syllabus and notes.</p>
       </div>
 
       <div class="slide-grid-2">
@@ -885,10 +901,10 @@
           <p class="card-desc">
             Never trust client-side state. Every modifying HTTP endpoint (POST, PUT, DELETE) verifies signed JWT claims:
           </p>
-          <div style="background: #0f172a; padding: 12px; border-radius: 8px; font-size: 0.85rem; line-height: 1.6;">
-            • <strong>Student:</strong> Read-only access, bookmarking, PDF viewing, skill map.<br>
-            • <strong>Faculty:</strong> Add/edit lecture notes, question papers, suggest projects.<br>
-            • <strong>Admin:</strong> System configuration, regulations, department management, audit logs.
+          <div style="background: #0f172a; padding: 14px; border-radius: 8px; font-size: 0.85rem; line-height: 1.7;">
+            • <strong style="color: var(--accent-cyan);">Student:</strong> Read-only access, bookmarking, in-browser PDF viewing, career skill mapping. Upload/edit actions blocked for data protection.<br>
+            • <strong style="color: var(--accent-amber);">Faculty:</strong> Authorized to upload & edit lecture notes, model papers, and suggest projects.<br>
+            • <strong style="color: #f43f5e);">Admin:</strong> Full institutional control, curriculum CRUD, user role management, and database synchronization.
           </div>
         </div>
 
@@ -900,11 +916,15 @@
           </div>
           <div class="list-item">
             <span class="bullet-icon">⏱️</span>
-            <span><strong>Rate Limiting:</strong> 100 req/15min general limiter; 20 attempts/15min brute-force auth limiter.</span>
+            <span><strong>Rate Limiting:</strong> 500 req/15min general limiter; 20 attempts/15min brute-force auth limiter.</span>
           </div>
           <div class="list-item">
             <span class="bullet-icon">🛡️</span>
             <span><strong>Input Sanitization:</strong> Express-validator sanitization preventing NoSQL injection.</span>
+          </div>
+          <div class="list-item">
+            <span class="bullet-icon">🔄</span>
+            <span><strong>Live Real-time Sync:</strong> Admin updates immediately reflected across student sessions without reload.</span>
           </div>
         </div>
       </div>
