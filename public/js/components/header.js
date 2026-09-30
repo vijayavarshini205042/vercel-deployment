@@ -22,12 +22,15 @@ window.HeaderComponent = {
     };
 
     const user = state.user;
+    const currentView = window.appState.currentView;
+    const isCompleted = window.appState.hasCompletedOnboarding;
+    const isLogin = currentView === 'login' || !window.appState.isAuth;
     const roleBadgeClass = user?.role === 'admin' ? 'badge-danger' : user?.role === 'faculty' ? 'badge-warning' : 'badge-primary';
 
     container.innerHTML = `
       <!-- Left: Logo & Context Breadcrumbs -->
       <div class="header-left">
-        <div class="brand-logo-container" id="header-brand-logo" title="Back to Dashboard">
+        <div class="brand-logo-container" id="header-brand-logo" style="${isCompleted ? 'cursor: pointer;' : 'cursor: default;'}" title="${isCompleted ? 'Back to Dashboard' : 'DRMS Portal'}">
           <div class="brand-logo-icon">🏛️</div>
           <div>
             <div class="brand-title">DRMS</div>
@@ -35,88 +38,94 @@ window.HeaderComponent = {
           </div>
         </div>
 
-        <!-- Selected Regulation & Department Breadcrumbs -->
-        <div class="context-breadcrumbs" aria-label="Academic Context">
-          <span class="context-pill" id="breadcrumb-regulation" title="Click to change regulation">
-            📜 ${currentReg} ▾
-          </span>
-          <span class="breadcrumb-separator">/</span>
-          <span class="context-pill" id="breadcrumb-department" title="Click to change department">
-            ${currentDept.icon} ${currentDept.name} (${currentDept.code}) ▾
-          </span>
-        </div>
+        ${isCompleted ? `
+          <!-- Selected Regulation & Department Breadcrumbs (Unlocked) -->
+          <div class="context-breadcrumbs" aria-label="Academic Context">
+            <span class="context-pill" id="breadcrumb-regulation" title="Click to change regulation">
+              📜 ${currentReg} ▾
+            </span>
+            <span class="breadcrumb-separator">/</span>
+            <span class="context-pill" id="breadcrumb-department" title="Click to change department">
+              ${currentDept.icon} ${currentDept.name} (${currentDept.code}) ▾
+            </span>
+          </div>
+        ` : ''}
       </div>
 
-      <!-- Center: Global Debounced Search -->
-      <div class="header-search">
-        <div class="search-input-wrapper">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
-          <input 
-            type="text" 
-            id="global-search-input" 
-            class="form-input" 
-            placeholder="Search notes, past question papers, job roles, skills, projects..." 
-            aria-label="Search resources globally"
-            autocomplete="off"
-          >
-          <button id="search-clear-btn" class="search-clear-btn" style="display: none;" aria-label="Clear search">✕</button>
+      <!-- Center: Global Debounced Search (Only when portal is unlocked) -->
+      ${isCompleted ? `
+        <div class="header-search">
+          <div class="search-input-wrapper">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input 
+              type="text" 
+              id="global-search-input" 
+              class="form-input" 
+              placeholder="Search notes, past question papers, job roles, skills, projects..." 
+              aria-label="Search resources globally"
+              autocomplete="off"
+            >
+            <button id="search-clear-btn" class="search-clear-btn" style="display: none;" aria-label="Clear search">✕</button>
+          </div>
+          <div id="search-results-dropdown" class="search-dropdown-results" style="display: none;"></div>
         </div>
-        <div id="search-results-dropdown" class="search-dropdown-results" style="display: none;"></div>
-      </div>
+      ` : '<div style="flex: 1;"></div>'}
 
       <!-- Right: Actions, Theme, Notifications & User Profile -->
       <div class="header-actions">
-        <!-- Project Presentation Modal Trigger -->
-        <button class="btn btn-outline btn-sm" id="header-presentation-btn" title="View Capstone Project Presentation Deck" style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; font-weight: 600; font-size: 0.8rem; border-color: rgba(99, 102, 241, 0.4); background: rgba(99, 102, 241, 0.08); color: var(--color-primary-400); cursor: pointer;">
-          📽️ <span>Presentation</span>
-        </button>
+        ${isCompleted ? `
+          <!-- Project Presentation Modal Trigger -->
+          <button class="btn btn-outline btn-sm" id="header-presentation-btn" title="View Capstone Project Presentation Deck" style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; font-weight: 600; font-size: 0.8rem; border-color: rgba(99, 102, 241, 0.4); background: rgba(99, 102, 241, 0.08); color: var(--color-primary-400); cursor: pointer;">
+            📽️ <span>Presentation</span>
+          </button>
+        ` : ''}
 
         <!-- Theme Switcher -->
         <button class="theme-toggle-btn" id="theme-toggle-btn" aria-label="Toggle dark/light theme" title="Toggle dark/light theme">
           ${state.theme === 'dark' ? '☀️' : '🌙'}
         </button>
 
-        <!-- Notifications Dropdown Trigger -->
-        <div style="position: relative;">
-          <button class="notification-btn" id="notification-toggle-btn" aria-label="Notifications" title="Notifications">
-            🔔
-            <span style="position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background: var(--color-accent-rose); border-radius: 50%;"></span>
-          </button>
-          <div id="notifications-menu" class="search-dropdown-results" style="display: none; width: 320px; right: 0; left: auto; top: 50px;">
-            <div style="padding: 12px 16px; border-bottom: 1px solid var(--border-color); font-weight: 700; font-size: 0.875rem;">
-              Recent Announcements & Uploads
-            </div>
-            <div id="notifications-list" style="max-height: 260px; overflow-y: auto;">
-              ${(window.AppFallbackData?.demoNotifications || []).map(n => `
-                <div style="padding: 10px 16px; border-bottom: 1px solid var(--border-subtle); font-size: 0.8125rem;">
-                  <div style="font-weight: 600; color: var(--text-primary);">${n.title}</div>
-                  <div style="color: var(--text-secondary); margin: 2px 0;">${n.message}</div>
-                  <div style="font-size: 0.7rem; color: var(--text-muted);">${n.time}</div>
-                </div>
-              `).join('')}
+        ${isCompleted ? `
+          <!-- Notifications Dropdown Trigger -->
+          <div style="position: relative;">
+            <button class="notification-btn" id="notification-toggle-btn" aria-label="Notifications" title="Notifications">
+              🔔
+              <span style="position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background: var(--color-accent-rose); border-radius: 50%;"></span>
+            </button>
+            <div id="notifications-menu" class="search-dropdown-results" style="display: none; width: 320px; right: 0; left: auto; top: 50px;">
+              <div style="padding: 12px 16px; border-bottom: 1px solid var(--border-color); font-weight: 700; font-size: 0.875rem;">
+                Recent Announcements & Uploads
+              </div>
+              <div id="notifications-list" style="max-height: 260px; overflow-y: auto;">
+                ${(window.AppFallbackData?.demoNotifications || []).map(n => `
+                  <div style="padding: 10px 16px; border-bottom: 1px solid var(--border-subtle); font-size: 0.8125rem;">
+                    <div style="font-weight: 600; color: var(--text-primary);">${n.title}</div>
+                    <div style="color: var(--text-secondary); margin: 2px 0;">${n.message}</div>
+                    <div style="font-size: 0.7rem; color: var(--text-muted);">${n.time}</div>
+                  </div>
+                `).join('')}
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- User Profile & Auth -->
-        ${user && user.role === 'admin' ? `
+          <!-- User Profile & Auth -->
           <div class="user-profile-menu">
             <button class="profile-button" id="profile-dropdown-btn" aria-expanded="false">
-              <div class="profile-avatar">${user.name.charAt(0).toUpperCase()}</div>
+              <div class="profile-avatar">${user?.name ? user.name.charAt(0).toUpperCase() : 'U'}</div>
               <div style="display: flex; flex-direction: column; text-align: left; line-height: 1.2;">
-                <span style="font-size: 0.875rem; font-weight: 600;">${user.name.split(' ')[0]}</span>
-                <span class="badge ${roleBadgeClass}" style="font-size: 0.65rem; padding: 1px 4px;">${user.role}</span>
+                <span style="font-size: 0.875rem; font-weight: 600;">${user?.name ? user.name.split(' ')[0] : 'User'}</span>
+                <span class="badge ${roleBadgeClass}" style="font-size: 0.65rem; padding: 1px 4px;">${user?.role || 'student'}</span>
               </div>
               <span style="font-size: 0.7rem; color: var(--text-muted);">▾</span>
             </button>
             <div id="profile-menu-dropdown" class="search-dropdown-results" style="display: none; width: 220px; right: 0; left: auto; top: 50px;">
               <div style="padding: 12px 16px; border-bottom: 1px solid var(--border-subtle);">
-                <div style="font-weight: 700; font-size: 0.875rem;">${user.name}</div>
-                <div style="font-size: 0.75rem; color: var(--text-muted);">${user.email}</div>
+                <div style="font-weight: 700; font-size: 0.875rem;">${user?.name || 'User'}</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted);">${user?.email || ''}</div>
               </div>
-              ${user.role === 'admin' ? `
+              ${user?.role === 'admin' ? `
                 <button class="search-result-item" id="menu-admin-btn" style="text-align: left; width: 100%;">
                   🛡️ <strong>Admin Control Center</strong>
                 </button>
@@ -128,15 +137,16 @@ window.HeaderComponent = {
                 🧭 <strong>Department Skill Map</strong>
               </button>
               <button class="search-result-item" id="menu-logout-btn" style="text-align: left; width: 100%; color: var(--color-accent-rose); border-top: 1px solid var(--border-subtle);">
-                🚪 <strong>Sign Out</strong>
+                🚪 <strong>Sign Out / Switch Role</strong>
               </button>
             </div>
           </div>
-        ` : `
-          <button class="btn btn-primary btn-sm" id="header-login-btn" title="Admin Login">
-            🛡️ Admin Login
+        ` : (isLogin ? '' : `
+          <!-- Onboarding step: Back/Switch Role button -->
+          <button class="btn btn-ghost btn-sm" id="header-switch-role-btn" style="color: var(--text-muted); font-size: 0.8rem;">
+            ← Switch Role
           </button>
-        `}
+        `)}
       </div>
     `;
 
@@ -145,9 +155,11 @@ window.HeaderComponent = {
 
 
   bindEvents() {
-    // Brand click -> dashboard
+    // Brand click -> dashboard (only when onboarding is complete)
     document.getElementById('header-brand-logo')?.addEventListener('click', () => {
-      window.appState.setView('dashboard');
+      if (window.appState.hasCompletedOnboarding) {
+        window.appState.setView('dashboard');
+      }
     });
 
     // Regulation selector breadcrumb
@@ -216,6 +228,10 @@ window.HeaderComponent = {
 
     document.getElementById('header-login-btn')?.addEventListener('click', () => {
       window.Auth.showAuthModal('login');
+    });
+
+    document.getElementById('header-switch-role-btn')?.addEventListener('click', () => {
+      window.Auth.logout();
     });
 
     // Global Search setup

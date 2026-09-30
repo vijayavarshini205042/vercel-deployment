@@ -213,7 +213,7 @@ window.QuestionPapersView = {
                 const qpIdentifier = qp.id || qp._id;
                 const isBookmarked = window.appState ? window.appState.isBookmarked(qpIdentifier) : false;
                 return `
-                  <div class="card card-hoverable" style="padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+                  <div class="card card-hoverable qp-item-card" style="padding: 20px; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer;">
                     <div>
                       <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; gap: 8px;">
                         <div style="display: flex; gap: 6px; flex-wrap: wrap;">
@@ -389,6 +389,17 @@ window.QuestionPapersView = {
               downloadCount: downloads
             });
           }
+        });
+      });
+
+      // Touching/clicking anywhere on the QP card opens its preview modal
+      container.querySelectorAll('.qp-item-card').forEach(card => {
+        card.addEventListener('click', (e) => {
+          if (e.target.closest('button') || e.target.closest('a') || e.target.closest('input')) {
+            return;
+          }
+          const previewBtn = card.querySelector('.preview-qp-btn');
+          if (previewBtn) previewBtn.click();
         });
       });
 

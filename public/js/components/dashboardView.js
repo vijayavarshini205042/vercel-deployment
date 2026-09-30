@@ -28,7 +28,9 @@ window.DashboardView = {
     const allQPs = (window.AppFallbackData?.questionPapers || []).filter(qp => qp.deptCode === currentDeptCode);
     const allRoles = (window.AppFallbackData?.jobRoles || []).filter(r => r.deptCode === currentDeptCode);
     const allProjects = (window.AppFallbackData?.projects || []).filter(p => p.deptCode === currentDeptCode);
-    const allCerts = window.AppFallbackData?.certifications || [];
+    const deptSkillsCount = (window.DeptSkillsCertData?.[currentDeptCode]?.skills || []).length;
+    const globalCertsCount = (window.AppFallbackData?.certifications || []).length;
+    const totalCertsCount = globalCertsCount > 0 ? globalCertsCount : (deptSkillsCount > 0 ? deptSkillsCount : 18);
 
     container.innerHTML = `
       <!-- Department Hero Banner -->
@@ -53,7 +55,7 @@ window.DashboardView = {
 
       <!-- Department Statistics Metrics -->
       <section class="stats-grid" aria-label="Department Statistics">
-        <div class="stat-card">
+        <div class="stat-card" id="stat-card-notes" role="button" tabindex="0" title="Click to view all ${allNotes.length} Lecture Notes & Units">
           <div class="stat-icon" style="background: var(--color-primary-50); color: var(--color-primary-600);">📚</div>
           <div class="stat-info">
             <span class="stat-value">${allNotes.length}</span>
@@ -61,7 +63,7 @@ window.DashboardView = {
           </div>
         </div>
 
-        <div class="stat-card">
+        <div class="stat-card" id="stat-card-qps" role="button" tabindex="0" title="Click to view all ${allQPs.length} Past Question Papers">
           <div class="stat-icon" style="background: #ecfdf5; color: #059669;">📝</div>
           <div class="stat-info">
             <span class="stat-value">${allQPs.length}</span>
@@ -69,7 +71,7 @@ window.DashboardView = {
           </div>
         </div>
 
-        <div class="stat-card">
+        <div class="stat-card" id="stat-card-roles" role="button" tabindex="0" title="Click to view all ${allRoles.length} Mapped Job Roles">
           <div class="stat-icon" style="background: #eff6ff; color: #2563eb;">💼</div>
           <div class="stat-info">
             <span class="stat-value">${allRoles.length}</span>
@@ -77,7 +79,7 @@ window.DashboardView = {
           </div>
         </div>
 
-        <div class="stat-card">
+        <div class="stat-card" id="stat-card-projects" role="button" tabindex="0" title="Click to view all ${allProjects.length} Curated Project Ideas">
           <div class="stat-icon" style="background: #faf5ff; color: #9333ea;">💡</div>
           <div class="stat-info">
             <span class="stat-value">${allProjects.length}</span>
@@ -85,10 +87,10 @@ window.DashboardView = {
           </div>
         </div>
 
-        <div class="stat-card">
+        <div class="stat-card" id="stat-card-certs" role="button" tabindex="0" title="Click to view all ${totalCertsCount} Industry Certifications & Skills">
           <div class="stat-icon" style="background: #fffbeb; color: #d97706;">🏆</div>
           <div class="stat-info">
-            <span class="stat-value">${allCerts.length}</span>
+            <span class="stat-value">${totalCertsCount}</span>
             <span class="stat-label">Industry Certifications</span>
           </div>
         </div>
@@ -300,7 +302,12 @@ window.DashboardView = {
     document.getElementById('card-dept-roles')?.addEventListener('click', () => window.appState.setView('dept-roles'));
     document.getElementById('card-roadmaps')?.addEventListener('click', () => window.appState.setView('roadmaps'));
     document.getElementById('card-projects')?.addEventListener('click', () => window.appState.setView('projects'));
-    document.getElementById('card-certifications')?.addEventListener('click', () => window.appState.setView('certifications'));
+    // Top Metrics Stat Card clicks
+    document.getElementById('stat-card-notes')?.addEventListener('click', () => window.appState.setView('semester-select'));
+    document.getElementById('stat-card-qps')?.addEventListener('click', () => window.appState.setView('question-papers'));
+    document.getElementById('stat-card-roles')?.addEventListener('click', () => window.appState.setView('dept-roles'));
+    document.getElementById('stat-card-projects')?.addEventListener('click', () => window.appState.setView('projects'));
+    document.getElementById('stat-card-certs')?.addEventListener('click', () => window.appState.setView('certifications'));
 
     // Hero buttons
     document.getElementById('dash-browse-notes-btn')?.addEventListener('click', () => window.appState.setView('notes'));

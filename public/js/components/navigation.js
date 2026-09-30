@@ -23,8 +23,8 @@ window.NavigationComponent = {
     const currentView = window.appState.currentView;
     const user = window.appState.user;
 
-    // Hide sidebar on guided flow selection screens
-    if (this.isFlowView(currentView) || !user) {
+    // Hide sidebar on guided flow selection screens or until onboarding is complete
+    if (this.isFlowView(currentView) || !user || !window.appState.hasCompletedOnboarding) {
       sidebar.hidden = true;
       sidebar.style.display = 'none';
       return;
@@ -45,7 +45,7 @@ window.NavigationComponent = {
     const careerItems = [
       { id: 'dept-roles', label: 'Dept. Roles & Skills', icon: '💼' },
       { id: 'projects', label: 'Project Ideas', icon: '💡' },
-      { id: 'certifications', label: 'Certifications', icon: '🏆' },
+      { id: 'certifications', label: 'Skills & Certifications', icon: '🏆' },
       { id: 'roadmaps', label: 'Career Roadmaps', icon: '🗺️' }
     ];
 
@@ -144,7 +144,8 @@ window.NavigationComponent = {
     const currentView = window.appState.currentView;
     const user = window.appState.user;
 
-    if (this.isFlowView(currentView) || !user) {
+    // Hide mobile bottom nav on flow screens or until onboarding is complete
+    if (this.isFlowView(currentView) || !user || !window.appState.hasCompletedOnboarding) {
       mobileNav.hidden = true;
       mobileNav.style.display = 'none';
       return;

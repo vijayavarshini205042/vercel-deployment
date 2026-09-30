@@ -18,17 +18,41 @@ window.RegulationSelectView = {
     }
 
     const currentReg = window.appState.regulation;
+    const isOnboarding = window.appState.role === 'student' && !window.appState.hasCompletedOnboarding;
 
     container.innerHTML = `
-      <div style="max-width: 720px; margin: 40px auto; width: 100%;">
+      <div style="max-width: 760px; margin: 30px auto; width: 100%; padding: 0 16px;">
+        
+        <!-- Onboarding Progress Flow Indicator -->
+        <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 28px; flex-wrap: wrap;">
+          <div class="breadcrumb-step current" style="cursor: default;">
+            <span>1</span> <span>📜 Choose Regulation</span>
+          </div>
+          <span class="breadcrumb-arrow">→</span>
+          <div class="breadcrumb-step ${isOnboarding ? 'upcoming' : 'completed'}" style="cursor: default;">
+            <span>2</span> <span>🏛️ Choose Department</span>
+          </div>
+          <span class="breadcrumb-arrow">→</span>
+          <div class="breadcrumb-step upcoming" style="cursor: default;">
+            <span>3</span> <span>🚀 Enter Portal</span>
+          </div>
+        </div>
+
+        <!-- Back to Role link if during onboarding -->
+        <div style="margin-bottom: 16px; text-align: left;">
+          <button class="btn btn-ghost btn-sm" id="reg-back-role-btn" style="color: var(--text-muted); font-size: 0.8rem; display: inline-flex; align-items: center; gap: 4px;">
+            ← Back to Role Selection
+          </button>
+        </div>
+
         <!-- Header card -->
-        <div style="text-align: center; margin-bottom: 32px;">
-          <div style="display: inline-flex; align-items: center; justify-content: center; width: 56px; height: 56px; border-radius: var(--radius-xl); background: var(--color-primary-100); color: var(--color-primary-700); font-size: 1.75rem; margin-bottom: 16px;">
+        <div style="text-align: center; margin-bottom: 28px;">
+          <div style="display: inline-flex; align-items: center; justify-content: center; width: 56px; height: 56px; border-radius: var(--radius-xl); background: var(--color-primary-100); color: var(--color-primary-700); font-size: 1.75rem; margin-bottom: 14px;">
             📜
           </div>
           <h1 style="font-size: 2rem; font-weight: 800; margin-bottom: 8px;">Select Academic Regulation</h1>
-          <p style="color: var(--text-secondary); max-width: 500px; margin: 0 auto;">
-            Engineering curriculum, credits, and subject syllabi are governed by university academic regulations. Choose your active regulation below.
+          <p style="color: var(--text-secondary); max-width: 520px; margin: 0 auto; font-size: 0.95rem; line-height: 1.5;">
+            Engineering syllabus copies, credits, question papers and courses are categorized by university regulation. Please pick your active regulation:
           </p>
         </div>
 
@@ -36,30 +60,30 @@ window.RegulationSelectView = {
         <div style="display: flex; flex-direction: column; gap: 16px;">
           ${regulations.map(reg => {
             const isSelected = reg.code === currentReg;
-            const regColor = reg.code === 'R2025' ? '#8b5cf6' : '#6366f1';
+            const regColor = reg.code === 'R2025' ? '#8b5cf6' : '#3b82f6';
             const regGradient = reg.code === 'R2025'
               ? 'linear-gradient(135deg, #8b5cf6, #7c3aed)'
-              : 'linear-gradient(135deg, #6366f1, #4f46e5)';
+              : 'linear-gradient(135deg, #3b82f6, #2563eb)';
             return `
               <div 
                 class="card card-hoverable reg-select-card" 
                 data-code="${reg.code}"
-                style="cursor: pointer; padding: 24px; border: 2px solid ${isSelected ? regColor : 'var(--border-color)'}; background-color: ${isSelected ? 'var(--color-primary-50)' : 'var(--bg-surface)'};"
+                style="cursor: pointer; padding: 22px; border: 2px solid ${isSelected ? regColor : 'var(--border-color)'}; background-color: ${isSelected ? 'var(--color-primary-50)' : 'var(--bg-surface)'}; border-radius: var(--radius-lg); transition: all 0.2s ease;"
               >
                 <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
                   <div style="display: flex; align-items: center; gap: 16px; flex: 1;">
-                    <div style="width: 52px; height: 52px; border-radius: var(--radius-lg); background: ${isSelected ? regGradient : 'var(--bg-subtle)'}; color: ${isSelected ? '#fff' : regColor}; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9rem; flex-shrink: 0; box-shadow: ${isSelected ? '0 4px 12px ' + regColor + '44' : 'none'};">
+                    <div style="width: 54px; height: 54px; border-radius: var(--radius-lg); background: ${isSelected ? regGradient : 'var(--bg-subtle)'}; color: ${isSelected ? '#fff' : regColor}; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1rem; flex-shrink: 0; box-shadow: ${isSelected ? '0 4px 14px ' + regColor + '44' : 'none'};">
                       ${reg.code}
                     </div>
                     <div>
-                      <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">
+                      <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--text-primary); margin: 0 0 4px 0;">
                         ${reg.name}
                       </h3>
                       <p style="font-size: 0.875rem; color: var(--text-secondary); margin: 0 0 10px;">
                         ${reg.description || 'Curriculum framework introduced in ' + reg.year}
                       </p>
                       <!-- Stats Row -->
-                      <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                         <span style="font-size: 0.78rem; font-weight: 600; color: var(--text-muted); background: var(--bg-subtle); padding: 3px 10px; border-radius: 99px;">
                           📅 Year ${reg.year}
                         </span>
@@ -74,9 +98,9 @@ window.RegulationSelectView = {
 
                   <div style="display: flex; align-items: center; gap: 12px; align-self: center;">
                     ${isSelected ? `
-                      <span class="badge badge-primary">Currently Selected</span>
+                      <span class="badge badge-primary">Active</span>
                     ` : ''}
-                    <span style="font-size: 1.25rem; color: ${regColor};">➔</span>
+                    <span style="font-size: 1.3rem; color: ${regColor};">➔</span>
                   </div>
                 </div>
 
@@ -95,27 +119,36 @@ window.RegulationSelectView = {
         </div>
 
         <!-- Navigation helper -->
-        <div style="text-align: center; margin-top: 32px;">
-          <button class="btn btn-secondary" id="skip-reg-btn">
-            Proceed to Department Selection ➔
+        <div style="text-align: center; margin-top: 28px;">
+          <button class="btn btn-primary" id="skip-reg-btn" style="padding: 12px 28px; font-weight: 700;">
+            Continue with Selected Regulation ➔
           </button>
         </div>
       </div>
     `;
 
-    // Bind event clicks
+    // Back to Role selection
+    document.getElementById('reg-back-role-btn')?.addEventListener('click', () => {
+      window.Auth.logout();
+    });
+
+    // Bind event clicks on regulation cards
     container.querySelectorAll('.reg-select-card').forEach(card => {
       card.addEventListener('click', () => {
         const code = card.getAttribute('data-code');
-        window.appState.setRegulation(code);
-        window.Toast.success(`Academic Regulation set to ${code}`);
-        // Next in flow: Department selection
-        window.appState.setView('department-select');
+        window.appState.setRegulation(code, true);
+        if (window.Toast) {
+          window.Toast.success(`Academic Regulation set to ${code}. Now select your department.`);
+        }
       });
     });
 
     document.getElementById('skip-reg-btn')?.addEventListener('click', () => {
-      window.appState.setView('department-select');
+      const code = window.appState.regulation || 'R2021';
+      window.appState.setRegulation(code, true);
+      if (window.Toast) {
+        window.Toast.success(`Academic Regulation set to ${code}. Now select your department.`);
+      }
     });
   }
 };

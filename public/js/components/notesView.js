@@ -326,7 +326,7 @@ window.NotesView = {
         ${notes.map(note => {
           const isBookmarked = window.appState.isBookmarked(note.id);
           return `
-            <div class="card card-hoverable" style="padding: 20px;">
+            <div class="card card-hoverable note-item-card" style="padding: 20px; cursor: pointer;">
               <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; gap: 12px;">
                 <div style="display: flex; align-items: center; gap: 12px;">
                   <div style="width: 44px; height: 44px; border-radius: var(--radius-md); background: var(--color-primary-50); color: var(--color-primary-700); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1rem;">
@@ -552,6 +552,17 @@ window.NotesView = {
             downloads: parseInt(btn.dataset.downloads || 0)
           });
         }
+      });
+    });
+
+    // Touching/clicking anywhere on the note card opens preview
+    container.querySelectorAll('.note-item-card').forEach(card => {
+      card.addEventListener('click', (e) => {
+        if (e.target.closest('button') || e.target.closest('a') || e.target.closest('input')) {
+          return;
+        }
+        const previewBtn = card.querySelector('.preview-note-btn');
+        if (previewBtn) previewBtn.click();
       });
     });
 

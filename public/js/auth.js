@@ -18,89 +18,127 @@ window.Auth = {
     const container = document.getElementById('view-container');
     if (!container) return;
 
-    // Show sidebar & chrome
+    // Strictly ensure sidebar & mobile nav are hidden on login
     const sidebar = document.getElementById('app-sidebar');
     const mobileNav = document.getElementById('mobile-bottom-nav');
-    if (sidebar) { sidebar.hidden = false; sidebar.style.display = ''; }
-    if (mobileNav) { mobileNav.hidden = false; mobileNav.style.display = ''; }
+    if (sidebar) { sidebar.hidden = true; sidebar.style.display = 'none'; }
+    if (mobileNav) { mobileNav.hidden = true; mobileNav.style.display = 'none'; }
 
     container.innerHTML = `
-      <div style="max-width: 520px; margin: 30px auto; padding: 32px; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-xl); box-shadow: var(--shadow-xl);">
+      <div style="max-width: 860px; margin: 40px auto; padding: 0 16px; width: 100%;">
         
-        <!-- Header -->
-        <div style="text-align: center; margin-bottom: 24px;">
-          <div style="font-size: 2.8rem; margin-bottom: 8px;">🏛️</div>
-          <h2 style="font-size: 1.6rem; font-weight: 800; color: var(--text-primary); margin: 0 0 6px 0;">DRMS Portal Access</h2>
-          <p style="font-size: 0.875rem; color: var(--text-muted); line-height: 1.5; margin: 0;">
-            Choose your role to continue to the academic and career resource hub.
-          </p>
-        </div>
-
-        <!-- 1. STUDENT DIRECT ACCESS (NO PASSWORD) -->
-        <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(99, 102, 241, 0.08)); border: 2px solid var(--color-primary-300, #93c5fd); border-radius: var(--radius-lg); padding: 22px; text-align: center; margin-bottom: 24px;">
-          <div style="font-size: 2.2rem; margin-bottom: 6px;">👨‍🎓</div>
-          <h3 style="margin: 0 0 4px; font-weight: 800; font-size: 1.2rem; color: var(--text-primary);">Student Portal</h3>
-          <p style="font-size: 0.84rem; color: var(--text-muted); line-height: 1.4; margin: 0 0 16px;">
-            Instant access to all verified notes, syllabus copies, question papers & career roadmaps. No registration or password required.
-          </p>
-          <button type="button" class="btn btn-primary" id="page-student-instant-enter" style="width: 100%; padding: 12px; font-weight: 700; font-size: 1rem; border-radius: var(--radius-md); box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);">
-            🚀 Enter as Student (Instant Access)
-          </button>
-        </div>
-
-        <!-- Divider -->
-        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
-          <span style="flex: 1; height: 1px; background: var(--border-subtle);"></span>
-          <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">OR ADMIN LOGIN</span>
-          <span style="flex: 1; height: 1px; background: var(--border-subtle);"></span>
-        </div>
-
-        <!-- 2. ADMIN LOGIN WITH EMAIL & PASSWORD -->
-        <div style="background: var(--bg-subtle); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 20px;">
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 14px;">
-            <span style="font-size: 1.25rem;">🛡️</span>
-            <div>
-              <h4 style="margin: 0; font-size: 0.95rem; font-weight: 700; color: var(--text-primary);">Administrator Access</h4>
-              <p style="margin: 0; font-size: 0.75rem; color: var(--text-muted);">For Department Faculty & System Admins</p>
-            </div>
+        <!-- Welcome Hero Header -->
+        <div style="text-align: center; margin-bottom: 36px;">
+          <div style="display: inline-flex; align-items: center; justify-content: center; width: 68px; height: 68px; border-radius: var(--radius-2xl, 20px); background: linear-gradient(135deg, var(--color-primary-500, #3b82f6), var(--color-accent-purple, #8b5cf6)); color: #ffffff; font-size: 2.2rem; margin-bottom: 16px; box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.4);">
+            🔐
           </div>
+          <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--text-primary); margin: 0 0 10px 0; letter-spacing: -0.02em;">
+            Portal Login & Access Permission
+          </h1>
+          <p style="font-size: 1.05rem; font-weight: 600; color: var(--color-primary-600); margin: 0 0 6px 0;">
+            Are you a Student or an Administrator?
+          </p>
+          <p style="font-size: 0.9rem; color: var(--text-muted); max-width: 580px; margin: 0 auto; line-height: 1.5;">
+            Direct access to the dashboard is protected. Please select your role below to configure your syllabus regulation and department.
+          </p>
+        </div>
 
-          <form id="admin-page-login-form">
-            <div class="form-group" style="margin-bottom: 14px;">
-              <label class="form-label" for="alp-email" style="display: block; font-size: 0.825rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px;">Admin Email</label>
-              <input type="email" id="alp-email" class="form-input" placeholder="admin@example.com" required autocomplete="email" style="width: 100%; padding: 9px 12px; border-radius: var(--radius-md);">
+        <!-- Role Selection Dual Cards -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; align-items: stretch;">
+          
+          <!-- 1. STUDENT ACCESS CARD -->
+          <div style="background: var(--bg-surface); border: 2px solid var(--color-primary-400, #60a5fa); border-radius: var(--radius-xl); padding: 32px 28px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: var(--shadow-lg); position: relative; overflow: hidden;">
+            <div style="position: absolute; top: 16px; right: 16px;">
+              <span class="badge badge-primary" style="font-size: 0.72rem; padding: 4px 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">
+                Instant Access
+              </span>
             </div>
 
-            <div class="form-group" style="margin-bottom: 16px;">
-              <label class="form-label" for="alp-password" style="display: block; font-size: 0.825rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px;">Password</label>
-              <div style="position: relative;">
-                <input type="password" id="alp-password" class="form-input" placeholder="••••••••" required autocomplete="current-password" style="width: 100%; padding: 9px 12px; padding-right: 40px; border-radius: var(--radius-md);">
-                <button type="button" id="alp-show-pw" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 0.9rem;">👁️</button>
+            <div>
+              <div style="width: 54px; height: 54px; border-radius: 14px; background: rgba(59, 130, 246, 0.1); color: var(--color-primary-600); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin-bottom: 18px;">
+                👨‍🎓
+              </div>
+              <h2 style="margin: 0 0 8px; font-weight: 800; font-size: 1.4rem; color: var(--text-primary);">
+                Student Portal
+              </h2>
+              <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; margin: 0 0 20px;">
+                Complete access to Anna University curriculum, verified lecture notes, previous year question papers, final year projects, and career roadmaps.
+              </p>
+
+              <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 26px;">
+                <div style="display: flex; align-items: center; gap: 8px; font-size: 0.84rem; color: var(--text-primary);">
+                  <span style="color: #10b981;">✓</span> <span>Anna University R2021 & R2025 Syllabi</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px; font-size: 0.84rem; color: var(--text-primary);">
+                  <span style="color: #10b981;">✓</span> <span>68+ Engineering Departments</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px; font-size: 0.84rem; color: var(--text-primary);">
+                  <span style="color: #10b981;">✓</span> <span>No registration or password needed</span>
+                </div>
               </div>
             </div>
 
-            <div id="alp-error-msg" style="display: none; background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 10px 14px; margin-bottom: 14px; color: #dc2626; font-size: 0.8125rem;"></div>
+            <div>
+              <button type="button" class="btn btn-primary" id="page-student-instant-enter" style="width: 100%; padding: 14px; font-weight: 700; font-size: 1rem; border-radius: var(--radius-md); box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35); cursor: pointer;">
+                🚀 Continue as Student ➔
+              </button>
+              <div style="text-align: center; margin-top: 10px; font-size: 0.75rem; color: var(--text-muted);">
+                Select Regulation & Department in next step
+              </div>
+            </div>
+          </div>
 
-            <button type="submit" class="btn btn-secondary" id="alp-submit-btn" style="width: 100%; padding: 11px; font-weight: 700; font-size: 0.9rem; border-radius: var(--radius-md);">
-              🔐 Sign In as Administrator
-            </button>
-          </form>
+          <!-- 2. ADMIN ACCESS CARD -->
+          <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 32px 28px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: var(--shadow-md);">
+            <div>
+              <div style="width: 54px; height: 54px; border-radius: 14px; background: rgba(239, 68, 68, 0.1); color: #ef4444; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin-bottom: 18px;">
+                🛡️
+              </div>
+              <h2 style="margin: 0 0 8px; font-weight: 800; font-size: 1.4rem; color: var(--text-primary);">
+                Administrator Sign In
+              </h2>
+              <p style="margin: 0 0 18px; font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5;">
+                Authorized portal for department faculty, coordinators, and system administrators to manage academic materials and system settings.
+              </p>
+
+              <form id="admin-page-login-form">
+                <div class="form-group" style="margin-bottom: 14px;">
+                  <label class="form-label" for="alp-email" style="display: block; font-size: 0.825rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px;">Admin Email</label>
+                  <input type="email" id="alp-email" class="form-input" placeholder="admin@example.com" required autocomplete="email" style="width: 100%; padding: 10px 12px; border-radius: var(--radius-md);">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 16px;">
+                  <label class="form-label" for="alp-password" style="display: block; font-size: 0.825rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px;">Password</label>
+                  <div style="position: relative;">
+                    <input type="password" id="alp-password" class="form-input" placeholder="••••••••" required autocomplete="current-password" style="width: 100%; padding: 10px 12px; padding-right: 40px; border-radius: var(--radius-md);">
+                    <button type="button" id="alp-show-pw" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 1rem;">👁️</button>
+                  </div>
+                </div>
+
+                <div id="alp-error-msg" style="display: none; background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 10px 14px; margin-bottom: 14px; color: #dc2626; font-size: 0.8125rem;"></div>
+
+                <button type="submit" class="btn btn-secondary" id="alp-submit-btn" style="width: 100%; padding: 12px; font-weight: 700; font-size: 0.95rem; border-radius: var(--radius-md); cursor: pointer;">
+                  🔐 Sign In as Administrator
+                </button>
+              </form>
+            </div>
+
+            <div style="margin-top: 18px; text-align: center; font-size: 0.75rem; color: var(--text-muted);">
+              Protected area for university faculty & staff
+            </div>
+          </div>
+
         </div>
 
       </div>
     `;
 
-    // 1-Click Student Login
+    // Student Button Click -> starts student flow: sets student user and navigates to regulation-select
     document.getElementById('page-student-instant-enter')?.addEventListener('click', () => {
-      window.appState.setUser({
-        id: 'student-' + Date.now(),
-        name: 'Student',
-        email: 'student@eduportal.com',
-        role: 'student',
-        token: 'student-open-access'
-      });
-      if (window.Toast) window.Toast.success('Welcome! Student access active. 🎓');
-      window.appState.setView('dashboard');
+      if (window.Toast) {
+        window.Toast.info('Welcome! Please select your Academic Regulation. 📜');
+      }
+      window.appState.startStudentFlow();
     });
 
     document.getElementById('alp-show-pw')?.addEventListener('click', () => {
@@ -247,18 +285,13 @@ window.Auth = {
       if (e.target === overlay) closeModal();
     });
 
-    // 1-Click Student Instant Access from Modal
+    // 1-Click Student Instant Access from Modal -> routes to regulation selection
     document.getElementById('modal-student-instant-btn')?.addEventListener('click', () => {
-      window.appState.setUser({
-        id: 'student-' + Date.now(),
-        name: 'Student',
-        email: 'student@eduportal.com',
-        role: 'student',
-        token: 'student-open-access'
-      });
-      if (window.Toast) window.Toast.success('Welcome! Student access active. 🎓');
       closeModal();
-      window.appState.setView('dashboard');
+      if (window.Toast) {
+        window.Toast.info('Welcome! Please choose your Academic Regulation. 📜');
+      }
+      window.appState.startStudentFlow();
     });
 
     document.getElementById('toggle-pw-vis')?.addEventListener('click', () => {
@@ -306,10 +339,9 @@ window.Auth = {
   },
 
   logout() {
-    window.appState.setUser(null);
+    window.appState.logout();
     if (window.Toast) {
-      window.Toast.info('Signed out. Student guest access enabled.');
+      window.Toast.info('Signed out. Please select your role to continue.');
     }
-    window.appState.setView('dashboard');
   }
 };

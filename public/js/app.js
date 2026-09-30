@@ -10,7 +10,7 @@ class AppRouter {
   constructor() {
     // Special fullscreen views that hide sidebar/nav
     this.fullscreenViews = new Set([
-      'regulation-select', 'department-select', 'semester-select', 'subject-select'
+      'login', 'regulation-select', 'department-select', 'semester-select', 'subject-select'
     ]);
 
     this.routes = {
@@ -47,13 +47,13 @@ class AppRouter {
 
     // 4. Subscribe to state changes
     window.appState.subscribe((state, changedKeys) => {
-      // Re-render header if user, regulation, or department changed
-      if (changedKeys.includes('user') || changedKeys.includes('regulation') || changedKeys.includes('department') || changedKeys.includes('theme')) {
+      // Re-render header if user, regulation, department, currentView, or theme changed
+      if (changedKeys.includes('user') || changedKeys.includes('regulation') || changedKeys.includes('department') || changedKeys.includes('theme') || changedKeys.includes('currentView') || changedKeys.includes('sessionActive') || changedKeys.includes('onboardingComplete')) {
         window.HeaderComponent.render();
       }
 
-      // Re-render navigation if view or user changed
-      if (changedKeys.includes('currentView') || changedKeys.includes('user')) {
+      // Re-render navigation if view, user, or onboarding changed
+      if (changedKeys.includes('currentView') || changedKeys.includes('user') || changedKeys.includes('onboardingComplete')) {
         window.NavigationComponent.render();
       }
       
@@ -67,27 +67,58 @@ class AppRouter {
   }
 
   async renderCurrentView() {
-    let currentView = window.appState.currentView || 'dashboard';
+    let currentView = window.appState.currentView || 'login';
 
-    // ── OPEN ACCESS MODE ──
-    // Login page redirect only happens if user explicitly navigates to 'login'
-    // All other views are freely accessible (guest mode is active)
-    if (currentView === 'login') {
-      // If already logged in as admin, go to admin center
-      if (window.appState.role === 'admin') {
-        window.appState.setView('admin');
+    // ── STRICT AUTH & ONBOARDING ROUTE PROTECTION ──
+    // 1. If not authenticated / no active session, MUST be on login view
+    if (!window.appState.isAuth) {
+      if (currentView !== 'login') {
+        window.appState.setView('login');
         return;
+      }
+    } else {
+      // User is authenticated / in active session
+      if (currentView === 'login') {
+        if (window.appState.role === 'admin') {
+          window.appState.setView('admin');
+          return;
+        } else if (window.appState.hasCompletedOnboarding) {
+          window.appState.setView('dashboard');
+          return;
+        } else if (!window.appState.user?.regulationChosen) {
+          window.appState.setView('regulation-select');
+          return;
+        } else if (!window.appState.user?.departmentChosen) {
+          window.appState.setView('department-select');
+          return;
+        }
+      }
+
+      // 2. Student Onboarding Enforcer:
+      // Student cannot access dashboard or other portal resources until regulation AND department are selected
+      if (window.appState.role === 'student' && !window.appState.hasCompletedOnboarding) {
+        if (!window.appState.user?.regulationChosen) {
+          if (currentView !== 'regulation-select') {
+            window.appState.setView('regulation-select');
+            return;
+          }
+        } else if (!window.appState.user?.departmentChosen) {
+          if (currentView !== 'department-select') {
+            window.appState.setView('department-select');
+            return;
+          }
+        }
       }
     }
 
     // ── STRICT ROLE-BASED ROUTE PROTECTION ──
-    // Admin routes protection: If student tries to access Admin route, deny access & redirect to Student Dashboard
+    // Admin routes protection: If student tries to access Admin route, deny access & redirect
     if (currentView === 'admin' && window.appState.role !== 'admin') {
       console.warn('Forbidden: Student attempted to access Admin route.');
       if (window.Toast) {
         window.Toast.error('Access Denied: Admin privileges required.');
       }
-      window.appState.setView('dashboard');
+      window.appState.setView(window.appState.hasCompletedOnboarding ? 'dashboard' : 'regulation-select');
       return;
     }
 

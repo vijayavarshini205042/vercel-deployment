@@ -19,18 +19,35 @@ window.DepartmentSelectView = {
 
     const currentDept = window.appState.department;
     const currentReg = window.appState.regulation;
+    const isOnboarding = window.appState.role === 'student' && !window.appState.hasCompletedOnboarding;
 
     container.innerHTML = `
-      <div style="max-width: 1200px; margin: 30px auto; width: 100%;">
+      <div style="max-width: 1200px; margin: 30px auto; width: 100%; padding: 0 16px;">
+        
+        <!-- Onboarding Progress Flow Indicator -->
+        <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 24px; flex-wrap: wrap;">
+          <button class="breadcrumb-step completed" id="dept-flow-reg-btn" style="cursor: pointer;" title="Change regulation">
+            <span>✓</span> <span>📜 Regulation: ${currentReg}</span>
+          </button>
+          <span class="breadcrumb-arrow">→</span>
+          <div class="breadcrumb-step current" style="cursor: default;">
+            <span>2</span> <span>🏛️ Choose Department</span>
+          </div>
+          <span class="breadcrumb-arrow">→</span>
+          <div class="breadcrumb-step upcoming" style="cursor: default;">
+            <span>3</span> <span>🚀 Enter Portal</span>
+          </div>
+        </div>
+
         <!-- Header banner -->
         <div style="text-align: center; margin-bottom: 28px;">
           <div style="display: inline-flex; align-items: center; gap: 8px; margin-bottom: 12px;">
-            <span class="badge badge-primary" style="font-size: 0.8125rem;">Active Regulation: ${currentReg}</span>
-            <button class="btn btn-ghost btn-sm" id="change-reg-link" style="color: var(--color-primary-600);">Change</button>
+            <span class="badge badge-primary" style="font-size: 0.8125rem;">Regulation: ${currentReg}</span>
+            <button class="btn btn-ghost btn-sm" id="change-reg-link" style="color: var(--color-primary-600); font-size: 0.8125rem;">← Change Regulation</button>
           </div>
           <h1 style="font-size: 2.25rem; font-weight: 800; margin-bottom: 8px;">Select Engineering Department</h1>
-          <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto;">
-            Explore customized curriculum syllabi, previous university question papers, department career roles, and recommended projects.
+          <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto; font-size: 0.95rem; line-height: 1.5;">
+            Choose your branch to unlock department notes, past question papers, lab manuals, and job roles:
           </p>
         </div>
 
@@ -93,6 +110,10 @@ window.DepartmentSelectView = {
     document.getElementById('change-reg-link')?.addEventListener('click', () => {
       window.appState.setView('regulation-select');
     });
+
+    document.getElementById('dept-flow-reg-btn')?.addEventListener('click', () => {
+      window.appState.setView('regulation-select');
+    });
   },
 
   renderCards(departments, selectedCategory, searchQuery) {
@@ -126,7 +147,7 @@ window.DepartmentSelectView = {
         <div 
           class="card card-hoverable dept-card-item" 
           data-code="${dept.code}"
-          style="cursor: pointer; border: 1.5px solid ${isSelected ? 'var(--color-primary-600)' : 'var(--border-color)'}; background-color: var(--bg-surface);"
+          style="cursor: pointer; border: 1.5px solid ${isSelected ? 'var(--color-primary-600)' : 'var(--border-color)'}; background-color: var(--bg-surface); border-radius: var(--radius-lg); transition: all 0.2s ease;"
         >
           <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px;">
             <div style="width: 52px; height: 52px; border-radius: var(--radius-lg); background: var(--bg-subtle); display: flex; align-items: center; justify-content: center; font-size: 1.8rem;">
@@ -147,21 +168,23 @@ window.DepartmentSelectView = {
           </p>
 
           <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 12px; border-top: 1px solid var(--border-subtle); font-size: 0.8125rem; font-weight: 600; color: var(--color-primary-600);">
-            <span>Access Dashboard</span>
+            <span>Select & Enter Portal</span>
             <span>➔</span>
           </div>
         </div>
       `;
     }).join('');
 
-    // Bind card clicks
+    // Bind card clicks -> completes onboarding and enters dashboard
     grid.querySelectorAll('.dept-card-item').forEach(card => {
       card.addEventListener('click', () => {
         const code = card.getAttribute('data-code');
-        window.appState.setDepartment(code);
-        window.Toast.success(`Switched to ${code} — now select your Year & Semester`);
-        // Flow: Department → Year/Semester selection
-        window.appState.setView('semester-select');
+        const deptObj = departments.find(d => d.code === code);
+        const deptName = deptObj ? deptObj.name : code;
+        window.appState.setDepartment(code, true);
+        if (window.Toast) {
+          window.Toast.success(`🎉 Welcome to ${deptName}! Accessing portal resources...`);
+        }
       });
     });
   }

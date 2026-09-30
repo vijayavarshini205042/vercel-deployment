@@ -5,39 +5,30 @@
 
 class AppState {
   constructor() {
-    // Load persisted state from localStorage
+    // Load persisted theme and saved bookmarks
     const savedTheme = localStorage.getItem('app_theme') || 'light';
-    let savedUser = null;
-    try {
-      savedUser = localStorage.getItem('app_user') ? JSON.parse(localStorage.getItem('app_user')) : null;
-    } catch {
-      savedUser = null;
-    }
-
     let savedReg = localStorage.getItem('app_regulation') || 'R2021';
     if (savedReg === 'R2017') savedReg = 'R2021';
     const savedDept = localStorage.getItem('app_department') || 'IT';
     const savedBookmarks = localStorage.getItem('app_bookmarks') ? JSON.parse(localStorage.getItem('app_bookmarks')) : [];
 
-    // Default to Student so students can directly browse the entire site without login
-    if (!savedUser) {
-      savedUser = {
-        id: 'student-open',
-        name: 'Student',
-        email: 'student@eduportal.com',
-        role: 'student',
-        token: 'student-open-access',
-        department: savedDept,
-        regulation: savedReg
-      };
-    }
+    // STRICT REQUIREMENT:
+    // When the app starts/loads, it must NEVER auto-open into dashboard.
+    // It MUST ALWAYS prompt for Login/Permission first!
+    // Clear any previous persistent login state so startup always asks for login
+    sessionStorage.removeItem('drms_session_active');
+    sessionStorage.removeItem('app_user');
+    sessionStorage.removeItem('drms_onboarding_complete');
+    localStorage.removeItem('app_user');
 
     this._state = {
       theme: savedTheme,
-      user: savedUser, // { id, name, email, role, token }
+      user: null, // Always null on initial startup - login required
+      sessionActive: false,
+      onboardingComplete: false,
       regulation: savedReg,
       department: savedDept,
-      currentView: 'dashboard', // default view is dashboard
+      currentView: 'login', // ALWAYS start on login screen
       viewParams: {},
       bookmarks: savedBookmarks,
       searchQuery: '',
@@ -80,11 +71,17 @@ class AppState {
   }
 
   get isAuth() {
-    return true; // Site is always open for student viewing
+    return !!(this._state.sessionActive && this._state.user);
+  }
+
+  get hasCompletedOnboarding() {
+    if (!this._state.user) return false;
+    if (this._state.user.role === 'admin') return true;
+    return !!this._state.onboardingComplete;
   }
 
   get role() {
-    return this._state.user ? this._state.user.role : 'student';
+    return this._state.user ? this._state.user.role : null;
   }
 
   get regulation() {
@@ -104,39 +101,91 @@ class AppState {
   }
 
   // Actions
+  startStudentFlow() {
+    const studentUser = {
+      id: 'student-' + Date.now(),
+      name: 'Student',
+      email: 'student@eduportal.com',
+      role: 'student',
+      token: 'student-access',
+      regulationChosen: false,
+      departmentChosen: false
+    };
+    this._state.user = studentUser;
+    this._state.sessionActive = true;
+    this._state.onboardingComplete = false;
+
+    sessionStorage.setItem('drms_session_active', 'true');
+    sessionStorage.setItem('app_user', JSON.stringify(studentUser));
+    sessionStorage.setItem('drms_onboarding_complete', 'false');
+
+    this.setView('regulation-select');
+    this._notify(['user', 'sessionActive', 'currentView']);
+  }
+
   setUser(user) {
     if (user) {
       this._state.user = user;
-      localStorage.setItem('app_user', JSON.stringify(user));
+      this._state.sessionActive = true;
+      if (user.role === 'admin') {
+        this._state.onboardingComplete = true;
+        sessionStorage.setItem('drms_onboarding_complete', 'true');
+      }
+      sessionStorage.setItem('drms_session_active', 'true');
+      sessionStorage.setItem('app_user', JSON.stringify(user));
     } else {
-      // Revert to Student Guest on logout
-      this._state.user = {
-        id: 'student-open',
-        name: 'Student',
-        email: 'student@eduportal.com',
-        role: 'student',
-        token: 'student-open-access',
-        department: this._state.department || 'IT',
-        regulation: this._state.regulation || 'R2021'
-      };
+      this._state.user = null;
+      this._state.sessionActive = false;
+      this._state.onboardingComplete = false;
+      sessionStorage.removeItem('drms_session_active');
+      sessionStorage.removeItem('app_user');
+      sessionStorage.removeItem('drms_onboarding_complete');
       localStorage.removeItem('app_user');
     }
-    this._notify(['user']);
+    this._notify(['user', 'sessionActive', 'onboardingComplete']);
   }
 
-  setRegulation(regCode) {
+  setRegulation(regCode, advanceFlow = false) {
     this._state.regulation = regCode;
     localStorage.setItem('app_regulation', regCode);
-    this._notify(['regulation']);
+
+    if (this._state.user && this._state.user.role === 'student') {
+      this._state.user.regulationChosen = true;
+      sessionStorage.setItem('app_user', JSON.stringify(this._state.user));
+    }
+
+    this._notify(['regulation', 'user']);
+
+    if (advanceFlow) {
+      this.setView('department-select');
+    }
   }
 
-  setDepartment(deptCode) {
+  setDepartment(deptCode, finishFlow = false) {
     this._state.department = deptCode;
     localStorage.setItem('app_department', deptCode);
-    this._notify(['department']);
+
+    if (this._state.user && this._state.user.role === 'student') {
+      this._state.user.departmentChosen = true;
+      this._state.onboardingComplete = true;
+      sessionStorage.setItem('app_user', JSON.stringify(this._state.user));
+      sessionStorage.setItem('drms_onboarding_complete', 'true');
+    }
+
+    this._notify(['department', 'user', 'onboardingComplete']);
+
+    if (finishFlow) {
+      this.setView('dashboard');
+    }
+  }
+
+  logout() {
+    this.setUser(null);
+    this.setView('login');
   }
 
   setView(viewName, params = {}) {
+    this._state.currentView = viewName;
     this._state.currentView = viewName;
     this._state.viewParams = params;
     window.scrollTo({ top: 0, behavior: 'smooth' });

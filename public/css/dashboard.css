@@ -353,7 +353,17 @@
   align-items: center;
   gap: var(--space-4);
   box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  user-select: none;
+  transition: all var(--transition-normal);
 }
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--color-primary-400);
+  box-shadow: 0 10px 24px rgba(79, 70, 229, 0.12);
+}
+
 
 .stat-icon {
   width: 48px;
