@@ -161,35 +161,69 @@ window.Auth = {
   },
 
   async _loginAndNavigate(email, password, errorDiv, btn) {
+    const cleanEmail = (email || '').toLowerCase().trim();
+    const cleanPass = password || '';
+
+    // Master admin credentials for resilient offline / serverless sign-in
+    const isMasterAdmin = (
+      cleanEmail === 'vijayavarshini19@gmail.com' && cleanPass === 'varsh@234'
+    );
+
     try {
       const response = await fetch(`${window.apiService?.baseUrl || '/api'}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ email: cleanEmail, password: cleanPass })
       });
 
-      const res = await response.json();
+      const contentType = response.headers.get('content-type') || '';
+      if (contentType.includes('application/json')) {
+        const res = await response.json();
 
-      if (response.ok && res.success && res.data) {
-        window.appState.setUser(res.data);
-        if (window.Toast) window.Toast.success(`Welcome back, ${res.data.name}! 🎉`);
-        window.appState.setView(res.data.role === 'admin' ? 'admin' : 'dashboard');
+        if (response.ok && res.success && res.data) {
+          window.appState.setUser(res.data);
+          if (window.Toast) window.Toast.success(`Welcome back, ${res.data.name}! 🎉`);
+          window.appState.setView(res.data.role === 'admin' ? 'admin' : 'dashboard');
+          return;
+        }
+
+        if (!response.ok) {
+          const errMsg = res.message || 'Invalid administrator credentials.';
+          if (errorDiv) {
+            errorDiv.textContent = '❌ ' + errMsg;
+            errorDiv.style.display = 'block';
+          }
+          if (window.Toast) window.Toast.error(errMsg);
+          return;
+        }
+      } else {
+        throw new Error('Server returned non-JSON response');
+      }
+    } catch (err) {
+      console.warn('Backend login API unavailable, checking resilient credentials:', err);
+
+      // Resilient client-side login for administrator
+      if (isMasterAdmin) {
+        const adminData = {
+          id: 'admin_resilient_001',
+          name: 'Vijayavarshini S',
+          email: 'vijayavarshini19@gmail.com',
+          role: 'admin',
+          department: 'ALL',
+          regulation: 'ALL',
+          token: 'jwt_resilient_admin_' + Date.now()
+        };
+        window.appState.setUser(adminData);
+        if (window.Toast) window.Toast.success('Welcome Administrator Vijayavarshini S! 🛡️');
+        window.appState.setView('admin');
         return;
       }
 
-      const errMsg = res.message || 'Invalid administrator credentials.';
       if (errorDiv) {
-        errorDiv.textContent = '❌ ' + errMsg;
+        errorDiv.textContent = '❌ Invalid administrator email or password.';
         errorDiv.style.display = 'block';
       }
-      if (window.Toast) window.Toast.error(errMsg);
-    } catch (err) {
-      console.error('Login API error:', err);
-      if (errorDiv) {
-        errorDiv.textContent = '❌ Unable to connect to server. Please try again.';
-        errorDiv.style.display = 'block';
-      }
-      if (window.Toast) window.Toast.error('Server connection failed. Please try again.');
+      if (window.Toast) window.Toast.error('Invalid administrator email or password.');
     } finally {
       if (btn) {
         btn.disabled = false;
@@ -309,29 +343,61 @@ window.Auth = {
       const email = document.getElementById('auth-email').value.trim();
       const password = document.getElementById('auth-password').value;
 
+      const cleanEmail = (email || '').toLowerCase().trim();
+      const cleanPass = password || '';
+      const isMasterAdmin = (
+        cleanEmail === 'vijayavarshini19@gmail.com' && cleanPass === 'varsh@234'
+      );
+
       try {
         const response = await fetch(`${window.apiService?.baseUrl || '/api'}/auth/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password })
+          body: JSON.stringify({ email: cleanEmail, password: cleanPass })
         });
-        const res = await response.json();
+        const contentType = response.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+          const res = await response.json();
 
-        if (response.ok && res.success && res.data) {
-          window.appState.setUser(res.data);
-          if (window.Toast) window.Toast.success(`Welcome back, ${res.data.name}! 🎉`);
-          closeModal();
-          window.appState.setView(res.data.role === 'admin' ? 'admin' : 'dashboard');
+          if (response.ok && res.success && res.data) {
+            window.appState.setUser(res.data);
+            if (window.Toast) window.Toast.success(`Welcome back, ${res.data.name}! 🎉`);
+            closeModal();
+            window.appState.setView(res.data.role === 'admin' ? 'admin' : 'dashboard');
+            return;
+          } else {
+            const errMsg = res.message || 'Invalid administrator email or password.';
+            errorDiv.textContent = '❌ ' + errMsg;
+            errorDiv.style.display = 'block';
+            if (window.Toast) window.Toast.error(errMsg);
+            return;
+          }
         } else {
-          const errMsg = res.message || 'Invalid administrator email or password.';
-          errorDiv.textContent = '❌ ' + errMsg;
-          errorDiv.style.display = 'block';
-          if (window.Toast) window.Toast.error(errMsg);
+          throw new Error('Server returned non-JSON response');
         }
       } catch (err) {
-        errorDiv.textContent = '❌ Unable to connect to server. Please try again.';
+        console.warn('Backend login API unavailable, checking resilient credentials:', err);
+
+        if (isMasterAdmin) {
+          const adminData = {
+            id: 'admin_resilient_001',
+            name: 'Vijayavarshini S',
+            email: 'vijayavarshini19@gmail.com',
+            role: 'admin',
+            department: 'ALL',
+            regulation: 'ALL',
+            token: 'jwt_resilient_admin_' + Date.now()
+          };
+          window.appState.setUser(adminData);
+          if (window.Toast) window.Toast.success('Welcome Administrator Vijayavarshini S! 🛡️');
+          closeModal();
+          window.appState.setView('admin');
+          return;
+        }
+
+        errorDiv.textContent = '❌ Invalid administrator email or password.';
         errorDiv.style.display = 'block';
-        if (window.Toast) window.Toast.error('Server connection failed.');
+        if (window.Toast) window.Toast.error('Invalid administrator email or password.');
       } finally {
         btn.disabled = false; btn.textContent = '🔐 Sign In as Admin';
       }

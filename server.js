@@ -63,18 +63,18 @@ app.use(express.static(path.join(__dirname, 'public'), {
 }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// ── API Routes ───────────────────────────────────────────────────────────────
-app.use('/api/auth', authRoutes);
-app.use('/api/regulations', regulationRoutes);
-app.use('/api/departments', departmentRoutes);
-app.use('/api/resources', resourceRoutes);
-app.use('/api/careers', careerRoutes);
-app.use('/api/projects', projectRoutes);
-app.use('/api/certifications', certificationRoutes);
-app.use('/api/search', searchRoutes);
+// ── API Routes (Support both /api/* and /* for Vercel serverless compatibility) ─
+app.use(['/api/auth', '/auth'], authRoutes);
+app.use(['/api/regulations', '/regulations'], regulationRoutes);
+app.use(['/api/departments', '/departments'], departmentRoutes);
+app.use(['/api/resources', '/resources'], resourceRoutes);
+app.use(['/api/careers', '/careers'], careerRoutes);
+app.use(['/api/projects', '/projects'], projectRoutes);
+app.use(['/api/certifications', '/certifications'], certificationRoutes);
+app.use(['/api/search', '/search'], searchRoutes);
 
 // ── Health Check ─────────────────────────────────────────────────────────────
-app.get('/api/health', (req, res) => {
+app.get(['/api/health', '/health'], (req, res) => {
   res.json({
     success: true,
     message: 'Department Resource Management System API is running',
@@ -85,7 +85,17 @@ app.get('/api/health', (req, res) => {
 
 // ── SPA Catch-All (serve index.html for all non-API routes) ──────────────────
 app.get('*', (req, res) => {
-  if (!req.path.startsWith('/api')) {
+  const isApi = req.path.startsWith('/api') || 
+                req.path.startsWith('/auth') || 
+                req.path.startsWith('/resources') || 
+                req.path.startsWith('/departments') || 
+                req.path.startsWith('/regulations') ||
+                req.path.startsWith('/careers') ||
+                req.path.startsWith('/projects') ||
+                req.path.startsWith('/certifications') ||
+                req.path.startsWith('/search') ||
+                req.path.startsWith('/health');
+  if (!isApi) {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
   }
 });
