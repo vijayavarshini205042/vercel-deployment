@@ -1,6 +1,6 @@
 /**
  * Advanced AI Academic & Career Assistant Chatbot Widget
- * Podhigai College of Engineering & Technology - Anna University Portal
+ * Anna University Student Portal
  * 
  * Deeply integrates with:
  * 1. Departmental Job Roles (Salary Benchmarks, Skills, Industry Tools)
@@ -64,7 +64,7 @@ window.ChatbotWidget = {
             <div class="chatbot-avatar">🤖</div>
             <div class="chatbot-info">
               <h3>Anna University AI Guide</h3>
-              <p>Podhigai College • Academic & Career Assistant</p>
+              <p>Academic & Career Assistant</p>
             </div>
           </div>
 
@@ -193,7 +193,7 @@ window.ChatbotWidget = {
     const greetingHtml = `
       <div>
         <p style="margin: 0 0 6px 0;">
-          <strong>Vanakkam! 👋 Welcome to Podhigai College of Engineering & Technology!</strong>
+          <strong>Vanakkam! 👋 Welcome to Anna University Student Portal!</strong>
         </p>
         <p style="margin: 0 0 8px 0;">
           I am your Anna University AI Academic & Career Assistant. I have live access to all <strong>68 Engineering Departments</strong>, syllabus notes, question papers, departmental roles, project ideas, and career roadmaps.
@@ -303,23 +303,23 @@ window.ChatbotWidget = {
       targetDept = foundDept.code;
     }
 
-    // ── 0. COLLEGE & HOD DETAILS ───────────────────────────────────────────
-    if (q.includes('hod') || q.includes('rajasekaran') || q.includes('principal') || q.includes('podhigai') || q.includes('college') || q.includes('creator') || q.includes('varshini') || q.includes('head of department')) {
+    // ── 0. PORTAL & HOD DETAILS ───────────────────────────────────────────
+    if (q.includes('hod') || q.includes('rajasekaran') || q.includes('principal') || q.includes('college') || q.includes('creator') || q.includes('varshini') || q.includes('head of department')) {
       return `
         <div>
           <div style="font-weight: 700; color: #7c3aed; margin-bottom: 6px;">
-            🏛️ Podhigai College of Engineering & Technology
+            🏛️ Anna University Student Portal
           </div>
           <div style="background: #f5f3ff; border: 1px solid #ede9fe; border-radius: 8px; padding: 10px 12px; margin-bottom: 10px; font-size: 0.83rem;">
             <div>👨‍🏫 <strong>Head of Department (IT):</strong> Mr. G. Rajasekaran, HOD/IT</div>
             <div style="margin-top: 4px;">🎓 <strong>Affiliation:</strong> Anna University, Chennai</div>
-            <div style="margin-top: 4px;">💻 <strong>Portal Architect:</strong> Vijayavarshini, Podhigai College of Engineering & Technology</div>
+            <div style="margin-top: 4px;">💻 <strong>Portal Architect:</strong> Vijayavarshini</div>
           </div>
           <p style="font-size: 0.82rem; color: #475569; margin: 0 0 10px 0;">
             This centralized portal serves students across all <strong>68 Engineering Departments</strong> with verified notes, university question papers, and career blueprints.
           </p>
           <button class="chat-card-btn" style="width: 100%;" onclick="window.appState.setView('dashboard'); window.ChatbotWidget.toggleChat(false);">
-            🏛️ View College Dashboard & HOD Portal ➔
+            🏛️ View Dashboard & HOD Portal ➔
           </button>
         </div>
       `;
