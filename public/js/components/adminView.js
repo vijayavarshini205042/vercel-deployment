@@ -273,7 +273,7 @@ window.AdminView = {
                   </td>
                   <td><code>${d.code}</code></td>
                   <td>${d.category}</td>
-                  <td><span class="badge badge-success">Active R2021 / R2023</span></td>
+                  <td><span class="badge badge-success">Active R2021 / R2025</span></td>
                   <td>
                     <div class="table-actions">
                       <button class="btn btn-secondary btn-sm admin-edit-btn" data-type="dept" data-id="${d.id}">Configure</button>
@@ -433,13 +433,22 @@ window.AdminView = {
                 </select>
               </div>
 
-              <div class="form-group">
-                <label class="form-label">Department</label>
-                <select class="form-select" id="res-dept-select" required>
-                  ${(window.AppFallbackData?.departments || []).map(d => `
-                    <option value="${d.code}">${d.name} (${d.code})</option>
-                  `).join('')}
-                </select>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div class="form-group">
+                  <label class="form-label">Academic Regulation</label>
+                  <select class="form-select" id="res-reg-select" required>
+                    <option value="R2021">Regulation 2021 (R2021)</option>
+                    <option value="R2025">Regulation 2025 (R2025)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Department</label>
+                  <select class="form-select" id="res-dept-select" required>
+                    ${(window.AppFallbackData?.departments || []).map(d => `
+                      <option value="${d.code}">${d.name} (${d.code})</option>
+                    `).join('')}
+                  </select>
+                </div>
               </div>
 
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
@@ -531,7 +540,7 @@ window.AdminView = {
         subjectCode: subCodePart,
         subjectName: subNamePart || subCodePart,
         deptCode: dept,
-        regCode: window.appState.regulation || "R2021",
+        regCode: document.getElementById('res-reg-select')?.value || window.appState.regulation || "R2021",
         semester: sem,
         unit: unit,
         title,
