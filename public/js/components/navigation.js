@@ -51,8 +51,7 @@ window.NavigationComponent = {
 
     // ── Personal & Showcase ──
     const personalItems = [
-      { id: 'bookmarks', label: 'My Bookmarks', icon: '⭐' },
-      { id: 'presentation', label: 'Project Presentation', icon: '📽️' }
+      { id: 'bookmarks', label: 'My Bookmarks', icon: '⭐' }
     ];
 
     if (user && user.role === 'admin') {
@@ -130,11 +129,6 @@ window.NavigationComponent = {
     sidebar.querySelectorAll('.sidebar-nav-item').forEach(item => {
       item.addEventListener('click', () => {
         const view = item.getAttribute('data-view');
-        if (view === 'presentation') {
-          if (window.PresentationModal) window.PresentationModal.show();
-          else window.open('/presentation.html', '_blank');
-          return;
-        }
         window.appState.setView(view);
       });
     });

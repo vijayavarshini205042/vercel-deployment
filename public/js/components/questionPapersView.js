@@ -15,7 +15,7 @@ window.QuestionPapersView = {
     const params = state.viewParams || {};
 
     let selectedSem = params.semester || 'all';
-    let selectedSubjectId = params.subjectId || null;
+    let selectedSubjectId = params.subjectId || params.subjectCode || null;
     let selectedYear = 'all';
     let searchQuery = '';
 
@@ -167,29 +167,29 @@ window.QuestionPapersView = {
             </div>
           </div>
 
-          <!-- Free Question Paper Portals (BrainKart, EnggTree, Padeepz, EduEngineering) -->
+          <!-- Official Academic Digital Repositories -->
           <div class="card" style="padding: 16px 20px; margin-bottom: 24px; background: var(--bg-surface); border: 1px solid var(--border-color);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
               <div style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
-                <span>📑</span> <strong>Anna University Question Papers — Free Study Portals</strong>
+                <span>📑</span> <strong>Anna University Question Papers & Question Banks — Verified Digital Repositories</strong>
               </div>
               <span class="badge badge-success" style="font-size: 0.72rem;">100% Free Solved Papers & Question Banks</span>
             </div>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;">
-              <a href="https://www.padeepz.net/?s=${encodeURIComponent(currentSubject ? currentSubject.code : currentDeptCode + ' question paper')}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; padding: 10px 14px; border-radius: var(--radius-md); background: rgba(217, 119, 6, 0.08); border: 1px solid rgba(217, 119, 6, 0.25); color: #d97706; font-weight: 600; font-size: 0.82rem; display: flex; align-items: center; justify-content: space-between;">
-                <span>⚡ Padeepz QP Archive</span>
+              <a href="https://onlinecourses.nptel.ac.in/explorer?q=${encodeURIComponent(currentSubject ? currentSubject.name || currentSubject.code : currentDeptCode + ' engineering')}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; padding: 10px 14px; border-radius: var(--radius-md); background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(37, 99, 235, 0.25); color: #2563eb; font-weight: 600; font-size: 0.82rem; display: flex; align-items: center; justify-content: space-between;">
+                <span>🇮🇳 NPTEL / SWAYAM QP Archive</span>
                 <span>↗</span>
               </a>
-              <a href="https://www.enggtree.com/?s=${encodeURIComponent(currentSubject ? currentSubject.code : currentDeptCode + ' question paper')}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; padding: 10px 14px; border-radius: var(--radius-md); background: rgba(5, 150, 105, 0.08); border: 1px solid rgba(5, 150, 105, 0.25); color: #059669; font-weight: 600; font-size: 0.82rem; display: flex; align-items: center; justify-content: space-between;">
-                <span>🌲 EnggTree Question Papers</span>
+              <a href="https://ndl.iitkgp.ac.in/result?q=${encodeURIComponent(currentSubject ? currentSubject.code + ' question paper' : currentDeptCode + ' question paper')}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; padding: 10px 14px; border-radius: var(--radius-md); background: rgba(5, 150, 105, 0.08); border: 1px solid rgba(5, 150, 105, 0.25); color: #059669; font-weight: 600; font-size: 0.82rem; display: flex; align-items: center; justify-content: space-between;">
+                <span>🏛️ National Digital Library (NDLI)</span>
                 <span>↗</span>
               </a>
-              <a href="https://www.brainkart.com/search/?q=${encodeURIComponent(currentSubject ? currentSubject.code + ' question paper' : currentDeptCode + ' question paper')}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; padding: 10px 14px; border-radius: var(--radius-md); background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(37, 99, 235, 0.25); color: #2563eb; font-weight: 600; font-size: 0.82rem; display: flex; align-items: center; justify-content: space-between;">
-                <span>📚 BrainKart Question Banks</span>
+              <a href="https://openlibrary.org/search?q=${encodeURIComponent(currentSubject ? currentSubject.name || currentSubject.code : currentDeptCode + ' engineering')}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; padding: 10px 14px; border-radius: var(--radius-md); background: rgba(217, 119, 6, 0.08); border: 1px solid rgba(217, 119, 6, 0.25); color: #d97706; font-weight: 600; font-size: 0.82rem; display: flex; align-items: center; justify-content: space-between;">
+                <span>📖 Open Library Academic Repository</span>
                 <span>↗</span>
               </a>
-              <a href="https://www.eduengineering.net/?s=${encodeURIComponent(currentSubject ? currentSubject.code : currentDeptCode + ' question paper')}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; padding: 10px 14px; border-radius: var(--radius-md); background: rgba(124, 58, 237, 0.08); border: 1px solid rgba(124, 58, 237, 0.25); color: #7c3aed; font-weight: 600; font-size: 0.82rem; display: flex; align-items: center; justify-content: space-between;">
-                <span>🎓 EduEngineering Solved QPs</span>
+              <a href="https://cac.annauniv.edu" target="_blank" rel="noopener noreferrer" style="text-decoration: none; padding: 10px 14px; border-radius: var(--radius-md); background: rgba(124, 58, 237, 0.08); border: 1px solid rgba(124, 58, 237, 0.25); color: #7c3aed; font-weight: 600; font-size: 0.82rem; display: flex; align-items: center; justify-content: space-between;">
+                <span>🎓 Anna University CAC Curriculum & Model QPs</span>
                 <span>↗</span>
               </a>
             </div>
@@ -260,13 +260,12 @@ window.QuestionPapersView = {
                         <span>📥 ${qp.downloads || 0} downloads</span>
                       </div>
 
-                      <!-- Direct Portal Download Links -->
+                      <!-- Official Verified Academic Repositories -->
                       <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; padding: 6px 10px; background: var(--bg-surface-elevated); border-radius: var(--radius-sm); border: 1px dashed var(--border-color); align-items: center;">
-                        <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; gap: 4px;">🌐 Free Portals:</span>
-                        <a href="${qp.portals?.brainkart || 'https://www.brainkart.com/search/?q=' + encodeURIComponent((qp.subjectCode || '') + ' question paper anna university')}" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(37,99,235,0.08); color: #2563eb; text-decoration: none; font-size: 0.7rem; padding: 3px 8px; border-radius: 4px; font-weight: 600;">📚 BrainKart ↗</a>
-                        <a href="${qp.portals?.enggtree || 'https://www.enggtree.com/?s=' + encodeURIComponent(qp.subjectCode || '')}" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(5,150,105,0.08); color: #059669; text-decoration: none; font-size: 0.7rem; padding: 3px 8px; border-radius: 4px; font-weight: 600;">🌲 EnggTree ↗</a>
-                        <a href="${qp.portals?.padeepz || 'https://www.padeepz.net/?s=' + encodeURIComponent(qp.subjectCode || '')}" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(217,119,6,0.08); color: #d97706; text-decoration: none; font-size: 0.7rem; padding: 3px 8px; border-radius: 4px; font-weight: 600;">⚡ Padeepz ↗</a>
-                        <a href="${qp.portals?.eduengineering || 'https://www.eduengineering.net/?s=' + encodeURIComponent(qp.subjectCode || '')}" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(124,58,237,0.08); color: #7c3aed; text-decoration: none; font-size: 0.7rem; padding: 3px 8px; border-radius: 4px; font-weight: 600;">🎓 EduEngineering ↗</a>
+                        <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; gap: 4px;">🏛️ Repositories:</span>
+                        <a href="https://onlinecourses.nptel.ac.in/explorer?q=${encodeURIComponent(qp.subjectName || qp.subjectCode || '')}" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(37,99,235,0.08); color: #2563eb; text-decoration: none; font-size: 0.7rem; padding: 3px 8px; border-radius: 4px; font-weight: 600;">🏛️ NPTEL / SWAYAM ↗</a>
+                        <a href="https://ndl.iitkgp.ac.in/result?q=${encodeURIComponent(qp.subjectName || qp.subjectCode || '')}" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(5,150,105,0.08); color: #059669; text-decoration: none; font-size: 0.7rem; padding: 3px 8px; border-radius: 4px; font-weight: 600;">📚 NDLI Repository ↗</a>
+                        <a href="https://cac.annauniv.edu" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(124,58,237,0.08); color: #7c3aed; text-decoration: none; font-size: 0.7rem; padding: 3px 8px; border-radius: 4px; font-weight: 600;">🎓 Anna University CAC ↗</a>
                       </div>
 
                       ${(qp.analysis || qp.questions || (window.PYQAnalysisData && window.PYQAnalysisData.find(p => p.qpCode === qp.qpCode || p.subjectCode === qp.subjectCode))) ? `

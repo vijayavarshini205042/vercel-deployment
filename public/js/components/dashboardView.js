@@ -51,6 +51,40 @@ window.DashboardView = {
             </button>
           </div>
         </div>
+      <!-- Department Leadership / HOD Profile Card -->
+      <section style="margin-bottom: 26px;">
+        <div class="card" style="padding: 22px 26px; border: 1.5px solid var(--border-color); border-radius: var(--radius-xl); background: var(--bg-surface); box-shadow: var(--shadow-sm); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px;">
+          <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+            <div style="width: 72px; height: 72px; border-radius: var(--radius-xl); background: linear-gradient(135deg, #7c3aed, #4f46e5); color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; box-shadow: 0 8px 20px rgba(124, 58, 237, 0.25); flex-shrink: 0;">
+              👨‍🏫
+            </div>
+            <div>
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap;">
+                <span class="badge" style="background: rgba(124, 58, 237, 0.12); color: #7c3aed; font-weight: 700; font-size: 0.75rem;">
+                  🏛️ Department Leadership
+                </span>
+                <span class="badge badge-success" style="font-size: 0.72rem;">Podhigai College of Engineering & Technology</span>
+              </div>
+              <h2 style="font-size: 1.35rem; font-weight: 800; color: var(--text-primary); margin: 0 0 4px 0;">
+                Mr. G. Rajasekaran, HOD/IT
+              </h2>
+              <div style="font-size: 0.88rem; color: var(--text-secondary); font-weight: 600;">
+                Head of the Department • Department of Information Technology
+              </div>
+              <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; display: flex; gap: 14px; flex-wrap: wrap;">
+                <span>📧 hod.it@podhigai.edu.in</span>
+                <span>•</span>
+                <span>🏢 IT Department Block, Ground Floor</span>
+                <span>•</span>
+                <span>🎓 Anna University Affiliated</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="max-width: 380px; padding: 12px 16px; background: var(--bg-subtle); border-radius: var(--radius-md); border-left: 4px solid #7c3aed; font-size: 0.82rem; line-height: 1.5; color: var(--text-secondary);">
+            <em>"Welcome to our departmental learning portal. Make full use of the curriculum notes, university question papers, project blueprints, and career roadmaps curated for your academic and placement excellence."</em>
+          </div>
+        </div>
       </section>
 
       <!-- Department Statistics Metrics -->

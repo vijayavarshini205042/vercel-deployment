@@ -75,13 +75,6 @@ window.HeaderComponent = {
 
       <!-- Right: Actions, Theme, Notifications & User Profile -->
       <div class="header-actions">
-        ${isCompleted ? `
-          <!-- Project Presentation Modal Trigger -->
-          <button class="btn btn-outline btn-sm" id="header-presentation-btn" title="View Capstone Project Presentation Deck" style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; font-weight: 600; font-size: 0.8rem; border-color: rgba(99, 102, 241, 0.4); background: rgba(99, 102, 241, 0.08); color: var(--color-primary-400); cursor: pointer;">
-            📽️ <span>Presentation</span>
-          </button>
-        ` : ''}
-
         <!-- Theme Switcher -->
         <button class="theme-toggle-btn" id="theme-toggle-btn" aria-label="Toggle dark/light theme" title="Toggle dark/light theme">
           ${state.theme === 'dark' ? '☀️' : '🌙'}
@@ -218,13 +211,6 @@ window.HeaderComponent = {
     document.getElementById('menu-logout-btn')?.addEventListener('click', () => {
       window.Auth.logout();
     });
-    document.getElementById('header-presentation-btn')?.addEventListener('click', () => {
-      if (window.PresentationModal) {
-        window.PresentationModal.show();
-      } else {
-        window.open('/presentation.html', '_blank');
-      }
-    });
 
     document.getElementById('header-login-btn')?.addEventListener('click', () => {
       window.Auth.showAuthModal('login');
@@ -259,7 +245,7 @@ window.HeaderComponent = {
 
       debounceTimer = setTimeout(() => {
         this.executeSearch(q, dropdown);
-      }, 250);
+      }, 200);
     });
 
     clearBtn?.addEventListener('click', () => {
@@ -271,73 +257,143 @@ window.HeaderComponent = {
   },
 
   executeSearch(query, dropdown) {
-    const q = query.toLowerCase();
+    const q = query.toLowerCase().trim();
     const data = window.AppFallbackData;
     if (!data) return;
 
     const results = [];
 
-    // Search Notes
+    // 1. Search Subjects (Fixes 'No matching resources found' when searching for subjects)
+    (data.subjects || []).forEach(sub => {
+      const sName = (sub.name || '').toLowerCase();
+      const sCode = (sub.code || '').toLowerCase();
+      const sDept = (sub.deptCode || '').toLowerCase();
+      if (sName.includes(q) || sCode.includes(q) || `${sCode} ${sName}`.includes(q) || sDept === q) {
+        results.push({
+          type: 'Curriculum Subject',
+          icon: '📖',
+          title: `${sub.name} (${sub.code})`,
+          subtitle: `${sub.deptCode} • Semester ${sub.semester} • ${sub.credits || 3} Credits • ${sub.regCode || 'R2021'}`,
+          action: () => {
+            if (sub.deptCode) window.appState.setDepartment(sub.deptCode);
+            if (sub.regCode) window.appState.setRegulation(sub.regCode);
+            window.appState.setView('notes', { semester: sub.semester, subjectId: sub.id || sub.code, subjectCode: sub.code });
+          }
+        });
+      }
+    });
+
+    // 2. Search Lecture Notes
     (data.notes || []).forEach(n => {
-      if (n.title.toLowerCase().includes(q) || n.subjectName.toLowerCase().includes(q) || n.description.toLowerCase().includes(q)) {
+      const nTitle = (n.title || '').toLowerCase();
+      const nSubName = (n.subjectName || '').toLowerCase();
+      const nSubCode = (n.subjectCode || '').toLowerCase();
+      const nDesc = (n.description || '').toLowerCase();
+      if (nTitle.includes(q) || nSubName.includes(q) || nSubCode.includes(q) || nDesc.includes(q)) {
         results.push({
           type: 'Lecture Notes',
           icon: '📚',
           title: n.title,
-          subtitle: `${n.subjectName} (${n.subjectCode}) • Sem ${n.semester} • Unit ${n.unit}`,
-          action: () => window.appState.setView('notes', { semester: n.semester, subjectCode: n.subjectCode })
+          subtitle: `${n.subjectName || n.subjectCode} (${n.subjectCode}) • Sem ${n.semester} • Unit ${n.unit}`,
+          action: () => {
+            if (n.deptCode) window.appState.setDepartment(n.deptCode);
+            window.appState.setView('notes', { semester: n.semester, subjectId: n.subjectId || n.subjectCode, subjectCode: n.subjectCode });
+          }
         });
       }
     });
 
-    // Search Question Papers
+    // 3. Search Question Papers
     (data.questionPapers || []).forEach(qp => {
-      if (qp.subjectName.toLowerCase().includes(q) || qp.subjectCode.toLowerCase().includes(q) || qp.academicYear.toLowerCase().includes(q)) {
+      const qpSubName = (qp.subjectName || '').toLowerCase();
+      const qpSubCode = (qp.subjectCode || '').toLowerCase();
+      const qpYear = (qp.academicYear || '').toLowerCase();
+      const qpCode = (qp.qpCode || '').toLowerCase();
+      if (qpSubName.includes(q) || qpSubCode.includes(q) || qpYear.includes(q) || qpCode.includes(q)) {
         results.push({
           type: 'Question Paper',
           icon: '📝',
           title: `${qp.subjectName} (${qp.subjectCode}) - ${qp.academicYear}`,
-          subtitle: `Semester ${qp.semester} • ${qp.examType}`,
-          action: () => window.appState.setView('question-papers', { semester: qp.semester })
+          subtitle: `Semester ${qp.semester} • ${qp.examType || 'University Exam'}`,
+          action: () => {
+            if (qp.deptCode) window.appState.setDepartment(qp.deptCode);
+            window.appState.setView('question-papers', { semester: qp.semester, subjectCode: qp.subjectCode });
+          }
         });
       }
     });
 
-    // Search Job Roles
+    // 4. Search Textbooks
+    (data.textbooks || []).forEach(tb => {
+      const tbTitle = (tb.title || '').toLowerCase();
+      const tbAuthor = (tb.author || '').toLowerCase();
+      const tbSub = (tb.summary || '').toLowerCase();
+      if (tbTitle.includes(q) || tbAuthor.includes(q) || tbSub.includes(q)) {
+        results.push({
+          type: 'Textbook / Reference',
+          icon: '📖',
+          title: tb.title,
+          subtitle: `Author: ${tb.author} • Publisher: ${tb.publisher || 'Standard Edition'}`,
+          action: () => {
+            window.appState.setView('notes', { subjectId: tb.subjectId });
+          }
+        });
+      }
+    });
+
+    // 5. Search Job Roles & Roadmaps
     (data.jobRoles || []).forEach(role => {
-      if (role.title.toLowerCase().includes(q) || role.domain.toLowerCase().includes(q) || role.coreSkills.some(s => s.toLowerCase().includes(q))) {
+      const rTitle = (role.title || role.roleTitle || '').toLowerCase();
+      const rDomain = (role.domain || role.category || '').toLowerCase();
+      const rSkills = (role.coreSkills || role.topSkills || []).map(s => s.toLowerCase());
+      if (rTitle.includes(q) || rDomain.includes(q) || rSkills.some(s => s.includes(q))) {
         results.push({
           type: 'Job Role & Career',
           icon: '💼',
-          title: role.title,
-          subtitle: `${role.domain} • ${role.avgSalaryRange}`,
-          action: () => window.appState.setView('job-roles')
+          title: role.title || role.roleTitle,
+          subtitle: `${role.domain || role.category || 'Technology'} • ${role.avgSalaryRange || role.salaryBenchmark || 'Competitive'}`,
+          action: () => {
+            if (role.deptCode) window.appState.setDepartment(role.deptCode);
+            window.appState.setView('dept-roles');
+          }
         });
       }
     });
 
-    // Search Projects
+    // 6. Search Projects
     (data.projects || []).forEach(proj => {
-      if (proj.title.toLowerCase().includes(q) || proj.domain.toLowerCase().includes(q) || proj.suggestedTech.some(t => t.toLowerCase().includes(q))) {
+      const pTitle = (proj.title || proj.projectTitle || '').toLowerCase();
+      const pDomain = (proj.domain || proj.department || '').toLowerCase();
+      const pTech = (proj.suggestedTech || proj.techStack || []).map(t => t.toLowerCase());
+      if (pTitle.includes(q) || pDomain.includes(q) || pTech.some(t => t.includes(q))) {
         results.push({
-          type: 'Project Corner',
+          type: 'Project Ideas',
           icon: '💡',
-          title: proj.title,
-          subtitle: `${proj.domain} • ${proj.difficulty} • ${proj.projectType}`,
-          action: () => window.appState.setView('projects')
+          title: proj.title || proj.projectTitle,
+          subtitle: `${proj.domain || proj.department || 'Engineering'} • ${proj.difficulty || proj.difficultyLevel || 'Capstone'}`,
+          action: () => {
+            if (proj.deptCode) window.appState.setDepartment(proj.deptCode);
+            window.appState.setView('projects');
+          }
         });
       }
     });
 
-    // Search Certifications
+    // 7. Search Certifications
     (data.certifications || []).forEach(cert => {
-      if (cert.title.toLowerCase().includes(q) || cert.provider.toLowerCase().includes(q) || cert.category.toLowerCase().includes(q)) {
+      const cTitle = (cert.title || cert.skillName || '').toLowerCase();
+      const cProvider = (cert.provider || cert.recommendedPlatform || '').toLowerCase();
+      const cCategory = (cert.category || '').toLowerCase();
+      if (cTitle.includes(q) || cProvider.includes(q) || cCategory.includes(q)) {
         results.push({
-          type: 'Certification',
+          type: 'Free Certification',
           icon: '🏆',
-          title: cert.title,
-          subtitle: `${cert.provider} • ${cert.level} Level`,
-          action: () => window.appState.setView('certifications')
+          title: cert.title || cert.skillName,
+          subtitle: `${cert.provider || cert.recommendedPlatform || 'Verified Platform'} • ${cert.level || cert.skillLevel || 'All Levels'}`,
+          action: () => {
+            if (cert.deptCode) window.appState.setDepartment(cert.deptCode);
+            window.appState.setView('certifications');
+          }
         });
       }
     });

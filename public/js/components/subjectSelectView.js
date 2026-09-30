@@ -106,20 +106,20 @@ window.SubjectSelectView = {
                     <span class="badge badge-subtle" style="font-size: 0.7rem;">${sub.year || 'Year'} • Sem ${sub.semester}</span>
                   </div>
 
-                  <!-- Free Educational Sites Quick Links (BrainKart, EnggTree, Padeepz, EduEngineering) -->
+                  <!-- Official Verified Academic Repositories -->
                   <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; padding: 6px 8px; background: var(--bg-surface-elevated); border-radius: var(--radius-sm); border: 1px dashed var(--border-color);">
-                    <span style="font-size: 0.68rem; font-weight: 700; color: var(--text-muted); align-self: center;">Free Sites:</span>
-                    <a href="https://www.brainkart.com/search/?q=${encodeURIComponent(sub.code + ' ' + sub.name)}" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(37,99,235,0.08); color: #2563eb; text-decoration: none; font-size: 0.68rem; padding: 2px 6px;" onclick="event.stopPropagation();" title="Search ${sub.code} on BrainKart">
-                      📚 BrainKart ↗
+                    <span style="font-size: 0.68rem; font-weight: 700; color: var(--text-muted); align-self: center;">Repositories:</span>
+                    <a href="https://onlinecourses.nptel.ac.in/explorer?q=${encodeURIComponent(sub.name || sub.code)}" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(37,99,235,0.08); color: #2563eb; text-decoration: none; font-size: 0.68rem; padding: 2px 6px;" onclick="event.stopPropagation();" title="Search ${sub.code} on NPTEL / SWAYAM">
+                      🏛️ NPTEL ↗
                     </a>
-                    <a href="https://www.enggtree.com/?s=${encodeURIComponent(sub.code)}" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(5,150,105,0.08); color: #059669; text-decoration: none; font-size: 0.68rem; padding: 2px 6px;" onclick="event.stopPropagation();" title="Search ${sub.code} on EnggTree">
-                      🌲 EnggTree ↗
+                    <a href="https://ndl.iitkgp.ac.in/result?q=${encodeURIComponent(sub.name || sub.code)}" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(5,150,105,0.08); color: #059669; text-decoration: none; font-size: 0.68rem; padding: 2px 6px;" onclick="event.stopPropagation();" title="Search ${sub.code} on National Digital Library">
+                      📚 NDLI ↗
                     </a>
-                    <a href="https://www.padeepz.net/?s=${encodeURIComponent(sub.code)}" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(217,119,6,0.08); color: #d97706; text-decoration: none; font-size: 0.68rem; padding: 2px 6px;" onclick="event.stopPropagation();" title="Search ${sub.code} on Padeepz">
-                      ⚡ Padeepz ↗
+                    <a href="https://openlibrary.org/search?q=${encodeURIComponent(sub.name || sub.code)}" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(217,119,6,0.08); color: #d97706; text-decoration: none; font-size: 0.68rem; padding: 2px 6px;" onclick="event.stopPropagation();" title="Search ${sub.code} Textbooks on Open Library">
+                      📖 E-Books ↗
                     </a>
-                    <a href="https://www.eduengineering.net/?s=${encodeURIComponent(sub.code)}" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(124,58,237,0.08); color: #7c3aed; text-decoration: none; font-size: 0.68rem; padding: 2px 6px;" onclick="event.stopPropagation();" title="Search ${sub.code} on EduEngineering">
-                      🎓 EduEngg ↗
+                    <a href="https://cac.annauniv.edu" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(124,58,237,0.08); color: #7c3aed; text-decoration: none; font-size: 0.68rem; padding: 2px 6px;" onclick="event.stopPropagation();" title="Anna University Curriculum Syllabus">
+                      🎓 AU CAC ↗
                     </a>
                   </div>
 

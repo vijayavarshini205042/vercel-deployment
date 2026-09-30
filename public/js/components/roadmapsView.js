@@ -605,8 +605,8 @@ window.RoadmapsView = {
           <div style="display: flex; gap: 32px;">
             <div class="a4-signature-block">
               <div class="a4-signature-line"></div>
-              <div style="font-weight: 700; color: #1e293b;">Dr. Academic HOD</div>
-              <div style="font-size: 0.68rem; color: #64748b;">Dept. of ${item.deptCode}</div>
+              <div style="font-weight: 700; color: #1e293b;">${item.deptCode === 'IT' ? 'Mr. G. Rajasekaran, HOD/IT' : 'Head of Department (HOD)'}</div>
+              <div style="font-size: 0.68rem; color: #64748b;">Dept. of ${item.deptCode} • Podhigai College of Engg</div>
             </div>
 
             <div class="a4-signature-block">
