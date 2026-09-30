@@ -210,6 +210,23 @@ window.PdfViewerModal = {
                               `).join('')}
                             </div>
                           </div>
+
+                          <!-- PART C -->
+                          ${qpQuestions.partC ? `
+                            <div style="margin-bottom: 30px;">
+                              <div style="background: #1e293b; color: #fff; padding: 10px 16px; border-radius: 6px; font-weight: 800; font-size: 0.95rem; margin-bottom: 16px;">
+                                PART C — (1 × 15 = 15 Marks) • Comprehensive Design & Case Study Application
+                              </div>
+                              <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px 20px; background: #fafafa;">
+                                <div style="font-weight: 700; color: #0f172a; margin-bottom: 8px; font-size: 0.95rem; white-space: pre-line;">
+                                  ${qpQuestions.partC.qNo || 16}. ${qpQuestions.partC.question}
+                                </div>
+                                <div style="background: #fdf4ff; border-left: 3px solid #c026d3; padding: 12px 16px; border-radius: 4px; font-size: 0.88rem; color: #701a75; white-space: pre-line;">
+                                  <strong>Solution / Design Blueprint:</strong><br>${qpQuestions.partC.solutionOutline}
+                                </div>
+                              </div>
+                            </div>
+                          ` : ''}
                         </div>
                       `;
                     }
@@ -414,7 +431,7 @@ window.PdfViewerModal = {
         <!DOCTYPE html>
         <html>
         <head>
-          <title>${title} - Podhigai College of Engineering & Technology</title>
+          <title>${title} — Anna University Engineering Curriculum</title>
           <style>
             body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 40px; color: #0f172a; line-height: 1.6; }
             @media print { body { padding: 0; } }
@@ -443,11 +460,11 @@ window.PdfViewerModal = {
         // Generate formatted text study sheet
         const sheetEl = document.getElementById('pdf-printable-content');
         const textContent = `========================================================================\n` +
-          `PODHIGAI COLLEGE OF ENGINEERING & TECHNOLOGY\n` +
-          `Department Resource Management System\n` +
-          `Course: ${subject} (${subCode})\n` +
+          `ANNA UNIVERSITY CHENNAI — ACADEMIC LEARNING PORTAL\n` +
+          `Official Curriculum & Examination Resource Archive\n` +
+          `Course: ${subject} ${subCode ? '(' + subCode + ')' : ''}\n` +
           `Document: ${title}\n` +
-          `Approved by: Mr. G. Rajasekaran, HOD/IT\n` +
+          `Verified by: Anna University Academic Board (CAC / ACOE)\n` +
           `========================================================================\n\n` +
           (sheetEl ? sheetEl.innerText : description);
 
