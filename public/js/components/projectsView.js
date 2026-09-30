@@ -1,21 +1,35 @@
 /**
- * Final Year Project Ideas & Project Reference View Component
- * Flow: Final Year Projects → Select Department → Select Category → Browse Projects → Open Project Details
- * Strictly supports ALL 68 Departments with dedicated:
- * - Trending real-world problem areas
- * - Project reference topics
- * - Multi-parameter filters (Software/Hardware/Hybrid, Difficulty, Category)
- * - Detailed architectural modal
+ * Page 2: Project Ideas View Component
+ * Dedicated page for displaying curated capstone and mini project ideas for all departments.
+ * Data Source: /data/project_ideas.json (window.ProjectIdeasData)
+ * Schema: Project Title, Department, Difficulty Level (Beginner/Intermediate/Advanced), Tech Stack, Key Features
  */
 
 window.ProjectsView = {
   currentFilters: {
-    deptCode: 'CSE',
-    category: 'All',
-    nature: 'All',
-    difficulty: 'All',
-    search: '',
-    selectedTopic: ''
+    deptCode: 'ALL',
+    difficulty: 'ALL',
+    search: ''
+  },
+  projectsCache: null,
+
+  async loadData() {
+    if (this.projectsCache && this.projectsCache.length > 0) return this.projectsCache;
+    if (window.ProjectIdeasData && window.ProjectIdeasData.length > 0) {
+      this.projectsCache = window.ProjectIdeasData;
+      return this.projectsCache;
+    }
+    try {
+      const res = await fetch('/data/project_ideas.json');
+      if (res.ok) {
+        this.projectsCache = await res.json();
+        return this.projectsCache;
+      }
+    } catch (err) {
+      console.warn('Could not fetch /data/project_ideas.json, falling back to embedded', err);
+    }
+    this.projectsCache = window.ProjectIdeasData || [];
+    return this.projectsCache;
   },
 
   async render() {
@@ -23,398 +37,236 @@ window.ProjectsView = {
     if (!container) return;
 
     const state = window.appState.state;
-    // Set initial department from app state
-    if (state.department && !this.initializedDept) {
-      this.currentFilters.deptCode = state.department;
-      this.initializedDept = true;
+    const activeDeptCode = state.department || 'IT';
+
+    if (this.currentFilters.deptCode === 'ALL' && activeDeptCode) {
+      this.currentFilters.deptCode = activeDeptCode;
     }
 
+    const allProjects = await this.loadData();
     const deptList = window.AppFallbackData?.departments || [];
-    
+
     const renderContent = () => {
-      const activeDeptCode = this.currentFilters.deptCode || 'CSE';
-      const dept = deptList.find(d => d.code === activeDeptCode) || {
-        name: activeDeptCode + " Engineering", code: activeDeptCode, icon: "🏛️"
-      };
+      const query = this.currentFilters.search.toLowerCase().trim();
+      const selectedDept = this.currentFilters.deptCode;
+      const selectedDiff = this.currentFilters.difficulty;
 
-      // Retrieve department-specific project data from master database
-      const deptMasterData = window.FinalYearProjectsData?.[activeDeptCode] || {
-        deptCode: activeDeptCode,
-        deptName: dept.name,
-        trendingProblemAreas: [],
-        projectReferenceTopics: [],
-        categories: [],
-        projects: []
-      };
-
-      const rawProjects = deptMasterData.projects || [];
-      const trendingProblems = deptMasterData.trendingProblemAreas || [];
-      const refTopics = deptMasterData.projectReferenceTopics || [];
-      const availableCategories = ['All', ...(deptMasterData.categories || ['Industry-oriented', 'Research-oriented', 'Sustainability', 'Social Impact'])];
-
-      // Apply multi-parameter filters
-      const filteredProjects = rawProjects.filter(p => {
-        // Nature filter (Software / Hardware / Hybrid)
-        if (this.currentFilters.nature !== 'All' && p.projectNature !== this.currentFilters.nature) {
-          return false;
-        }
-
-        // Difficulty filter (Beginner / Intermediate / Advanced)
-        if (this.currentFilters.difficulty !== 'All' && p.difficulty !== this.currentFilters.difficulty) {
-          return false;
-        }
-
-        // Category filter
-        if (this.currentFilters.category !== 'All' && p.category !== this.currentFilters.category && p.categoryTag !== this.currentFilters.category) {
-          return false;
-        }
-
-        // Reference topic filter
-        if (this.currentFilters.selectedTopic) {
-          const t = this.currentFilters.selectedTopic.toLowerCase();
-          const matchTitle = p.title.toLowerCase().includes(t);
-          const matchDomain = (p.domain || '').toLowerCase().includes(t);
-          const matchTech = (p.technologies || []).some(tech => tech.toLowerCase().includes(t));
-          if (!matchTitle && !matchDomain && !matchTech) return false;
-        }
-
-        // Free-text Search
-        if (this.currentFilters.search) {
-          const q = this.currentFilters.search.toLowerCase().trim();
-          const matchTitle = p.title.toLowerCase().includes(q);
-          const matchProb = (p.realWorldProblem || '').toLowerCase().includes(q);
-          const matchTech = (p.technologies || []).some(tech => tech.toLowerCase().includes(q));
-          const matchCat = (p.category || '').toLowerCase().includes(q);
-          const matchDomain = (p.domain || '').toLowerCase().includes(q);
-          if (!matchTitle && !matchProb && !matchTech && !matchCat && !matchDomain) return false;
-        }
-
-        return true;
+      // Filter projects
+      const filtered = allProjects.filter(p => {
+        const matchesDept = selectedDept === 'ALL' || p.deptCode === selectedDept;
+        const matchesDiff = selectedDiff === 'ALL' || p.difficultyLevel.toLowerCase() === selectedDiff.toLowerCase();
+        const matchesSearch = !query || 
+          p.projectTitle.toLowerCase().includes(query) || 
+          p.department.toLowerCase().includes(query) || 
+          (p.techStack && p.techStack.some(t => t.toLowerCase().includes(query))) ||
+          (p.keyFeatures && p.keyFeatures.some(f => f.toLowerCase().includes(query))) ||
+          (p.shortOverview && p.shortOverview.toLowerCase().includes(query));
+        return matchesDept && matchesDiff && matchesSearch;
       });
+
+      const getDifficultyBadge = (level) => {
+        const lvl = (level || 'Intermediate').toLowerCase();
+        if (lvl === 'beginner') {
+          return `<span class="badge" style="background: rgba(16, 185, 129, 0.12); color: #059669; border: 1px solid rgba(16, 185, 129, 0.3); font-weight: 700;">🌱 Beginner</span>`;
+        } else if (lvl === 'advanced') {
+          return `<span class="badge" style="background: rgba(139, 92, 246, 0.12); color: #7c3aed; border: 1px solid rgba(139, 92, 246, 0.3); font-weight: 700;">🚀 Advanced</span>`;
+        } else {
+          return `<span class="badge" style="background: rgba(245, 158, 11, 0.12); color: #d97706; border: 1px solid rgba(245, 158, 11, 0.3); font-weight: 700;">⚡ Intermediate</span>`;
+        }
+      };
 
       container.innerHTML = `
         <div style="max-width: 1200px; margin: 0 auto; width: 100%; padding-bottom: 60px;">
-          <!-- Breadcrumb Flow -->
+          
+          <!-- Breadcrumb Trail -->
           <div class="flow-breadcrumb" style="display: flex; align-items: center; gap: 8px; margin-bottom: 24px; flex-wrap: wrap;">
-            <button class="breadcrumb-step completed" id="sbc-home">🏠 Dashboard</button>
+            <button class="breadcrumb-step completed" id="proj-bc-dashboard">🏛️ Dashboard</button>
             <span class="breadcrumb-arrow">→</span>
-            <span class="breadcrumb-step current">💡 Final Year Project Ideas & References</span>
+            <span class="breadcrumb-step current">💡 Page 2: Project Ideas</span>
           </div>
 
-          <!-- Page Header & Department Switcher -->
-          <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 20px; margin-bottom: 28px;">
-            <div>
-              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                <span class="badge badge-primary">🎓 Final Year Capstone & Research</span>
-                <span class="badge badge-success">${activeDeptCode} — ${dept.name}</span>
-                <span class="badge badge-subtle">68 Departments Library</span>
+          <!-- Section Hero Header -->
+          <div style="text-align: center; margin-bottom: 36px;">
+            <div style="display: inline-flex; align-items: center; justify-content: center; width: 68px; height: 68px; border-radius: var(--radius-xl); background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; font-size: 2.2rem; margin-bottom: 16px; box-shadow: 0 8px 24px rgba(245, 158, 11, 0.3);">
+              💡
+            </div>
+            <h1 style="font-size: 2.3rem; font-weight: 800; margin-bottom: 10px; color: var(--text-primary); letter-spacing: -0.02em;">
+              Curated Engineering Project Ideas
+            </h1>
+            <p style="color: var(--text-secondary); max-width: 720px; margin: 0 auto; font-size: 1.05rem; line-height: 1.6;">
+              Explore industry-aligned capstone and mini project concepts across all engineering branches. Each idea specifies technical stacks, key operational features, and complexity tiers.
+            </p>
+          </div>
+
+          <!-- Multi-Parameter Control Panel -->
+          <div class="card" style="padding: 20px 24px; margin-bottom: 30px; border: 1px solid var(--border-color); background: var(--bg-surface); border-radius: var(--radius-xl); box-shadow: var(--shadow-sm);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 16px;">
+              
+              <!-- Department Select Filter -->
+              <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">
+                  Filter Department:
+                </label>
+                <select id="proj-filter-dept" class="form-input" style="padding: 7px 12px; font-weight: 600; min-width: 220px; border-radius: var(--radius-md);">
+                  <option value="ALL">🌐 All Engineering Departments</option>
+                  ${deptList.map(d => `
+                    <option value="${d.code}" ${d.code === selectedDept ? 'selected' : ''}>
+                      ${d.icon || '🏛️'} ${d.name} (${d.code})
+                    </option>
+                  `).join('')}
+                </select>
               </div>
-              <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--text-primary); margin: 0 0 6px;">
-                Final Year Project Ideas & Reference Blueprint
-              </h1>
-              <p style="color: var(--text-secondary); max-width: 680px; margin: 0; font-size: 0.95rem; line-height: 1.5;">
-                Explore department-specific project ideas with real-world problem statements, core engineering objectives, architecture, hardware/software stacks, and future enhancement directions.
-              </p>
+
+              <!-- Search input -->
+              <div style="position: relative; width: 300px; max-width: 100%;">
+                <input 
+                  type="text" 
+                  id="proj-search-input" 
+                  class="form-input" 
+                  placeholder="Search project titles, tech stack..." 
+                  value="${this.currentFilters.search}"
+                  style="padding-left: 36px; border-radius: var(--radius-md);"
+                >
+                <span style="position: absolute; left: 12px; top: 9px; color: var(--text-muted);">🔍</span>
+              </div>
             </div>
 
-            <!-- Department Switcher Dropdown (Allows switching to ANY of the 68 Departments) -->
-            <div style="min-width: 260px; background: var(--bg-surface); padding: 12px; border-radius: var(--radius-md); border: 1px solid var(--border-color); box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
-              <label for="fyp-dept-select" style="display: block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px;">
-                🏛️ Select Department (68 Branches):
-              </label>
-              <select id="fyp-dept-select" class="form-select" style="width: 100%; font-size: 0.88rem; font-weight: 600; border-radius: var(--radius-sm);">
-                ${deptList.map(d => `
-                  <option value="${d.code}" ${d.code === activeDeptCode ? 'selected' : ''}>
-                    ${d.code} — ${d.name}
-                  </option>
-                `).join('')}
-              </select>
-            </div>
-          </div>
-
-          <!-- SECTION 1: Trending Real-World Problem Areas -->
-          <div class="card" style="padding: 20px; margin-bottom: 24px; background: var(--bg-surface); border: 1px solid var(--border-color);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
-              <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin: 0; display: flex; align-items: center; gap: 8px;">
-                🔥 Trending Real-World Problem Areas in ${activeDeptCode}
-              </h3>
-              <span class="badge badge-info" style="font-size: 0.72rem;">Industry Benchmark Focus</span>
-            </div>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px;">
-              ${trendingProblems.map((prob, idx) => `
-                <div style="display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; background: var(--bg-surface-elevated); border-radius: var(--radius-md); border-left: 3px solid var(--color-primary-600); font-size: 0.84rem; color: var(--text-secondary); line-height: 1.4;">
-                  <span style="font-weight: 700; color: var(--color-primary-600);">#${idx + 1}</span>
-                  <span>${prob}</span>
-                </div>
-              `).join('')}
-            </div>
-          </div>
-
-          <!-- SECTION 2: Project Reference Topics -->
-          <div class="card" style="padding: 20px; margin-bottom: 28px; background: var(--bg-surface); border: 1px solid var(--border-color);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
-              <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin: 0; display: flex; align-items: center; gap: 8px;">
-                📚 Project Reference Topics for ${activeDeptCode} Students
-              </h3>
-              <span style="font-size: 0.75rem; color: var(--text-muted);">Click any topic to filter matching blueprints</span>
-            </div>
-            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-              <button class="chip fyp-ref-topic-chip ${!this.currentFilters.selectedTopic ? 'active' : ''}" data-topic="" style="font-size: 0.78rem;">
-                All Reference Topics
-              </button>
-              ${refTopics.map(topic => `
-                <button class="chip fyp-ref-topic-chip ${this.currentFilters.selectedTopic === topic ? 'active' : ''}" data-topic="${topic}" style="font-size: 0.78rem;">
-                  📌 ${topic}
+            <!-- Difficulty Pills -->
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; border-top: 1px solid var(--border-subtle); padding-top: 14px;">
+              <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-right: 4px;">Difficulty Level:</span>
+              ${['ALL', 'Beginner', 'Intermediate', 'Advanced'].map(diff => `
+                <button class="chip ${selectedDiff.toLowerCase() === diff.toLowerCase() ? 'active' : ''}" data-diff="${diff}" style="font-size: 0.8rem; padding: 4px 14px;">
+                  ${diff === 'ALL' ? 'All Levels' : diff}
                 </button>
               `).join('')}
             </div>
           </div>
 
-          <!-- SECTION 3: Filters & Search Toolbar -->
-          <div class="card" style="padding: 18px 20px; margin-bottom: 28px; background: var(--bg-surface); border: 1px solid var(--border-color);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
-              <div style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 6px;">
-                🔍 <strong>Filter & Search Project Blueprints</strong>
-              </div>
-              <div style="font-size: 0.82rem; font-weight: 600; color: var(--text-secondary);">
-                Showing ${filteredProjects.length} of ${rawProjects.length} project blueprints
-              </div>
+          <!-- Results Stats Bar -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 0 4px;">
+            <div style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary);">
+              Showing <span style="color: var(--color-primary-600);">${filtered.length}</span> Project Blueprints
             </div>
-
-            <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 12px; align-items: center;">
-              <!-- Free Text Search -->
-              <div>
-                <input 
-                  type="text" 
-                  id="fyp-search-input" 
-                  class="form-input" 
-                  placeholder="Search project title, problem, or technology..." 
-                  value="${this.currentFilters.search}"
-                  style="width: 100%; font-size: 0.85rem;"
-                />
-              </div>
-
-              <!-- Project Nature (Software / Hardware / Hybrid) -->
-              <div>
-                <select id="fyp-nature-select" class="form-select" style="width: 100%; font-size: 0.85rem;">
-                  <option value="All" ${this.currentFilters.nature === 'All' ? 'selected' : ''}>All Natures (SW/HW/Hybrid)</option>
-                  <option value="Software" ${this.currentFilters.nature === 'Software' ? 'selected' : ''}>💻 Software Projects</option>
-                  <option value="Hardware" ${this.currentFilters.nature === 'Hardware' ? 'selected' : ''}>⚡ Hardware Projects</option>
-                  <option value="Hybrid" ${this.currentFilters.nature === 'Hybrid' ? 'selected' : ''}>🔄 Hybrid (SW + HW)</option>
-                </select>
-              </div>
-
-              <!-- Difficulty Level -->
-              <div>
-                <select id="fyp-diff-select" class="form-select" style="width: 100%; font-size: 0.85rem;">
-                  <option value="All" ${this.currentFilters.difficulty === 'All' ? 'selected' : ''}>All Difficulties</option>
-                  <option value="Beginner" ${this.currentFilters.difficulty === 'Beginner' ? 'selected' : ''}>Beginner Level</option>
-                  <option value="Intermediate" ${this.currentFilters.difficulty === 'Intermediate' ? 'selected' : ''}>Intermediate Level</option>
-                  <option value="Advanced" ${this.currentFilters.difficulty === 'Advanced' ? 'selected' : ''}>Advanced Capstone</option>
-                </select>
-              </div>
-
-              <!-- Category Theme Filter -->
-              <div>
-                <select id="fyp-cat-select" class="form-select" style="width: 100%; font-size: 0.85rem;">
-                  ${availableCategories.map(cat => `
-                    <option value="${cat}" ${this.currentFilters.category === cat ? 'selected' : ''}>${cat}</option>
-                  `).join('')}
-                </select>
-              </div>
-            </div>
-
-            <div style="display: flex; justify-content: flex-end; margin-top: 12px;">
-              <button class="btn btn-ghost" id="fyp-reset-filters-btn" style="font-size: 0.8rem; padding: 4px 10px;">
-                ✕ Reset All Filters
-              </button>
+            <div style="font-size: 0.85rem; color: var(--text-muted);">
+              Data Source: <code>project_ideas.json</code>
             </div>
           </div>
 
-          <!-- SECTION 4: Projects Grid -->
-          ${filteredProjects.length === 0 ? `
-            <div class="empty-state" style="padding: 48px 24px; text-align: center; border: 2px dashed var(--border-color); border-radius: var(--radius-lg); background: var(--bg-surface);">
-              <div class="empty-state-icon" style="font-size: 3rem; margin-bottom: 12px;">💡</div>
-              <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px;">
-                No Matching Project Blueprints Found
-              </h3>
-              <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 0.9rem;">
-                Try changing your search query or selecting "All Natures" / "All Difficulties".
-              </p>
-              <button class="btn btn-primary" id="fyp-empty-reset-btn">Reset All Filters</button>
+          <!-- Projects Grid -->
+          ${filtered.length === 0 ? `
+            <div class="empty-state">
+              <div class="empty-state-icon">💡</div>
+              <div class="empty-state-title">No Matching Projects Found</div>
+              <div class="empty-state-desc">Try clearing your search query or selecting "All Levels".</div>
+              <button class="btn btn-secondary" id="proj-reset-filters">Reset Filters</button>
             </div>
           ` : `
             <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 24px;">
-              ${filteredProjects.map((p, idx) => {
-                const isBookmarked = window.appState ? window.appState.isBookmarked(p.id) : false;
-                const natureBadgeColor = p.projectNature === 'Hardware' ? 'badge-warning' : (p.projectNature === 'Hybrid' ? 'badge-info' : 'badge-primary');
-                
-                return `
-                  <div class="card card-hoverable" style="padding: 24px; display: flex; flex-direction: column; animation: semFadeIn ${0.1 + idx * 0.04}s ease-out both;">
-                    <!-- Card Header Badges -->
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; gap: 8px;">
-                      <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-                        <span class="badge ${natureBadgeColor}" style="font-size: 0.72rem;">
-                          ${p.projectNature === 'Software' ? '💻 Software' : (p.projectNature === 'Hardware' ? '⚡ Hardware' : '🔄 Hybrid (SW+HW)')}
-                        </span>
-                        <span class="badge badge-success" style="font-size: 0.72rem;">${p.category || 'Industry'}</span>
-                        <span class="badge badge-subtle" style="font-size: 0.72rem;">📊 ${p.difficulty}</span>
-                      </div>
-                      <button 
-                        class="btn btn-icon btn-ghost bookmark-fyp-btn" 
-                        data-projid="${p.id}" 
-                        data-title="${p.title}"
-                        title="${isBookmarked ? 'Remove Bookmark' : 'Bookmark this project'}"
-                        style="padding: 4px;"
-                      >
-                        <span style="font-size: 1.2rem;">${isBookmarked ? '⭐' : '☆'}</span>
-                      </button>
+              ${filtered.map(proj => `
+                <div class="card card-hoverable proj-card-item" style="display: flex; flex-direction: column; justify-content: space-between; border-radius: var(--radius-xl); border: 1.5px solid var(--border-color); background: var(--bg-surface); padding: 24px; transition: all 0.2s ease;">
+                  
+                  <div>
+                    <!-- Top Badge Row -->
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; gap: 10px;">
+                      <span class="badge badge-primary" style="font-weight: 700;">${proj.deptCode}</span>
+                      ${getDifficultyBadge(proj.difficultyLevel)}
                     </div>
 
                     <!-- Project Title -->
-                    <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin: 0 0 10px; line-height: 1.35;">
-                      ${p.title}
+                    <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin: 0 0 10px 0; line-height: 1.35;">
+                      ${proj.projectTitle}
                     </h3>
 
-                    <!-- Real-World Problem Snippet -->
-                    <div style="margin-bottom: 12px;">
-                      <div style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px;">
-                        ⚠️ Real-World Problem:
-                      </div>
-                      <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.45; margin: 0; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
-                        ${p.realWorldProblem}
-                      </p>
-                    </div>
+                    <!-- Short Overview -->
+                    <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.55; margin: 0 0 18px 0;">
+                      ${proj.shortOverview}
+                    </p>
 
-                    <!-- Expected Output Snippet -->
-                    <div style="margin-bottom: 14px; background: var(--bg-surface-elevated); padding: 8px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
-                      <div style="font-size: 0.72rem; font-weight: 700; color: var(--color-primary-600); margin-bottom: 2px;">
-                        🎯 Expected Output:
+                    <!-- Tech Stack Pills -->
+                    ${proj.techStack && proj.techStack.length > 0 ? `
+                      <div style="margin-bottom: 16px;">
+                        <div style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.04em; margin-bottom: 6px;">
+                          Recommended Tech Stack:
+                        </div>
+                        <div style="display: flex; flex-wrap: wrap; gap: 5px;">
+                          ${proj.techStack.map(tech => `
+                            <span class="badge" style="background: rgba(99, 102, 241, 0.08); color: var(--color-primary-700); border: 1px solid rgba(99, 102, 241, 0.2); font-size: 0.75rem; font-weight: 600;">
+                              ⚙️ ${tech}
+                            </span>
+                          `).join('')}
+                        </div>
                       </div>
-                      <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.4; margin: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                        ${p.expectedOutput}
-                      </p>
-                    </div>
+                    ` : ''}
 
-                    <!-- Tech Stack Tags -->
-                    <div style="margin-bottom: 18px;">
-                      <div style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px;">
-                        🛠️ Tech Stack & Tools:
+                    <!-- Key Features -->
+                    ${proj.keyFeatures && proj.keyFeatures.length > 0 ? `
+                      <div style="margin-bottom: 18px; background: var(--bg-subtle); padding: 12px 14px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+                        <div style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.04em; margin-bottom: 6px;">
+                          Core Architectural Deliverables:
+                        </div>
+                        <ul style="margin: 0; padding-left: 18px; font-size: 0.8125rem; color: var(--text-secondary); line-height: 1.5;">
+                          ${proj.keyFeatures.map(f => `<li>${f}</li>`).join('')}
+                        </ul>
                       </div>
-                      <div style="display: flex; flex-wrap: wrap; gap: 4px;">
-                        ${(p.technologies || []).slice(0, 5).map(tech => `
-                          <span class="badge badge-subtle" style="font-size: 0.68rem; text-transform: none;">${tech}</span>
-                        `).join('')}
-                      </div>
-                    </div>
-
-                    <!-- Open Full Project Details Action -->
-                    <div style="margin-top: auto; padding-top: 14px; border-top: 1px solid var(--border-subtle);">
-                      <button 
-                        class="btn btn-primary btn-sm view-fyp-spec-btn" 
-                        data-projid="${p.id}"
-                        style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 700;"
-                      >
-                        📖 View Full Blueprint & Specs ➔
-                      </button>
-                    </div>
+                    ` : ''}
                   </div>
-                `;
-              }).join('')}
+
+                  <!-- Footer Actions -->
+                  <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-subtle); padding-top: 14px; margin-top: 16px; font-size: 0.82rem;">
+                    <span style="color: var(--text-muted); font-size: 0.78rem;">
+                      ${proj.department}
+                    </span>
+                    <button class="btn btn-outline btn-sm copy-blueprint-btn" data-title="${encodeURIComponent(proj.projectTitle)}" style="font-size: 0.75rem; padding: 4px 10px;">
+                      📋 Copy Title
+                    </button>
+                  </div>
+
+                </div>
+              `).join('')}
             </div>
           `}
+
         </div>
       `;
 
-      // Attach Event Handlers
-      container.querySelector('#sbc-home')?.addEventListener('click', () => {
+      // Event bindings
+      document.getElementById('proj-bc-dashboard')?.addEventListener('click', () => {
         window.appState.setView('dashboard');
       });
 
-      // Department Switcher
-      container.querySelector('#fyp-dept-select')?.addEventListener('change', (e) => {
+      document.getElementById('proj-filter-dept')?.addEventListener('change', (e) => {
         this.currentFilters.deptCode = e.target.value;
-        this.currentFilters.selectedTopic = '';
         renderContent();
       });
 
-      // Nature Filter
-      container.querySelector('#fyp-nature-select')?.addEventListener('change', (e) => {
-        this.currentFilters.nature = e.target.value;
-        renderContent();
-      });
+      const searchInput = document.getElementById('proj-search-input');
+      if (searchInput) {
+        searchInput.focus();
+        searchInput.selectionStart = searchInput.selectionEnd = searchInput.value.length;
+        searchInput.addEventListener('input', (e) => {
+          this.currentFilters.search = e.target.value;
+          renderContent();
+        });
+      }
 
-      // Difficulty Filter
-      container.querySelector('#fyp-diff-select')?.addEventListener('change', (e) => {
-        this.currentFilters.difficulty = e.target.value;
-        renderContent();
-      });
-
-      // Category Filter
-      container.querySelector('#fyp-cat-select')?.addEventListener('change', (e) => {
-        this.currentFilters.category = e.target.value;
-        renderContent();
-      });
-
-      // Search Input
-      container.querySelector('#fyp-search-input')?.addEventListener('input', (e) => {
-        this.currentFilters.search = e.target.value;
-        renderContent();
-      });
-
-      // Reference Topic Chips
-      container.querySelectorAll('.fyp-ref-topic-chip').forEach(btn => {
-        btn.addEventListener('click', () => {
-          this.currentFilters.selectedTopic = btn.getAttribute('data-topic');
+      container.querySelectorAll('.chip[data-diff]').forEach(chip => {
+        chip.addEventListener('click', () => {
+          this.currentFilters.difficulty = chip.getAttribute('data-diff');
           renderContent();
         });
       });
 
-      // Reset Buttons
-      const reset = () => {
-        this.currentFilters.nature = 'All';
-        this.currentFilters.difficulty = 'All';
-        this.currentFilters.category = 'All';
-        this.currentFilters.search = '';
-        this.currentFilters.selectedTopic = '';
+      document.getElementById('proj-reset-filters')?.addEventListener('click', () => {
+        this.currentFilters = { deptCode: 'ALL', difficulty: 'ALL', search: '' };
         renderContent();
-      };
-      container.querySelector('#fyp-reset-filters-btn')?.addEventListener('click', reset);
-      container.querySelector('#fyp-empty-reset-btn')?.addEventListener('click', reset);
-
-      // Open Modal Details
-      container.querySelectorAll('.view-fyp-spec-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const id = btn.getAttribute('data-projid');
-          const proj = rawProjects.find(p => p.id === id) || (window.AppFallbackData?.projects || []).find(p => p.id === id);
-          if (proj) {
-            window.ProjectDetailModal.open({
-              ...proj,
-              problemStatement: proj.realWorldProblem || proj.problemStatement,
-              objective: proj.mainObjective || proj.objective,
-              features: proj.keyModules || proj.features,
-              suggestedTech: proj.technologies || proj.suggestedTech,
-              categoryTag: `${proj.projectNature || 'Hybrid'} • ${proj.category || 'Industry'}`
-            });
-          }
-        });
       });
 
-      // Bookmark project
-      container.querySelectorAll('.bookmark-fyp-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const id = btn.getAttribute('data-projid');
-          const title = btn.getAttribute('data-title');
-          const added = window.appState.toggleBookmark({
-            id,
-            title,
-            type: 'Final Year Project',
-            category: 'Projects',
-            deptCode: activeDeptCode,
-            regCode: window.appState.regulation
-          });
-          window.Toast.info(added ? `Bookmarked: ${title}` : `Removed bookmark`);
-          renderContent();
+      container.querySelectorAll('.copy-blueprint-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const title = decodeURIComponent(btn.getAttribute('data-title'));
+          navigator.clipboard?.writeText(title);
+          if (window.Toast) window.Toast.success(`Copied "${title}" to clipboard! 📋`);
         });
       });
     };

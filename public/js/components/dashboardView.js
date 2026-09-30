@@ -129,54 +129,66 @@ window.DashboardView = {
             </div>
           </div>
 
-          <!-- Departmental Roles & Free Skills -->
+          <!-- Page 1: Departmental Roles -->
           <div class="resource-nav-card" id="card-dept-roles">
-            <div class="resource-card-icon" style="background: linear-gradient(135deg, #fef3c7, #fffbeb); color: #d97706;">💼</div>
-            <h3 class="resource-card-title">Dept. Roles & Free Skills</h3>
+            <div class="resource-card-icon" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(5, 150, 105, 0.25)); color: #059669;">💼</div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+              <h3 class="resource-card-title" style="margin: 0;">Departmental Roles</h3>
+              <span class="badge badge-subtle" style="font-size: 0.65rem;">Page 1</span>
+            </div>
             <p class="resource-card-desc">
-              Career roles specific to ${dept.code}, required skills, and 100% free certification paths (freeCodeCamp, Cisco, Kaggle, and more).
+              All available career roles in ${dept.code} categorized by technology, responsibilities, and industry salary benchmarks (₹6 - 28 LPA).
             </p>
             <div class="resource-card-footer">
-              <span>Explore Skills & Certs</span>
+              <span>Explore Departmental Roles</span>
               <span>➔</span>
             </div>
           </div>
 
-          <!-- Visual Roadmaps -->
-          <div class="resource-nav-card" id="card-roadmaps">
-            <div class="resource-card-icon" style="background: #fdf2f8; color: #db2777;">🗺️</div>
-            <h3 class="resource-card-title">Visual Career Roadmaps</h3>
-            <p class="resource-card-desc">
-              Step-by-step interactive flowcharts guiding you from foundational engineering prerequisites to production-ready mastery and interview questions.
-            </p>
-            <div class="resource-card-footer">
-              <span>View Learning Trees</span>
-              <span>➔</span>
-            </div>
-          </div>
-
-          <!-- Project Corner -->
+          <!-- Page 2: Project Ideas -->
           <div class="resource-nav-card" id="card-projects">
-            <div class="resource-card-icon" style="background: #faf5ff; color: #9333ea;">💡</div>
-            <h3 class="resource-card-title">Project & Skill Corner</h3>
+            <div class="resource-card-icon" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(217, 119, 6, 0.25)); color: #d97706;">💡</div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+              <h3 class="resource-card-title" style="margin: 0;">Project Ideas</h3>
+              <span class="badge badge-subtle" style="font-size: 0.65rem;">Page 2</span>
+            </div>
             <p class="resource-card-desc">
-              High-impact Mini and Final Year project ideas with problem statements, architecture flows, verified technology stacks, and difficulty levels.
+              Curated capstone & mini project ideas for ${dept.code} categorized by difficulty (Beginner, Intermediate, Advanced) and modern tech stacks.
             </p>
             <div class="resource-card-footer">
-              <span>Discover Project Blueprints</span>
+              <span>Browse Project Ideas</span>
               <span>➔</span>
             </div>
           </div>
 
-          <!-- Certifications -->
+          <!-- Page 3: Skills & Certifications -->
           <div class="resource-nav-card" id="card-certifications">
-            <div class="resource-card-icon" style="background: #fffbeb; color: #d97706;">🏆</div>
-            <h3 class="resource-card-title">Industry Certifications</h3>
+            <div class="resource-card-icon" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(79, 70, 229, 0.25)); color: #4f46e5;">🏆</div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+              <h3 class="resource-card-title" style="margin: 0;">Skills & Certifications</h3>
+              <span class="badge badge-subtle" style="font-size: 0.65rem;">Page 3</span>
+            </div>
             <p class="resource-card-desc">
-              Verified credentials from AWS, Cisco, Red Hat, Dassault Systèmes, and Google Cloud with official exam outlines and preparation roadmaps.
+              Required technical proficiencies and direct course links with 100% FREE certificates from Coursera, NPTEL, edX, Google & Microsoft.
             </p>
             <div class="resource-card-footer">
-              <span>Explore Credentials</span>
+              <span>View Free Certifications</span>
+              <span>➔</span>
+            </div>
+          </div>
+
+          <!-- Page 4: Career Roadmaps -->
+          <div class="resource-nav-card" id="card-roadmaps">
+            <div class="resource-card-icon" style="background: linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(8, 145, 178, 0.25)); color: #0891b2;">🗺️</div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+              <h3 class="resource-card-title" style="margin: 0;">Career Roadmaps</h3>
+              <span class="badge badge-subtle" style="font-size: 0.65rem;">Page 4</span>
+            </div>
+            <p class="resource-card-desc">
+              Step-by-step sequential 4-phase learning paths (Basics ➔ Core Skills ➔ Advanced Tools ➔ Portfolio Projects) for each departmental role.
+            </p>
+            <div class="resource-card-footer">
+              <span>Open Career Roadmaps</span>
               <span>➔</span>
             </div>
           </div>
@@ -300,8 +312,9 @@ window.DashboardView = {
     document.getElementById('card-notes')?.addEventListener('click', () => window.appState.setView('semester-select'));
     document.getElementById('card-question-papers')?.addEventListener('click', () => window.appState.setView('question-papers'));
     document.getElementById('card-dept-roles')?.addEventListener('click', () => window.appState.setView('dept-roles'));
-    document.getElementById('card-roadmaps')?.addEventListener('click', () => window.appState.setView('roadmaps'));
     document.getElementById('card-projects')?.addEventListener('click', () => window.appState.setView('projects'));
+    document.getElementById('card-certifications')?.addEventListener('click', () => window.appState.setView('certifications'));
+    document.getElementById('card-roadmaps')?.addEventListener('click', () => window.appState.setView('roadmaps'));
     // Top Metrics Stat Card clicks
     document.getElementById('stat-card-notes')?.addEventListener('click', () => window.appState.setView('semester-select'));
     document.getElementById('stat-card-qps')?.addEventListener('click', () => window.appState.setView('question-papers'));

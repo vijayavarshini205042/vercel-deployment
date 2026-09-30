@@ -33,20 +33,20 @@ window.NavigationComponent = {
     sidebar.hidden = false;
     sidebar.style.display = 'flex';
 
-    // ── Academic Resources ──
+    // ── 1. TOP SECTION (Academic Resources - High Priority) ──
     const academicItems = [
       { id: 'dashboard', label: 'Department Overview', icon: '🏛️' },
-      { id: 'semester-select', label: 'Year / Semester', icon: '📅' },
+      { id: 'semester-select', label: 'Year / Semester Selection', icon: '📅' },
       { id: 'notes', label: 'Syllabus & Notes', icon: '📚' },
-      { id: 'question-papers', label: 'Previous Year QP', icon: '📝' }
+      { id: 'question-papers', label: 'Previous Year Question Papers (QP)', icon: '📝' }
     ];
 
-    // ── Career & Skills ──
+    // ── 2. BOTTOM SECTION (Career & Skills - Separate Pages) ──
     const careerItems = [
-      { id: 'dept-roles', label: 'Dept. Roles & Skills', icon: '💼' },
-      { id: 'projects', label: 'Project Ideas', icon: '💡' },
-      { id: 'certifications', label: 'Skills & Certifications', icon: '🏆' },
-      { id: 'roadmaps', label: 'Career Roadmaps', icon: '🗺️' }
+      { id: 'dept-roles', label: 'Departmental Roles', icon: '💼', pageBadge: 'Page 1' },
+      { id: 'projects', label: 'Project Ideas', icon: '💡', pageBadge: 'Page 2' },
+      { id: 'certifications', label: 'Skills & Certifications', icon: '🏆', pageBadge: 'Page 3' },
+      { id: 'roadmaps', label: 'Career Roadmaps', icon: '🗺️', pageBadge: 'Page 4' }
     ];
 
     // ── Personal & Showcase ──
@@ -60,9 +60,16 @@ window.NavigationComponent = {
     }
 
     const renderItem = (item) => `
-      <li class="sidebar-nav-item ${currentView === item.id ? 'active' : ''}" data-view="${item.id}" title="${item.label}">
-        <span>${item.icon}</span>
-        <span>${item.label}</span>
+      <li class="sidebar-nav-item ${currentView === item.id ? 'active' : ''}" data-view="${item.id}" title="${item.label}" style="display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+          <span style="font-size: 1.15rem; flex-shrink: 0;">${item.icon}</span>
+          <span style="font-size: 0.85rem; font-weight: ${currentView === item.id ? '700' : '500'};">${item.label}</span>
+        </div>
+        ${item.pageBadge ? `
+          <span class="badge ${currentView === item.id ? 'badge-primary' : 'badge-subtle'}" style="font-size: 0.62rem; padding: 2px 6px; font-weight: 700; margin-left: 6px; flex-shrink: 0;">
+            ${item.pageBadge}
+          </span>
+        ` : ''}
       </li>
     `;
 
@@ -70,7 +77,7 @@ window.NavigationComponent = {
       <!-- Guided Flow Quick Steps -->
       <div style="padding: 10px 16px; margin-bottom: 4px;">
         <div style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.06em; margin-bottom: 8px;">
-          Quick Navigation
+          Quick Context
         </div>
         <div style="display: flex; flex-direction: column; gap: 4px;">
           <button class="flow-step-btn ${currentView === 'regulation-select' ? 'active' : ''}" data-view="regulation-select">
@@ -79,17 +86,14 @@ window.NavigationComponent = {
           <button class="flow-step-btn ${currentView === 'department-select' ? 'active' : ''}" data-view="department-select">
             🏛️ Change Department
           </button>
-          <button class="flow-step-btn ${['semester-select','subject-select'].includes(currentView) ? 'active' : ''}" data-view="semester-select">
-            📅 Year / Semester → Subject
-          </button>
         </div>
       </div>
 
       <div class="sidebar-divider"></div>
 
-      <!-- Academic Resources -->
+      <!-- 1. TOP SECTION: Academic Resources -->
       <div>
-        <div style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.06em; padding-left: 12px; margin-bottom: 8px;">
+        <div style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.06em; padding-left: 12px; margin-bottom: 8px;">
           Academic Resources
         </div>
         <ul class="sidebar-nav-list">
@@ -97,9 +101,11 @@ window.NavigationComponent = {
         </ul>
       </div>
 
-      <!-- Career & Skills -->
+      <div class="sidebar-divider" style="margin: 12px 0;"></div>
+
+      <!-- 2. BOTTOM SECTION: Career & Skills (Separate Pages) -->
       <div>
-        <div style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.06em; padding-left: 12px; margin-bottom: 8px;">
+        <div style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.06em; padding-left: 12px; margin-bottom: 8px;">
           Career & Skills
         </div>
         <ul class="sidebar-nav-list">
@@ -107,8 +113,13 @@ window.NavigationComponent = {
         </ul>
       </div>
 
-      <!-- Personal -->
+      <div class="sidebar-divider" style="margin: 12px 0;"></div>
+
+      <!-- Personal & Showcase -->
       <div style="margin-top: auto;">
+        <div style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.06em; padding-left: 12px; margin-bottom: 8px;">
+          Saved & Tools
+        </div>
         <ul class="sidebar-nav-list">
           ${personalItems.map(renderItem).join('')}
         </ul>
@@ -154,18 +165,20 @@ window.NavigationComponent = {
     mobileNav.hidden = false;
     mobileNav.style.display = 'flex';
 
+    // 6-item mobile bar covering Academic + Career sections cleanly
     const items = [
-      { id: 'dashboard', label: 'Home', icon: '🏛️' },
-      { id: 'semester-select', label: 'Subjects', icon: '📅' },
+      { id: 'dashboard', label: 'Overview', icon: '🏛️' },
+      { id: 'notes', label: 'Notes', icon: '📚' },
+      { id: 'dept-roles', label: 'Roles', icon: '💼' },
       { id: 'projects', label: 'Projects', icon: '💡' },
-      { id: 'dept-roles', label: 'Careers', icon: '💼' },
-      { id: 'bookmarks', label: 'Saved', icon: '⭐' }
+      { id: 'certifications', label: 'Skills', icon: '🏆' },
+      { id: 'roadmaps', label: 'Roadmaps', icon: '🗺️' }
     ];
 
     mobileNav.innerHTML = items.map(item => `
-      <button class="mobile-nav-item ${currentView === item.id || (item.id === 'semester-select' && currentView === 'subject-select') ? 'active' : ''}" data-view="${item.id}">
-        <span style="font-size: 1.25rem;">${item.icon}</span>
-        <span>${item.label}</span>
+      <button class="mobile-nav-item ${currentView === item.id ? 'active' : ''}" data-view="${item.id}" title="${item.label}">
+        <span style="font-size: 1.15rem;">${item.icon}</span>
+        <span style="font-size: 0.7rem; font-weight: 600;">${item.label}</span>
       </button>
     `).join('');
 
