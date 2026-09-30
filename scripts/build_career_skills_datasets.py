@@ -163,6 +163,8 @@ for dept in career_db:
         role_title = role.get('roleName', 'Role')
         top_skills = role.get('technicalSkills', ['Core Principles', 'Data Analysis', 'Engineering Tools'])
         tools = role.get('tools', ['VS Code', 'Git', 'Linux', 'Docker'])
+        category = role.get('roleType', 'Technology')
+        salary = get_salary_benchmark(role_title, category, dept_code)
         
         phase1 = f"Phase 1: Basics - Core fundamentals of {role_title}, {dept_name} mathematical foundations, and basic programming/analytical syntax."
         phase2 = f"Phase 2: Core Skills - In-depth mastery of {', '.join(top_skills[:3])}, system workflows, and domain architectural standards."
@@ -171,9 +173,21 @@ for dept in career_db:
 
         all_roadmaps.append({
             "id": f"roadmap-{dept_code.lower()}-{idx+1}",
+            "roleId": role.get('roleId', f"{dept_code}-ROLE-{idx+1}"),
             "roleTitle": role_title,
             "department": dept_name,
             "deptCode": dept_code,
+            "category": category,
+            "shortOverview": role.get('description', f"Specialized professional career pathway in {dept_name}."),
+            "salaryBenchmark": salary,
+            "technicalSkills": top_skills,
+            "tools": tools,
+            "roadmapSteps": role.get('roadmap', []),
+            "certifications": role.get('certifications', []),
+            "projects": role.get('projects', []),
+            "interviewTopics": role.get('interviewTopics', []),
+            "resumeSuggestions": role.get('resumeSuggestions', []),
+            "careerProgression": role.get('careerProgression', []),
             "sequentialRoadmapSteps": {
                 "phase1": phase1,
                 "phase2": phase2,

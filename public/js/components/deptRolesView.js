@@ -278,7 +278,12 @@ window.DeptRolesView = {
       container.querySelectorAll('.role-view-roadmap-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           const dept = btn.getAttribute('data-dept');
+          const title = decodeURIComponent(btn.getAttribute('data-role-title') || '');
           if (dept) window.appState.setDepartment(dept);
+          if (window.RoadmapsView) {
+            window.RoadmapsView.currentFilters.deptCode = dept || 'ALL';
+            window.RoadmapsView.currentFilters.search = title;
+          }
           window.appState.setView('roadmaps');
         });
       });
