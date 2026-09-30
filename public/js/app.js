@@ -45,7 +45,12 @@ class AppRouter {
     // 3. Render current active view
     this.renderCurrentView();
 
-    // 4. Subscribe to state changes
+    // 4. Initialize AI Academic & Career Chatbot Assistant
+    if (window.ChatbotWidget && typeof window.ChatbotWidget.init === 'function') {
+      window.ChatbotWidget.init();
+    }
+
+    // 5. Subscribe to state changes
     window.appState.subscribe((state, changedKeys) => {
       // Re-render header if user, regulation, department, currentView, or theme changed
       if (changedKeys.includes('user') || changedKeys.includes('regulation') || changedKeys.includes('department') || changedKeys.includes('theme') || changedKeys.includes('currentView') || changedKeys.includes('sessionActive') || changedKeys.includes('onboardingComplete')) {
