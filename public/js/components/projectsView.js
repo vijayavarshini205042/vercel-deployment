@@ -9,26 +9,53 @@ window.ProjectsView = {
   currentFilters: {
     deptCode: 'ALL',
     difficulty: 'ALL',
+    category: 'ALL',
     search: ''
   },
   projectsCache: null,
 
   async loadData() {
     if (this.projectsCache && this.projectsCache.length > 0) return this.projectsCache;
+    let list = [];
     if (window.ProjectIdeasData && window.ProjectIdeasData.length > 0) {
-      this.projectsCache = window.ProjectIdeasData;
-      return this.projectsCache;
-    }
-    try {
-      const res = await fetch('/data/project_ideas.json');
-      if (res.ok) {
-        this.projectsCache = await res.json();
-        return this.projectsCache;
+      list = [...window.ProjectIdeasData];
+    } else {
+      try {
+        const res = await fetch('/data/project_ideas.json');
+        if (res.ok) {
+          list = await res.json();
+        }
+      } catch (err) {
+        console.warn('Could not fetch /data/project_ideas.json, falling back to embedded', err);
       }
-    } catch (err) {
-      console.warn('Could not fetch /data/project_ideas.json, falling back to embedded', err);
     }
-    this.projectsCache = window.ProjectIdeasData || [];
+
+    // Merge in FinalYearProjectsData for all 68 departments
+    if (window.FinalYearProjectsData) {
+      Object.keys(window.FinalYearProjectsData).forEach(deptKey => {
+        const dObj = window.FinalYearProjectsData[deptKey];
+        if (dObj && Array.isArray(dObj.projects)) {
+          dObj.projects.forEach(p => {
+            if (!list.some(existing => existing.id === p.id)) {
+              list.push({
+                id: p.id,
+                deptCode: p.deptCode || deptKey,
+                department: p.department || dObj.deptName || deptKey,
+                projectTitle: p.title,
+                category: p.category || 'Final Year',
+                difficultyLevel: p.difficultyLevel || 'Advanced',
+                shortOverview: p.proposedSolution || p.realWorldProblem || '',
+                techStack: p.technologies || [],
+                keyFeatures: p.keyModules || [],
+                scope: p.scope || 'Final Year'
+              });
+            }
+          });
+        }
+      });
+    }
+
+    this.projectsCache = list;
     return this.projectsCache;
   },
 
@@ -50,18 +77,31 @@ window.ProjectsView = {
       const query = this.currentFilters.search.toLowerCase().trim();
       const selectedDept = this.currentFilters.deptCode;
       const selectedDiff = this.currentFilters.difficulty;
+      const selectedCat = this.currentFilters.category;
 
       // Filter projects
       const filtered = allProjects.filter(p => {
         const matchesDept = selectedDept === 'ALL' || p.deptCode === selectedDept;
-        const matchesDiff = selectedDiff === 'ALL' || p.difficultyLevel.toLowerCase() === selectedDiff.toLowerCase();
+        const matchesDiff = selectedDiff === 'ALL' || (p.difficultyLevel || '').toLowerCase() === selectedDiff.toLowerCase();
+        
+        let matchesCat = true;
+        if (selectedCat !== 'ALL') {
+          const pCat = ((p.category || '') + ' ' + (p.projectTitle || '') + ' ' + (p.techStack || []).join(' ')).toLowerCase();
+          if (selectedCat === 'Mini Project') matchesCat = pCat.includes('mini') || (p.difficultyLevel === 'Beginner');
+          else if (selectedCat === 'Final Year') matchesCat = pCat.includes('final') || pCat.includes('capstone') || (p.difficultyLevel === 'Advanced');
+          else if (selectedCat === 'AI/ML') matchesCat = pCat.includes('ai') || pCat.includes('machine learning') || pCat.includes('neural') || pCat.includes('deep learning');
+          else if (selectedCat === 'IoT/Hardware') matchesCat = pCat.includes('iot') || pCat.includes('sensor') || pCat.includes('arduino') || pCat.includes('raspberry') || pCat.includes('embedded');
+          else if (selectedCat === 'Software') matchesCat = pCat.includes('software') || pCat.includes('web') || pCat.includes('cloud') || pCat.includes('app');
+          else if (selectedCat === 'Industry') matchesCat = pCat.includes('industry') || pCat.includes('automation') || pCat.includes('commercial');
+        }
+
         const matchesSearch = !query || 
           p.projectTitle.toLowerCase().includes(query) || 
           p.department.toLowerCase().includes(query) || 
           (p.techStack && p.techStack.some(t => t.toLowerCase().includes(query))) ||
           (p.keyFeatures && p.keyFeatures.some(f => f.toLowerCase().includes(query))) ||
           (p.shortOverview && p.shortOverview.toLowerCase().includes(query));
-        return matchesDept && matchesDiff && matchesSearch;
+        return matchesDept && matchesDiff && matchesCat && matchesSearch;
       });
 
       const getDifficultyBadge = (level) => {
@@ -137,6 +177,24 @@ window.ProjectsView = {
               ${['ALL', 'Beginner', 'Intermediate', 'Advanced'].map(diff => `
                 <button class="chip ${selectedDiff.toLowerCase() === diff.toLowerCase() ? 'active' : ''}" data-diff="${diff}" style="font-size: 0.8rem; padding: 4px 14px;">
                   ${diff === 'ALL' ? 'All Levels' : diff}
+                </button>
+              `).join('')}
+            </div>
+
+            <!-- Project Track / Category Pills -->
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; border-top: 1px solid var(--border-subtle); padding-top: 14px; margin-top: 12px;">
+              <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-right: 4px;">Project Track:</span>
+              ${[
+                { id: 'ALL', label: '🌟 All Tracks' },
+                { id: 'Mini Project', label: '🛠️ Mini Projects' },
+                { id: 'Final Year', label: '🎓 Final Year Projects' },
+                { id: 'AI/ML', label: '🤖 AI & Machine Learning' },
+                { id: 'IoT/Hardware', label: '📡 IoT & Hardware' },
+                { id: 'Software', label: '💻 Software & Web' },
+                { id: 'Industry', label: '🏭 Industry Oriented' }
+              ].map(cat => `
+                <button class="chip ${selectedCat === cat.id ? 'active' : ''}" data-cat="${cat.id}" style="font-size: 0.8rem; padding: 4px 14px;">
+                  ${cat.label}
                 </button>
               `).join('')}
             </div>
@@ -256,8 +314,15 @@ window.ProjectsView = {
         });
       });
 
+      container.querySelectorAll('.chip[data-cat]').forEach(chip => {
+        chip.addEventListener('click', () => {
+          this.currentFilters.category = chip.getAttribute('data-cat');
+          renderContent();
+        });
+      });
+
       document.getElementById('proj-reset-filters')?.addEventListener('click', () => {
-        this.currentFilters = { deptCode: 'ALL', difficulty: 'ALL', search: '' };
+        this.currentFilters = { deptCode: 'ALL', difficulty: 'ALL', category: 'ALL', search: '' };
         renderContent();
       });
 

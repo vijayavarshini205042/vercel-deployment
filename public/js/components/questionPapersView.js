@@ -199,9 +199,9 @@ window.QuestionPapersView = {
           ${allQPs.length === 0 ? `
             <div class="empty-state" style="padding: 48px 24px; text-align: center; border: 2px dashed var(--border-color); border-radius: var(--radius-lg); background: var(--bg-surface);">
               <div class="empty-state-icon" style="font-size: 3rem; margin-bottom: 12px;">📝</div>
-              <div class="empty-state-title" style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px;">No Question Papers Available</div>
+              <div class="empty-state-title" style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px;">Content will be added soon.</div>
               <div class="empty-state-desc" style="color: var(--text-secondary); margin-bottom: 20px; font-size: 0.9rem;">
-                No past university question papers found for the selected semester or year filter. You can upload one right now!
+                Official Anna University past question papers and answer keys are currently being archived for this subject.
               </div>
               <button class="btn btn-primary trigger-upload-qp-btn" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 700; padding: 10px 22px; border-radius: var(--radius-md); box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);">
                 📤 + Upload Question Paper

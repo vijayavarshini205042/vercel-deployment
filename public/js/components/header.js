@@ -263,7 +263,68 @@ window.HeaderComponent = {
 
     const results = [];
 
-    // 1. Search Subjects (Fixes 'No matching resources found' when searching for subjects)
+    // 1. Search Engineering Departments (All 68 Departments)
+    (data.departments || []).forEach(dept => {
+      const dName = (dept.name || '').toLowerCase();
+      const dCode = (dept.code || '').toLowerCase();
+      const dCat = (dept.category || '').toLowerCase();
+      if (dName.includes(q) || dCode.includes(q) || dCat.includes(q)) {
+        results.push({
+          type: 'Department',
+          icon: dept.icon || '🏛️',
+          title: `${dept.name} (${dept.code})`,
+          subtitle: `${dept.category || 'Engineering'} • 68 Departments Portal`,
+          action: () => {
+            window.appState.setDepartment(dept.code);
+            window.appState.setView('dashboard');
+          }
+        });
+      }
+    });
+
+    // 2. Search Academic Regulations (R2021 & R2025)
+    (data.regulations || [
+      { code: 'R2021', name: 'Anna University Regulation 2021', year: '2021', status: 'Active' },
+      { code: 'R2025', name: 'Anna University Regulation 2025', year: '2025', status: 'Active' }
+    ]).forEach(reg => {
+      const rCode = (reg.code || '').toLowerCase();
+      const rName = (reg.name || '').toLowerCase();
+      if (rCode.includes(q) || rName.includes(q)) {
+        results.push({
+          type: 'Regulation',
+          icon: '📜',
+          title: `${reg.name} (${reg.code})`,
+          subtitle: `Curriculum Framework • ${reg.status || 'Active'}`,
+          action: () => {
+            window.appState.setRegulation(reg.code);
+            window.appState.setView('department-select');
+          }
+        });
+      }
+    });
+
+    // 3. Search Skills
+    const skillsSet = new Set();
+    const allCareerRoles = window.DepartmentalRolesData || data.jobRoles || [];
+    allCareerRoles.forEach(role => {
+      (role.topSkills || role.coreSkills || []).forEach(skill => {
+        if (skill.toLowerCase().includes(q) && !skillsSet.has(skill.toLowerCase())) {
+          skillsSet.add(skill.toLowerCase());
+          results.push({
+            type: 'Technical Skill',
+            icon: '⚡',
+            title: skill,
+            subtitle: `In-demand Skill for ${role.roleTitle || role.title} (${role.department || role.deptCode})`,
+            action: () => {
+              if (role.deptCode) window.appState.setDepartment(role.deptCode);
+              window.appState.setView('certifications');
+            }
+          });
+        }
+      });
+    });
+
+    // 4. Search Subjects (Fixes 'No matching resources found' when searching for subjects)
     (data.subjects || []).forEach(sub => {
       const sName = (sub.name || '').toLowerCase();
       const sCode = (sub.code || '').toLowerCase();

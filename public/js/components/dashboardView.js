@@ -227,9 +227,78 @@ window.DashboardView = {
             </div>
           </div>
 
+      <!-- Dedicated Anna University Academic Hub & Resource Gateways -->
+      <section style="margin-bottom: 36px;">
+        <div class="card" style="padding: 24px; border: 1.5px solid var(--border-color); border-radius: var(--radius-xl); background: var(--bg-surface); box-shadow: var(--shadow-sm);">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px; flex-wrap: wrap; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 14px;">
+              <div style="width: 52px; height: 52px; border-radius: var(--radius-lg); background: linear-gradient(135deg, #7c3aed, #4f46e5); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; box-shadow: 0 4px 14px rgba(124, 58, 237, 0.25);">
+                🏛️
+              </div>
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                  <h2 style="font-size: 1.3rem; font-weight: 800; color: var(--text-primary); margin: 0;">
+                    Anna University Engineering Student Academic Portal
+                  </h2>
+                  <span class="badge badge-primary">Affiliated Institutional Hub</span>
+                </div>
+                <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 3px 0 0 0;">
+                  Official Academic Curriculum, Regulations & Examination Portals for Podhigai College of Engineering & Technology
+                </p>
+              </div>
+            </div>
+
+            <!-- Regulation Switcher Pills -->
+            <div style="display: flex; align-items: center; gap: 8px; background: var(--bg-subtle); padding: 4px; border-radius: var(--radius-full); border: 1px solid var(--border-color);">
+              <button class="chip ${currentReg === 'R2021' ? 'active' : ''}" id="dash-switch-r2021" style="font-size: 0.78rem; padding: 4px 14px; font-weight: 700; cursor: pointer;">
+                Regulation 2021
+              </button>
+              <button class="chip ${currentReg === 'R2025' ? 'active' : ''}" id="dash-switch-r2025" style="font-size: 0.78rem; padding: 4px 14px; font-weight: 700; cursor: pointer;">
+                Regulation 2025
+              </button>
+            </div>
+          </div>
+
+          <!-- Academic Gateway Cards Grid -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px;">
+            <a href="https://cac.annauniv.edu" target="_blank" rel="noopener noreferrer" style="text-decoration: none; padding: 14px; background: var(--bg-surface-elevated); border: 1px solid var(--border-color); border-radius: var(--radius-md); display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+              <div>
+                <div style="font-size: 0.72rem; font-weight: 700; color: #7c3aed; text-transform: uppercase;">Official Curriculum</div>
+                <div style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary); margin: 4px 0;">Centre for Academic Courses (CAC)</div>
+                <div style="font-size: 0.78rem; color: var(--text-muted);">Syllabus copies, course credits, and curriculum regulations for all branches.</div>
+              </div>
+              <div style="margin-top: 10px; font-size: 0.78rem; font-weight: 700; color: #7c3aed;">cac.annauniv.edu ↗</div>
+            </a>
+
+            <a href="https://coe1.annauniv.edu" target="_blank" rel="noopener noreferrer" style="text-decoration: none; padding: 14px; background: var(--bg-surface-elevated); border: 1px solid var(--border-color); border-radius: var(--radius-md); display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+              <div>
+                <div style="font-size: 0.72rem; font-weight: 700; color: #059669; text-transform: uppercase;">Examination Office</div>
+                <div style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary); margin: 4px 0;">Controller of Examinations (ACOE)</div>
+                <div style="font-size: 0.78rem; color: var(--text-muted);">End-semester exam timetables, hall tickets, and grade revaluation portals.</div>
+              </div>
+              <div style="margin-top: 10px; font-size: 0.78rem; font-weight: 700; color: #059669;">coe1.annauniv.edu ↗</div>
+            </a>
+
+            <a href="https://onlinecourses.nptel.ac.in" target="_blank" rel="noopener noreferrer" style="text-decoration: none; padding: 14px; background: var(--bg-surface-elevated); border: 1px solid var(--border-color); border-radius: var(--radius-md); display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+              <div>
+                <div style="font-size: 0.72rem; font-weight: 700; color: #2563eb; text-transform: uppercase;">Credit Transfer</div>
+                <div style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary); margin: 4px 0;">NPTEL / SWAYAM MOOCs</div>
+                <div style="font-size: 0.78rem; color: var(--text-muted);">Anna University approved online elective courses eligible for degree credit transfer.</div>
+              </div>
+              <div style="margin-top: 10px; font-size: 0.78rem; font-weight: 700; color: #2563eb;">nptel.ac.in ↗</div>
+            </a>
+
+            <a href="https://ndl.iitkgp.ac.in" target="_blank" rel="noopener noreferrer" style="text-decoration: none; padding: 14px; background: var(--bg-surface-elevated); border: 1px solid var(--border-color); border-radius: var(--radius-md); display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+              <div>
+                <div style="font-size: 0.72rem; font-weight: 700; color: #d97706; text-transform: uppercase;">Central Digital Library</div>
+                <div style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary); margin: 4px 0;">National Digital Library (NDLI)</div>
+                <div style="font-size: 0.78rem; color: var(--text-muted);">Over 500,000 engineering textbooks, reference volumes, and conference papers.</div>
+              </div>
+              <div style="margin-top: 10px; font-size: 0.78rem; font-weight: 700; color: #d97706;">ndl.iitkgp.ac.in ↗</div>
+            </a>
+          </div>
         </div>
       </section>
-
 
       <!-- Department Software Tools & Free Licenses -->
       <section style="margin-bottom: 36px;">
@@ -360,6 +429,16 @@ window.DashboardView = {
     document.getElementById('dash-browse-notes-btn')?.addEventListener('click', () => window.appState.setView('notes'));
     document.getElementById('dash-skill-map-btn')?.addEventListener('click', () => window.appState.setView('skill-map'));
     document.getElementById('dash-change-dept-btn')?.addEventListener('click', () => window.appState.setView('department-select'));
+
+    // Anna University Regulation Switchers
+    document.getElementById('dash-switch-r2021')?.addEventListener('click', () => {
+      window.appState.setRegulation('R2021');
+      this.render();
+    });
+    document.getElementById('dash-switch-r2025')?.addEventListener('click', () => {
+      window.appState.setRegulation('R2025');
+      this.render();
+    });
 
     // Secondary buttons
     document.getElementById('view-all-notes-btn')?.addEventListener('click', () => window.appState.setView('notes'));
