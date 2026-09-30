@@ -84,19 +84,28 @@ window.NotesView = {
         selectedSubjectId = currentSubject.id || currentSubject.code;
       }
 
-      // Filter notes strictly by subjectId or subjectCode
-      let allNotes = (window.AppFallbackData?.notes || []).filter(n => {
-        const matchesSubject = currentSubject ? (n.subjectId === currentSubject.id || n.subjectCode === currentSubject.code) : false;
-        const matchesUnit = !selectedUnit || n.unit === selectedUnit;
-        return matchesSubject && matchesUnit;
-      });
+      // Resolve comprehensive 5-unit curriculum & lecture notes for current subject
+      let allNotes = [];
+      if (currentSubject && window.AcademicNotesCatalog && typeof window.AcademicNotesCatalog.getNotesForSubject === 'function') {
+        allNotes = window.AcademicNotesCatalog.getNotesForSubject(currentSubject);
+      } else if (currentSubject && window.FreeStudyPortals) {
+        allNotes = window.FreeStudyPortals.generateUnitNotes(currentSubject);
+      }
 
-      // If no pre-baked notes exist for this subject, use FreeStudyPortals generator for Unit 1 to 5
-      if (allNotes.length === 0 && currentSubject && window.FreeStudyPortals) {
-        const generatedNotes = window.FreeStudyPortals.generateUnitNotes(currentSubject);
-        allNotes = generatedNotes.filter(n => {
-          return !selectedUnit || n.unit === selectedUnit;
+      // Check for any admin/faculty uploaded notes in database
+      const uploadedNotes = (window.AppFallbackData?.notes || []).filter(n => {
+        return currentSubject && (n.subjectId === currentSubject.id || n.subjectCode === currentSubject.code) && (n.isCustomUploaded || n.fileUrl?.startsWith('blob:'));
+      });
+      if (uploadedNotes.length > 0) {
+        uploadedNotes.forEach(un => {
+          const idx = allNotes.findIndex(n => n.unit === un.unit);
+          if (idx !== -1) allNotes[idx] = { ...allNotes[idx], ...un };
+          else allNotes.push(un);
         });
+      }
+
+      if (selectedUnit) {
+        allNotes = allNotes.filter(n => n.unit === selectedUnit);
       }
 
       // Filter Textbooks & References (always guarantee available textbooks)
@@ -556,6 +565,23 @@ window.NotesView = {
                 ${note.description}
               </p>
 
+              <!-- Unit Subtopics & Concepts Breakdown -->
+              ${note.topics && note.topics.length > 0 ? `
+                <div style="margin-bottom: 14px;">
+                  <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px;">
+                    📌 Unit Subtopics & Syllabus Scope:
+                  </div>
+                  <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                    ${note.topics.slice(0, 5).map(top => `
+                      <span class="badge" style="background: rgba(124, 58, 237, 0.06); border: 1px solid rgba(124, 58, 237, 0.2); color: #6d28d9; font-size: 0.74rem; padding: 3px 8px; border-radius: 4px; font-weight: 600;">
+                        ✓ ${top}
+                      </span>
+                    `).join('')}
+                    ${note.topics.length > 5 ? `<span class="badge" style="font-size: 0.72rem; color: var(--text-muted); padding: 3px 6px;">+${note.topics.length - 5} more</span>` : ''}
+                  </div>
+                </div>
+              ` : ''}
+
               <!-- Verified Unit Academic Reference Links -->
               <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; padding: 8px 12px; background: var(--bg-surface-elevated); border-radius: var(--radius-sm); border: 1px dashed var(--border-color); align-items: center;">
                 <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted);">🏛️ Unit ${note.unit || 1} Academic Repositories:</span>
@@ -589,6 +615,7 @@ window.NotesView = {
                     </button>
                   ` : ''}
                   <button class="btn btn-secondary btn-sm preview-note-btn" 
+                    data-noteid="${note.id}"
                     data-title="${note.title}" 
                     data-file="${note.fileName || 'Notes.pdf'}" 
                     data-fileurl="${note.fileUrl || ''}"
@@ -813,16 +840,23 @@ window.NotesView = {
     container.querySelectorAll('.preview-note-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
+        const noteId = btn.dataset.noteid;
+        const foundNote = allNotes.find(n => n.id === noteId);
         if (window.PdfViewerModal) {
           window.PdfViewerModal.open({
-            title: btn.dataset.title,
-            fileName: btn.dataset.file,
-            fileUrl: btn.dataset.fileurl,
-            subjectName: btn.dataset.subject,
-            subjectCode: btn.dataset.subjectcode,
-            unit: btn.dataset.unit,
-            description: btn.dataset.description,
-            uploadedBy: btn.dataset.author,
+            ...(foundNote || {}),
+            title: foundNote?.title || btn.dataset.title,
+            fileName: foundNote?.fileName || btn.dataset.file,
+            fileUrl: foundNote?.fileUrl || btn.dataset.fileurl,
+            subjectName: foundNote?.subjectName || btn.dataset.subject,
+            subjectCode: foundNote?.subjectCode || btn.dataset.subjectcode,
+            unit: foundNote?.unit || btn.dataset.unit,
+            description: foundNote?.description || btn.dataset.description,
+            topics: foundNote?.topics,
+            detailedNotes: foundNote?.detailedNotes,
+            partA: foundNote?.partA,
+            partB: foundNote?.partB,
+            uploadedBy: foundNote?.uploadedBy || btn.dataset.author,
             downloads: parseInt(btn.dataset.downloads || 0)
           });
         }
@@ -865,11 +899,13 @@ window.NotesView = {
     container.querySelectorAll('.download-note-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
-        const fileUrl = btn.dataset.fileurl;
-        const fileName = btn.dataset.file || 'Notes.pdf';
-        const title = btn.dataset.title || fileName;
+        const noteId = btn.dataset.noteid;
+        const foundNote = allNotes.find(n => n.id === noteId);
+        const fileUrl = btn.dataset.fileurl || foundNote?.fileUrl;
+        const fileName = btn.dataset.file || foundNote?.fileName || 'Notes.pdf';
+        const title = btn.dataset.title || foundNote?.title || fileName;
         if (window.appState && window.appState.addDownload) {
-          window.appState.addDownload(btn.dataset.noteid);
+          window.appState.addDownload(noteId);
         }
         
         if (fileUrl && fileUrl.startsWith('blob:')) {
@@ -881,16 +917,35 @@ window.NotesView = {
           a.click();
           document.body.removeChild(a);
         } else {
-          // Provide instant text/study sheet download to prevent 404 errors
+          // Construct comprehensive full academic notes text with theory and questions
           const textContent = `========================================================================\n` +
-            `PODHIGAI COLLEGE OF ENGINEERING & TECHNOLOGY\n` +
-            `Department Resource Management System\n` +
+            `ANNA UNIVERSITY STUDENT ACADEMIC PORTAL\n` +
+            `Course: ${foundNote?.subjectName || currentSubject?.name || 'Course'} (${foundNote?.subjectCode || currentSubject?.code || ''})\n` +
             `Document: ${title}\n` +
-            `Approved by: Mr. G. Rajasekaran, HOD/IT\n` +
+            `Regulation: ${foundNote?.regCode || currentReg} • Semester: ${foundNote?.semester || selectedSem}\n` +
             `========================================================================\n\n` +
-            `Comprehensive Anna University Syllabus Study Material\n` +
-            `File: ${fileName}\n` +
-            `Visit our portal to view full Part A (2-marks) and Part B (16-marks) questions.`;
+            `UNIT SYLLABUS SCOPE & OBJECTIVES:\n` +
+            `${foundNote?.description || ''}\n\n` +
+            `========================================================================\n` +
+            `KEY SUBTOPICS:\n` +
+            (foundNote?.topics || []).map((t, idx) => `  ${idx + 1}. ${t}`).join('\n') + `\n\n` +
+            `========================================================================\n` +
+            `COMPREHENSIVE LECTURE NOTES & DETAILED THEORETICAL EXPLANATIONS:\n` +
+            (foundNote?.detailedNotes || []).map((dn, idx) => 
+              `\n[TOPIC ${idx + 1}: ${dn.topic}]\n${dn.explanation}\n\nKey Principles & Governing Concepts:\n` + 
+              (dn.keyPoints || []).map(kp => ` - ${kp}`).join('\n')
+            ).join('\n\n') + `\n\n` +
+            `========================================================================\n` +
+            `PART A: ANNA UNIVERSITY 2-MARK SOLVED QUESTIONS & ANSWERS:\n` +
+            (foundNote?.partA || []).map((pa, idx) => `Q${idx + 1}: ${pa.q}\nAnswer: ${pa.a}\n`).join('\n') + `\n` +
+            `========================================================================\n` +
+            `PART B: ANNA UNIVERSITY 16-MARK ANALYTICAL SOLVED QUESTIONS & DERIVATIONS:\n` +
+            (foundNote?.partB || []).map((pb, idx) => `Q${idx + 1}: ${pb.q}\nSolution / Derivation Outline:\n${pb.solutionOutline}\n`).join('\n\n') +
+            `\n========================================================================\n` +
+            `Prescribed Textbooks: Anna University Curriculum Board\n` +
+            `Verified E-Learning: NPTEL (onlinecourses.nptel.ac.in) & NDLI (ndl.iitkgp.ac.in)\n` +
+            `========================================================================\n`;
+
           const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
           const blobUrl = URL.createObjectURL(blob);
           const a = document.createElement('a');
@@ -903,7 +958,7 @@ window.NotesView = {
         }
 
         if (window.Toast) {
-          window.Toast.show(`✅ Downloading ${fileName}...`, 'success');
+          window.Toast.show(`✅ Downloading full academic notes for ${fileName}...`, 'success');
         }
       });
     });

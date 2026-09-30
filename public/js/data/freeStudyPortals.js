@@ -175,6 +175,9 @@
      */
     generateUnitNotes(subject) {
       if (!subject) return [];
+      if (window.AcademicNotesCatalog && typeof window.AcademicNotesCatalog.getNotesForSubject === 'function') {
+        return window.AcademicNotesCatalog.getNotesForSubject(subject);
+      }
       const code = (subject.code || 'SUB').toUpperCase();
       const name = subject.name || 'Subject';
       const dept = (subject.deptCode || 'ENGG').toUpperCase();
