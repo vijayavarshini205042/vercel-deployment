@@ -104,6 +104,23 @@ window.NotesView = {
         });
       }
 
+      // Merge user-customized / manual notes saved in localStorage
+      try {
+        const manualNotesMap = JSON.parse(localStorage.getItem('drms_manual_notes') || '{}');
+        const subjectCode = currentSubject ? (currentSubject.code || '').toUpperCase() : '';
+        if (manualNotesMap[subjectCode]) {
+          Object.keys(manualNotesMap[subjectCode]).forEach(uNum => {
+            const custom = manualNotesMap[subjectCode][uNum];
+            const idx = allNotes.findIndex(n => n.unit === parseInt(uNum));
+            if (idx !== -1) {
+              allNotes[idx] = { ...allNotes[idx], ...custom, isCustomManual: true };
+            }
+          });
+        }
+      } catch (err) {
+        console.warn('Failed to parse manual notes:', err);
+      }
+
       if (selectedUnit) {
         allNotes = allNotes.filter(n => n.unit === selectedUnit);
       }
@@ -547,8 +564,9 @@ window.NotesView = {
                     U${note.unit || 1}
                   </div>
                   <div>
-                    <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin: 0;">
-                      ${note.title}
+                    <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin: 0; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                      <span>${note.title}</span>
+                      ${note.isCustomManual ? '<span class="badge" style="background: rgba(16,185,129,0.1); color: #059669; border: 1px solid #10b981; font-size: 0.72rem; padding: 2px 6px; font-weight: 700;">✍️ Custom Manual Syllabus</span>' : ''}
                     </h3>
                     <p style="font-size: 0.8125rem; color: var(--text-muted); margin-top: 2px;">
                       ${note.subjectName ? `<strong>${note.subjectName}</strong> (${note.subjectCode}) • ` : ''}Uploaded by: <strong>${note.uploadedBy || 'Faculty'}</strong> • ${note.createdAt || 'Current Curriculum'}
@@ -604,7 +622,7 @@ window.NotesView = {
                   <span>📄 ${note.fileSize || '2.2 MB'}</span> • <span>📥 ${note.downloads || 150} Downloads</span>
                 </div>
 
-                <div style="display: flex; gap: 8px; align-items: center;">
+                <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
                   ${isAdmin ? `
                     <button class="btn btn-danger btn-sm admin-delete-note-btn" 
                       data-noteid="${note.id || note._id}" 
@@ -614,6 +632,17 @@ window.NotesView = {
                       🗑️ Delete
                     </button>
                   ` : ''}
+                  <button class="btn btn-secondary btn-sm edit-manual-note-btn" 
+                    data-noteid="${note.id}"
+                    data-unit="${note.unit || 1}"
+                    data-title="${encodeURIComponent(note.title || '')}"
+                    data-desc="${encodeURIComponent(note.description || '')}"
+                    data-topics="${encodeURIComponent(JSON.stringify(note.topics || []))}"
+                    data-details="${encodeURIComponent(JSON.stringify(note.detailedNotes || []))}"
+                    style="display: inline-flex; align-items: center; gap: 4px; border-color: #7c3aed; color: #7c3aed; background: rgba(124, 58, 237, 0.05); font-weight: 600;"
+                    title="Edit or customize this unit's notes manually">
+                    ✏️ Edit Manually
+                  </button>
                   <button class="btn btn-secondary btn-sm preview-note-btn" 
                     data-noteid="${note.id}"
                     data-title="${note.title}" 
@@ -860,6 +889,129 @@ window.NotesView = {
             downloads: parseInt(btn.dataset.downloads || 0)
           });
         }
+      });
+    });
+
+    // Manual Note Edit Handler
+    container.querySelectorAll('.edit-manual-note-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const noteId = btn.dataset.noteid;
+        const unitNum = parseInt(btn.dataset.unit || 1);
+        const curTitle = decodeURIComponent(btn.dataset.title || '');
+        const curDesc = decodeURIComponent(btn.dataset.desc || '');
+        let curTopics = [];
+        try { curTopics = JSON.parse(decodeURIComponent(btn.dataset.topics || '[]')); } catch (err) {}
+        let curDetails = [];
+        try { curDetails = JSON.parse(decodeURIComponent(btn.dataset.details || '[]')); } catch (err) {}
+
+        const ctx = actions.getCurrentContext ? actions.getCurrentContext() : {};
+        const subject = ctx.subject;
+        const subName = subject ? subject.name : 'Engineering Course';
+        const subCode = subject ? (subject.code || '').toUpperCase() : '';
+
+        const modalDiv = document.createElement('div');
+        modalDiv.className = 'modal-overlay';
+        modalDiv.id = 'manual-note-modal-overlay';
+        modalDiv.innerHTML = `
+          <div class="modal-dialog" style="max-width: 680px; width: 95%; max-height: 90vh; overflow-y: auto;">
+            <div class="modal-header">
+              <h3 style="margin: 0; font-size: 1.2rem;">✏️ Customize / Edit Unit ${unitNum} Notes</h3>
+              <button class="btn btn-ghost btn-sm" id="close-manual-modal">✕</button>
+            </div>
+            <div class="modal-body" style="padding: 16px 20px;">
+              <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 14px;">
+                Customize syllabus, subtopics, and lecture notes manually for <strong>${subName} (${subCode})</strong>:
+              </p>
+              <form id="manual-note-form">
+                <div class="form-group" style="margin-bottom: 12px;">
+                  <label class="form-label" style="font-weight: 600; margin-bottom: 4px;">Unit Title</label>
+                  <input type="text" id="manual-note-title" class="form-input" style="width: 100%;" value="${curTitle.replace(/"/g, '&quot;')}" required />
+                </div>
+                <div class="form-group" style="margin-bottom: 12px;">
+                  <label class="form-label" style="font-weight: 600; margin-bottom: 4px;">Description / Scope</label>
+                  <textarea id="manual-note-desc" class="form-textarea" style="width: 100%;" rows="2">${curDesc}</textarea>
+                </div>
+                <div class="form-group" style="margin-bottom: 12px;">
+                  <label class="form-label" style="font-weight: 600; margin-bottom: 4px;">Unit Subtopics (One per line)</label>
+                  <textarea id="manual-note-topics" class="form-textarea" style="width: 100%;" rows="4">${curTopics.join('\n')}</textarea>
+                  <small style="color: var(--text-muted); font-size: 0.75rem;">Enter one subtopic per line</small>
+                </div>
+                <div class="form-group" style="margin-bottom: 16px;">
+                  <label class="form-label" style="font-weight: 600; margin-bottom: 4px;">Detailed Lecture Explanation / Notes Content</label>
+                  <textarea id="manual-note-details" class="form-textarea" style="width: 100%;" rows="6" placeholder="Enter comprehensive unit theory, concepts, formulas, and derivations...">${
+                    curDetails && curDetails.length > 0
+                      ? curDetails.map(dn => `### ${dn.topic}\n${dn.explanation}\nKey Points:\n${(dn.keyPoints || []).map(kp => `- ${kp}`).join('\n')}`).join('\n\n')
+                      : ''
+                  }</textarea>
+                </div>
+                <div style="display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; align-items: center; border-top: 1px solid var(--border-subtle); padding-top: 14px;">
+                  <button type="button" class="btn btn-ghost btn-sm" id="reset-manual-note" style="color: #ef4444; font-weight: 600;">
+                    ↺ Reset to Default Anna University Notes
+                  </button>
+                  <div style="display: flex; gap: 8px;">
+                    <button type="button" class="btn btn-secondary" id="cancel-manual-modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" style="font-weight: 700;">💾 Save Custom Notes</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(modalDiv);
+
+        const closeModal = () => modalDiv.remove();
+        modalDiv.querySelector('#close-manual-modal')?.addEventListener('click', closeModal);
+        modalDiv.querySelector('#cancel-manual-modal')?.addEventListener('click', closeModal);
+
+        modalDiv.querySelector('#reset-manual-note')?.addEventListener('click', () => {
+          try {
+            const manualNotesMap = JSON.parse(localStorage.getItem('drms_manual_notes') || '{}');
+            if (manualNotesMap[subCode] && manualNotesMap[subCode][unitNum]) {
+              delete manualNotesMap[subCode][unitNum];
+              localStorage.setItem('drms_manual_notes', JSON.stringify(manualNotesMap));
+            }
+            if (window.Toast) window.Toast.info(`Reset Unit ${unitNum} to standard Anna University curriculum.`);
+            closeModal();
+            renderContent();
+          } catch (e) {
+            console.error(e);
+          }
+        });
+
+        modalDiv.querySelector('#manual-note-form')?.addEventListener('submit', (ev) => {
+          ev.preventDefault();
+          const newTitle = modalDiv.querySelector('#manual-note-title')?.value.trim();
+          const newDesc = modalDiv.querySelector('#manual-note-desc')?.value.trim();
+          const rawTopics = modalDiv.querySelector('#manual-note-topics')?.value.trim();
+          const newDetails = modalDiv.querySelector('#manual-note-details')?.value.trim();
+
+          const topicsArr = rawTopics
+            .split(/[\n,]/)
+            .map(t => t.trim().replace(/^[-•*✓]\s*/, ''))
+            .filter(t => t.length > 0);
+
+          const manualNotesMap = JSON.parse(localStorage.getItem('drms_manual_notes') || '{}');
+          if (!manualNotesMap[subCode]) manualNotesMap[subCode] = {};
+
+          const detailedNotesArr = newDetails ? [{
+            topic: newTitle || `Unit ${unitNum} Notes`,
+            explanation: newDetails,
+            keyPoints: topicsArr.slice(0, 4)
+          }] : curDetails;
+
+          manualNotesMap[subCode][unitNum] = {
+            title: newTitle || curTitle,
+            description: newDesc || curDesc,
+            topics: topicsArr.length > 0 ? topicsArr : curTopics,
+            detailedNotes: detailedNotesArr
+          };
+
+          localStorage.setItem('drms_manual_notes', JSON.stringify(manualNotesMap));
+          if (window.Toast) window.Toast.success(`Unit ${unitNum} custom notes saved successfully!`);
+          closeModal();
+          renderContent();
+        });
       });
     });
 

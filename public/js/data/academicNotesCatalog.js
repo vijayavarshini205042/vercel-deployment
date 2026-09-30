@@ -824,70 +824,639 @@
      */
     synthesizeDomainCurriculum(subject) {
       const name = subject.name || 'Subject';
+      const code = (subject.code || '').toUpperCase();
       const sName = name.toLowerCase();
+
+      // English & Communication
+      if (sName.includes('english') || sName.includes('communicat') || sName.includes('language') || sName.includes('verbal') || code.startsWith('EN') || code.startsWith('HS')) {
+        return [
+          {
+            unit: 1,
+            title: 'Vocabulary Building, Grammar Fundamentals & Word Formation',
+            desc: 'Parts of speech, word formation (prefixes & suffixes), collocations, subject-verb agreement, tenses, and preposition usage.',
+            subtopics: [
+              'Parts of Speech & Grammatical Roles',
+              'Prefixes, Suffixes & Morphological Word Formation',
+              'Compound Nouns, Collocations & Phrasal Verbs',
+              'Subject-Verb Concord & Tense Agreement Rules',
+              'Prepositions, Articles & Conjunctions',
+              'Synonyms, Antonyms & Technical Vocabulary'
+            ]
+          },
+          {
+            unit: 2,
+            title: 'Reading Comprehension & Technical Analytical Skills',
+            desc: 'Skimming, scanning, intensive reading, critical analysis of technical texts, note-making, and inferential comprehension.',
+            subtopics: [
+              'Skimming for Gist & Scanning for Specific Data',
+              'Critical Analysis of Academic Research Papers',
+              'Identifying Main Themes and Author Intent',
+              'Note-Making & Information Distillation Protocols',
+              'Summarizing Long Technical Passages',
+              'Inferential Deduction & Fact vs Opinion Sorting'
+            ]
+          },
+          {
+            unit: 3,
+            title: 'Professional Technical Writing & Paragraph Architecture',
+            desc: 'Paragraph coherence, cohesion, formal email communication, technical reports, and transcoding visual data into text.',
+            subtopics: [
+              'Paragraph Coherence, Unity & Topic Sentences',
+              'Expository, Descriptive & Argumentative Writing',
+              'Formal Email Composition & Workplace Correspondence',
+              'Transcoding Graphic Charts, Tables & Flowcharts to Prose',
+              'Technical Definitions & Extended Descriptions',
+              'Checklists, Recommendations & Operating Manuals'
+            ]
+          },
+          {
+            unit: 4,
+            title: 'Listening Comprehension, Phonetics & Verbal Fluency',
+            desc: 'Active listening strategies, phonetics, syllable stress, intonation, self-introduction, and group discussion etiquette.',
+            subtopics: [
+              'Active Listening to Technical Lectures & Podcasts',
+              'Phonetics: Vowels, Consonants & Diphthongs',
+              'Syllable Stress, Intonation & Pronunciation Clarity',
+              'Self-Introduction & Elevator Pitch Delivery',
+              'Group Discussion Dynamics, Moderation & Turn-Taking',
+              'Overcoming Communication Apprehension & Anxiety'
+            ]
+          },
+          {
+            unit: 5,
+            title: 'Technical Presentations, Workplace Etiquette & Career Skills',
+            desc: 'Oral presentations, slide architecture, non-verbal communication, interview preparation, resume and cover letters.',
+            subtopics: [
+              'Structuring 10-Minute Technical Presentations',
+              'Effective Visual Slide Design & Data Storytelling',
+              'Body Language, Eye Contact & Non-Verbal Presence',
+              'Resume Preparation & Tailored Cover Letters',
+              'HR & Technical Job Interview Question Strategies',
+              'Minutes of Meeting (MoM) & Formal Agendas'
+            ]
+          }
+        ];
+      }
+
+      // C Programming & Problem Solving
+      if ((sName.includes('program') && (sName.includes('c') || sName.includes(' c') || sName.includes('c '))) || sName.includes('problem solving') || code === 'CS25C01' || code === 'CS3151' || code === 'GE3151') {
+        return [
+          {
+            unit: 1,
+            title: 'Problem Solving Techniques & C Language Fundamentals',
+            desc: 'Algorithms, flowcharts, compilation stages, primitive data types, operators, precedence, and standard I/O.',
+            subtopics: [
+              'Algorithmic Problem-Solving & Flowchart Conventions',
+              'Structure of a C Program & GCC Compilation Stages',
+              'Primitive Data Types, Identifiers, Variables & Constants',
+              'Arithmetic, Relational & Bitwise Operator Precedence',
+              'Standard Formatted I/O: printf and scanf Format Specifiers',
+              'Type Conversion & Explicit Type Casting Primitives'
+            ]
+          },
+          {
+            unit: 2,
+            title: 'Control Structures, Conditional Branching & Loops',
+            desc: 'If-else logic, nested selections, switch-case constructs, while, do-while, and for loops, and jump statements.',
+            subtopics: [
+              'Conditional Branching: if, if-else, nested if-else',
+              'Multi-Way Decision Making: switch-case with fall-through rules',
+              'Iterative Counting: for loop execution mechanics',
+              'Conditional Iteration: while and do-while loops',
+              'Jump Control: break, continue, and goto protocols',
+              'Nested Loop Patterns & Triangular Grid Formations'
+            ]
+          },
+          {
+            unit: 3,
+            title: 'Arrays, Multidimensional Matrices & String Processing',
+            desc: '1D arrays, 2D matrix operations, strings as null-terminated character arrays, and string handling functions.',
+            subtopics: [
+              'One-Dimensional Arrays: Contiguous Allocation & Bounds Checking',
+              'Multi-Dimensional Arrays: Matrix Addition & Multiplication',
+              'Linear and Binary Search on Array Elements',
+              'Null-Terminated Strings as Character Arrays',
+              'String Library Functions: strlen, strcpy, strcat, strcmp',
+              'String I/O Functions: gets, puts, fgets and Buffer Safety'
+            ]
+          },
+          {
+            unit: 4,
+            title: 'Modular Functions, Storage Classes & Pointer Architecture',
+            desc: 'Function prototypes, call by value vs reference, recursion, storage classes, pointer arithmetic, and pointers with arrays.',
+            subtopics: [
+              'Function Prototypes, Definitions & Return Semantics',
+              'Call by Value vs Call by Reference Parameter Passing',
+              'Recursion Mechanics, Base Cases & Call Stack Frames',
+              'Storage Classes: auto, register, static, and extern Scope',
+              'Pointer Fundamentals: Address Operator (&) and Dereference (*)',
+              'Pointer Arithmetic & Multi-Dimensional Array Pointers'
+            ]
+          },
+          {
+            unit: 5,
+            title: 'Structures, Unions, Dynamic Memory & File Management',
+            desc: 'User-defined structures, unions, memory allocation (malloc, calloc, free), and persistent disk file handling.',
+            subtopics: [
+              'Structure Declaration, Initialization & Dot (.) Operator',
+              'Nested Structures & Arrays of Heterogeneous Structures',
+              'Unions vs Structures & Memory Alignment Differences',
+              'Dynamic Memory Allocation: malloc(), calloc(), realloc(), free()',
+              'Sequential Disk File Operations: fopen, fclose, File Modes',
+              'Formatted File I/O: fprintf, fscanf, fread, fwrite'
+            ]
+          }
+        ];
+      }
+
+      // Python & Data Science
+      if (sName.includes('python') || sName.includes('data science') || code === 'AD25201' || code === 'IT25201') {
+        return [
+          {
+            unit: 1,
+            title: 'Python Language Basics, Variables & Operators',
+            desc: 'Python interpreter, dynamic typing, numeric types, boolean logic, expressions, and input/output formatting.',
+            subtopics: [
+              'Python Interactive Shell & Script Execution Model',
+              'Variables, Dynamic Typing & Mutable vs Immutable Objects',
+              'Arithmetic, Assignment, Comparison & Logical Operators',
+              'Bitwise, Membership (in) & Identity (is) Operators',
+              'Formatted Output with f-strings & str.format()',
+              'Standard User Input Casting & Error Handling'
+            ]
+          },
+          {
+            unit: 2,
+            title: 'Control Flow, Iterations & List Comprehensions',
+            desc: 'If-elif-else branching, while loops, for loops, range generator, loop control statements, and list comprehensions.',
+            subtopics: [
+              'Conditional Branching: if, elif, else Construct',
+              'Definite Iteration: for loops with range() and enumerate()',
+              'Indefinite Iteration: while loops and infinite loop guards',
+              'Loop Control: break, continue, pass and else clauses',
+              'List Comprehensions & Generator Expressions',
+              'Pattern Generation & Nested Iterative Sequences'
+            ]
+          },
+          {
+            unit: 3,
+            title: 'Functions, Scoping Rules & Functional Primitives',
+            desc: 'Function definitions, default arguments, *args, **kwargs, recursion, lambda expressions, map, filter, and reduce.',
+            subtopics: [
+              'Defining Functions with def & return Values',
+              'Positional, Keyword, Default, *args and **kwargs Parameters',
+              'Variable Scope Hierarchy: LEGB Rule (Local, Enclosing, Global, Built-in)',
+              'Recursive Functions & Recursion Depth Management',
+              'Anonymous Functions: lambda Syntax & Usage',
+              'Functional Tools: map(), filter(), and functools.reduce()'
+            ]
+          },
+          {
+            unit: 4,
+            title: 'Compound Data Structures: Lists, Tuples, Sets & Dictionaries',
+            desc: 'List indexing and slicing, tuple packing/unpacking, set operations, dictionary key-value mapping, and methods.',
+            subtopics: [
+              'Lists: Slicing, Sorting, Appending, Extending & Modifying',
+              'Tuples: Immutability, Tuple Packing & Sequence Unpacking',
+              'Dictionaries: Key-Value Mapping, Methods & Dict Comprehensions',
+              'Sets: Mathematical Set Operations (Union, Intersect, Difference)',
+              'Nested Collections & Deep vs Shallow Copy Semantics',
+              'Built-in Methods: zip(), sorted(), reversed(), min(), max()'
+            ]
+          },
+          {
+            unit: 5,
+            title: 'File I/O, Exceptions & Introduction to Data Science (NumPy/Pandas)',
+            desc: 'File reading and writing, context managers (with), try-except blocks, and fundamentals of NumPy arrays and Pandas dataframes.',
+            subtopics: [
+              'File Handling: open(), read(), write(), and Context Managers',
+              'Exception Handling: try, except, else, finally, and raise',
+              'Working with CSV & JSON Formatted Files',
+              'NumPy: N-Dimensional Arrays, Vectorized Operations & Broadcasting',
+              'Pandas: Series, DataFrames, Data Cleaning & Slicing',
+              'Data Visualization Basics using Matplotlib & Seaborn'
+            ]
+          }
+        ];
+      }
 
       // Engineering Mathematics
       if (sName.includes('math') || sName.includes('calculus') || sName.includes('algebra') || sName.includes('differential') || sName.includes('transform') || sName.includes('statistics') || sName.includes('probability')) {
         return [
-          { unit: 1, title: 'Matrices, Eigenvalues & Quadratic Forms', desc: 'Eigenvalues, Cayley-Hamilton Theorem, Orthogonal Diagonalization, Quadratic Forms reduction.' },
-          { unit: 2, title: 'Differential Calculus & Multi-Variable Functions', desc: 'Curvature, Partial Derivatives, Jacobians, Taylor Series, Maxima and Minima with Lagrange Multipliers.' },
-          { unit: 3, title: 'Integral Calculus & Vector Differential Calculus', desc: 'Double and Triple Integrals, Vector Fields, Gradient, Divergence, Curl, Green, Stokes and Gauss Theorems.' },
-          { unit: 4, title: 'Ordinary & Partial Differential Equations', desc: 'Higher Order Linear ODEs with Constant Coefficients, Method of Variation of Parameters, Cauchy-Euler equations.' },
-          { unit: 5, title: 'Laplace & Fourier Transforms with Boundary Value Problems', desc: 'Laplace transforms, Inverse Laplace, Convolution Theorem, Fourier series expansions and Wave equations.' }
+          {
+            unit: 1,
+            title: 'Matrices, Eigenvalues & Quadratic Forms',
+            desc: 'Eigenvalues, Cayley-Hamilton Theorem, Orthogonal Diagonalization, Quadratic Forms reduction.',
+            subtopics: [
+              'Characteristic Equation & Eigenvalue Computation',
+              'Cayley-Hamilton Theorem Statement & Matrix Inverse Calculation',
+              'Orthogonal Transformation & Symmetric Matrix Diagonalization',
+              'Quadratic Forms to Canonical Forms Transformation',
+              'Nature, Rank, Index and Signature of Quadratic Forms',
+              'Applications of Matrices in Engineering Networks'
+            ]
+          },
+          {
+            unit: 2,
+            title: 'Differential Calculus & Multi-Variable Functions',
+            desc: 'Curvature, Partial Derivatives, Jacobians, Taylor Series, Maxima and Minima with Lagrange Multipliers.',
+            subtopics: [
+              'Curvature in Cartesian & Polar Coordinates',
+              'Radius of Curvature, Centre of Curvature & Evolutes',
+              'Partial Derivatives & Euler Theorem on Homogeneous Functions',
+              'Total Derivatives & Jacobian Transformations',
+              'Taylor and Maclaurin Series for Functions of Two Variables',
+              'Constrained Maxima and Minima via Lagrange Multipliers'
+            ]
+          },
+          {
+            unit: 3,
+            title: 'Integral Calculus & Vector Differential Calculus',
+            desc: 'Double and Triple Integrals, Vector Fields, Gradient, Divergence, Curl, Green, Stokes and Gauss Theorems.',
+            subtopics: [
+              'Double Integrals in Cartesian & Polar Coordinates',
+              'Area as Double Integral & Volume as Triple Integral',
+              'Vector Differential Operator (Del): Gradient of a Scalar Field',
+              'Divergence and Curl of Vector Fields & Physical Meaning',
+              'Solenoidal and Irrotational Vector Fields Verification',
+              'Evaluation of Surface and Volume Integrals: Gauss & Stokes Theorems'
+            ]
+          },
+          {
+            unit: 4,
+            title: 'Ordinary & Partial Differential Equations',
+            desc: 'Higher Order Linear ODEs with Constant Coefficients, Method of Variation of Parameters, Cauchy-Euler equations.',
+            subtopics: [
+              'Higher Order Linear ODEs with Constant Coefficients',
+              'Particular Integral Evaluation for Various Right-Hand Sides',
+              'Method of Variation of Parameters for Second-Order ODEs',
+              'Cauchy-Euler and Legendre Linear Differential Equations',
+              'Simultaneous First-Order Linear Differential Equations',
+              'Formation and Solution of First-Order Partial Differential Equations'
+            ]
+          },
+          {
+            unit: 5,
+            title: 'Laplace & Fourier Transforms with Boundary Value Problems',
+            desc: 'Laplace transforms, Inverse Laplace, Convolution Theorem, Fourier series expansions and Wave equations.',
+            subtopics: [
+              'Existence Conditions & Standard Laplace Transforms',
+              'Transforms of Derivatives, Integrals & Periodic Functions',
+              'Inverse Laplace Transforms & Partial Fractions Technique',
+              'Convolution Theorem & Solving Initial Value ODEs',
+              'Dirichlet Conditions & Fourier Series Expansions',
+              'Half-Range Sine and Cosine Series with Engineering Applications'
+            ]
+          }
         ];
       }
 
       // Physics
       if (sName.includes('physics') || sName.includes('semiconductor') || sName.includes('optics') || sName.includes('material science')) {
         return [
-          { unit: 1, title: 'Mechanics, Elasticity & Properties of Matter', desc: 'Stress-strain curves, Hooke Law, Torsion pendulum, Cantilever bending, I-shaped girder design.' },
-          { unit: 2, title: 'Oscillations, Wave Optics & Laser Technology', desc: 'Damped oscillations, Interference, Diffraction gratings, Nd:YAG and CO2 Laser principles, Fiber optic transmission.' },
-          { unit: 3, title: 'Quantum Mechanics & Wave Equations', desc: 'Planck Radiation law, Compton effect, de Broglie hypothesis, 1D Time-independent Schrödinger equation.' },
-          { unit: 4, title: 'Semiconductor Physics & Transport Phenomena', desc: 'Energy band theory, Direct vs Indirect bandgap, Carrier concentration in intrinsic/extrinsic semiconductors, Hall effect.' },
-          { unit: 5, title: 'Superconductivity, Magnetic Materials & Nanotechnology', desc: 'Type I and Type II superconductors, Meissner effect, Ferromagnetism, Sol-gel nanomaterial synthesis, Carbon nanotubes.' }
+          {
+            unit: 1,
+            title: 'Mechanics, Elasticity & Properties of Matter',
+            desc: 'Stress-strain curves, Hooke Law, Torsion pendulum, Cantilever bending, I-shaped girder design.',
+            subtopics: [
+              'Hooke Law, Stress-Strain Relations & Elastic Moduli',
+              'Torsion of a Cylinder & Torsional Pendulum Rigidity',
+              'Bending Moment & Cantilever Depression Derivations',
+              'Uniform and Non-Uniform Bending Experiments',
+              'I-Shaped Girder Advantages in Civil Structural Engineering',
+              'Viscosity, Poiseuille Flow & Surface Tension'
+            ]
+          },
+          {
+            unit: 2,
+            title: 'Oscillations, Wave Optics & Laser Technology',
+            desc: 'Damped oscillations, Interference, Diffraction gratings, Nd:YAG and CO2 Laser principles, Fiber optic transmission.',
+            subtopics: [
+              'Simple Harmonic Motion, Damped & Forced Oscillations',
+              'Interference in Thin Films & Air Wedge Thickness Testing',
+              'Fraunhofer Diffraction through Single Slit and Grating',
+              'Spontaneous & Stimulated Emission, Einstein Coefficients',
+              'Nd:YAG and Semiconductor Injection Laser Operations',
+              'Optical Fiber Modes, Acceptance Angle & Numerical Aperture'
+            ]
+          },
+          {
+            unit: 3,
+            title: 'Quantum Mechanics & Wave Equations',
+            desc: 'Planck Radiation law, Compton effect, de Broglie hypothesis, 1D Time-independent Schrödinger equation.',
+            subtopics: [
+              'Blackbody Radiation Spectrum & Planck Quantum Hypothesis',
+              'Compton Effect Derivation & Experimental Verification',
+              'de Broglie Matter Waves & Davisson-Germer Experiment',
+              'Heisenberg Uncertainty Principle & Physical Implications',
+              'Schrödinger 1D Time-Independent Wave Equation',
+              'Particle in a 1D Infinite Potential Well (Energy Quantization)'
+            ]
+          },
+          {
+            unit: 4,
+            title: 'Semiconductor Physics & Transport Phenomena',
+            desc: 'Energy band theory, Direct vs Indirect bandgap, Carrier concentration in intrinsic/extrinsic semiconductors, Hall effect.',
+            subtopics: [
+              'Origin of Energy Bands in Solids & Kronig-Penney Model',
+              'Intrinsic Semiconductor Carrier Concentrations & Fermi Level',
+              'N-Type and P-Type Extrinsic Semiconductor Transport',
+              'Variation of Fermi Level with Temperature and Doping',
+              'Carrier Drift, Diffusion & Einstein Relation',
+              'Hall Effect Principle, Hall Coefficient & Applications'
+            ]
+          },
+          {
+            unit: 5,
+            title: 'Superconductivity, Magnetic Materials & Nanotechnology',
+            desc: 'Type I and Type II superconductors, Meissner effect, Ferromagnetism, Sol-gel nanomaterial synthesis, Carbon nanotubes.',
+            subtopics: [
+              'Superconducting State, Critical Temperature & Critical Field',
+              'Meissner Effect & Type I vs Type II Superconductors',
+              'BCS Theory Overview, High-Tc Materials & SQUID Magnetometers',
+              'Dia, Para and Ferromagnetism, Domain Theory & Hysteresis',
+              'Nanoscale Quantum Confinement & Size-Dependent Properties',
+              'Top-Down vs Bottom-Up Synthesis: Sol-Gel and Ball Milling'
+            ]
+          }
         ];
       }
 
       // Chemistry & Environmental
       if (sName.includes('chemistry') || sName.includes('environment') || sName.includes('pollution')) {
         return [
-          { unit: 1, title: 'Water Technology & Industrial Boiler Water Treatment', desc: 'Water hardness estimation via EDTA, Boiler troubles, Demineralization (Ion-Exchange), Reverse Osmosis desalination.' },
-          { unit: 2, title: 'Electrochemistry, EMF & Corrosion Engineering', desc: 'Nernst Equation, Galvanic cells, Mechanism of dry and wet corrosion, Sacrificial anode and impressed current cathodic protection.' },
-          { unit: 3, title: 'Polymer Science, Composites & Advanced Materials', desc: 'Addition and condensation polymerization, Thermoplastics vs Thermosets, Engineering plastics (Nylon, Teflon), Carbon fiber composites.' },
-          { unit: 4, title: 'Energy Storage Systems, Fuels & Combustion', desc: 'Calorific values, Proximate analysis, Lithium-ion battery chemistry, Supercapacitors, Hydrogen Fuel Cells (PEMFC).' },
-          { unit: 5, title: 'Environmental Pollution, Green Chemistry & Waste Management', desc: 'Air, water, and soil pollutants, BOD and COD analysis, 12 Principles of Green Chemistry, E-waste lifecycle recycling.' }
+          {
+            unit: 1,
+            title: 'Water Technology & Industrial Boiler Water Treatment',
+            desc: 'Water hardness estimation via EDTA, Boiler troubles, Demineralization (Ion-Exchange), Reverse Osmosis desalination.',
+            subtopics: [
+              'Hardness of Water: Temporary vs Permanent Hardness',
+              'EDTA Titrimetric Estimation of Hardness with Calculations',
+              'Boiler Troubles: Scales, Sludge, Caustic Embrittlement & Priming',
+              'External Treatment: Demineralization via Ion-Exchange Resins',
+              'Internal Treatment: Phosphate, Calgon, and Colloidal Conditioning',
+              'Desalination of Brackish Water via Reverse Osmosis (RO) Membrane'
+            ]
+          },
+          {
+            unit: 2,
+            title: 'Electrochemistry, EMF & Corrosion Engineering',
+            desc: 'Nernst Equation, Galvanic cells, Mechanism of dry and wet corrosion, Sacrificial anode and impressed current cathodic protection.',
+            subtopics: [
+              'Electrode Potential, Nernst Equation & Electrochemical Series',
+              'Reference Electrodes: Standard Hydrogen & Calomel Electrodes',
+              'Mechanisms of Chemical (Dry) and Electrochemical (Wet) Corrosion',
+              'Galvanic Corrosion, Pitting Corrosion & Stress Corrosion Cracking',
+              'Corrosion Control: Sacrificial Anode Cathodic Protection',
+              'Protective Coatings: Galvanizing, Tinning & Electroplating'
+            ]
+          },
+          {
+            unit: 3,
+            title: 'Polymer Science, Composites & Advanced Materials',
+            desc: 'Addition and condensation polymerization, Thermoplastics vs Thermosets, Engineering plastics (Nylon, Teflon), Carbon fiber composites.',
+            subtopics: [
+              'Functionality, Addition & Condensation Polymerization Mechanisms',
+              'Thermoplastics vs Thermosetting Resins Comparison',
+              'Synthesis and Uses of Engineering Plastics: Nylon-6,6, Teflon, Bakelite',
+              'Biodegradable Polymers (PLA, PGA) & Conducting Polymers',
+              'Polymer Matrix Composites (FRP) & Carbon Fiber Formulations',
+              'Preparation and Applications of Epoxy Resins'
+            ]
+          },
+          {
+            unit: 4,
+            title: 'Energy Storage Systems, Fuels & Combustion',
+            desc: 'Calorific values, Proximate analysis, Lithium-ion battery chemistry, Supercapacitors, Hydrogen Fuel Cells (PEMFC).',
+            subtopics: [
+              'Gross and Net Calorific Values & Dulong Formula',
+              'Proximate and Ultimate Analysis of Solid Coal Fuels',
+              'Petroleum Refining, Synthetic Petrol & Knocking (Octane/Cetane)',
+              'Primary and Secondary Batteries: Lead-Acid & Lithium-Ion Chemistry',
+              'Supercapacitors: Electric Double-Layer Capacitors (EDLC)',
+              'Hydrogen-Oxygen Proton-Exchange Membrane Fuel Cells (PEMFC)'
+            ]
+          },
+          {
+            unit: 5,
+            title: 'Environmental Pollution, Green Chemistry & Waste Management',
+            desc: 'Air, water, and soil pollutants, BOD and COD analysis, 12 Principles of Green Chemistry, E-waste lifecycle recycling.',
+            subtopics: [
+              'Air Pollutants (PM2.5, SOx, NOx) & Flue-Gas Desulfurization',
+              'Water Quality Indicators: Biochemical (BOD) & Chemical (COD) Oxygen Demand',
+              'Sewage Treatment: Primary, Secondary (Activated Sludge) & Tertiary Stages',
+              '12 Principles of Green Chemistry & Atom Economy Calculations',
+              'Electronic Waste (E-Waste) Hazard Profiling & Recycling Pathways',
+              'Solid Waste Management via Pyrolysis, Composting & Incineration'
+            ]
+          }
         ];
       }
 
       // Electrical / Electronics / Signals
       if (sName.includes('circuit') || sName.includes('electric') || sName.includes('electron') || sName.includes('signal') || sName.includes('vlsi') || sName.includes('microprocessor') || sName.includes('embedded')) {
         return [
-          { unit: 1, title: 'Circuit Theorems, Network Laws & Analysis', desc: 'Ohm Law, Kirchhoff Laws (KCL, KVL), Mesh and Nodal analysis, Thevenin, Norton, Superposition, Maximum Power Transfer.' },
-          { unit: 2, title: 'Semiconductor Devices & Diode Applications', desc: 'PN junction characteristics, Zener voltage regulation, BJT and MOSFET biasing, Small-signal hybrid-pi equivalent models.' },
-          { unit: 3, title: 'Operational Amplifiers & Analog Signal Conditioning', desc: 'Ideal Op-Amp characteristics, Inverting and Non-inverting amplifiers, Active filters, 555 Timer multivibrators.' },
-          { unit: 4, title: 'Digital Logic, Sequential Circuits & Microcontroller Architecture', desc: 'Boolean algebra, Karnaugh maps, Flip-flops, Counters, Shift registers, 8051/ARM architecture and instruction set.' },
-          { unit: 5, title: 'Power Electronics, Modulation & Interfacing', desc: 'SCR, MOSFET and IGBT switches, DC-DC Buck-Boost converters, Modulation schemes (AM, FM, PWM), Sensor ADC interfacing.' }
+          {
+            unit: 1,
+            title: 'Circuit Theorems, Network Laws & Analysis',
+            desc: 'Ohm Law, Kirchhoff Laws (KCL, KVL), Mesh and Nodal analysis, Thevenin, Norton, Superposition, Maximum Power Transfer.',
+            subtopics: [
+              'Ohm Law, Kirchhoff Current Law (KCL) & Kirchhoff Voltage Law (KVL)',
+              'Mesh and Nodal Analysis with Independent & Dependent Sources',
+              'Thevenin and Norton Equivalent Circuit Derivations',
+              'Superposition Theorem & Maximum Power Transfer Theorem',
+              'Source Transformation Techniques & Star-Delta Conversions',
+              'Transient Analysis of Series RL and RC Circuits'
+            ]
+          },
+          {
+            unit: 2,
+            title: 'Semiconductor Devices & Diode Applications',
+            desc: 'PN junction characteristics, Zener voltage regulation, BJT and MOSFET biasing, Small-signal hybrid-pi equivalent models.',
+            subtopics: [
+              'PN Junction Diode V-I Characteristics & Shockley Equation',
+              'Zener Diode Breakdown & Voltage Regulation Circuits',
+              'Half-Wave and Full-Wave Rectifiers with Capacitor Filter Analysis',
+              'Bipolar Junction Transistor (BJT) CE Configuration & Bias Stability',
+              'Enhancement and Depletion MOSFET Operation Principles',
+              'Small-Signal Hybrid-Pi High-Frequency Equivalent Models'
+            ]
+          },
+          {
+            unit: 3,
+            title: 'Operational Amplifiers & Analog Signal Conditioning',
+            desc: 'Ideal Op-Amp characteristics, Inverting and Non-inverting amplifiers, Active filters, 555 Timer multivibrators.',
+            subtopics: [
+              'Ideal Op-Amp Characteristics: Infinite Gain, Input Impedance, CMRR',
+              'Inverting, Non-Inverting, Summing & Difference Amplifiers',
+              'Active Low-Pass and High-Pass Butterworth Filters',
+              'Instrumentation Amplifier for Sensor Signal Conditioning',
+              'Precision Rectifiers and Peak Detector Circuits',
+              '555 Timer IC: Astable and Monostable Multivibrator Design'
+            ]
+          },
+          {
+            unit: 4,
+            title: 'Digital Logic, Sequential Circuits & Microcontroller Architecture',
+            desc: 'Boolean algebra, Karnaugh maps, Flip-flops, Counters, Shift registers, 8051/ARM architecture and instruction set.',
+            subtopics: [
+              'Boolean Algebra Minimization via Karnaugh Maps (K-Maps)',
+              'Combinational Circuits: Adders, Multiplexers & Decoders',
+              'Flip-Flops: SR, JK, D, T Flip-Flops & Master-Slave Timing',
+              'Synchronous and Asynchronous Modulo-N Counter Design',
+              '8051 Microcontroller Internal Architecture & Pinout Diagram',
+              'Instruction Set, Addressing Modes & Interrupt Handling'
+            ]
+          },
+          {
+            unit: 5,
+            title: 'Power Electronics, Modulation & Interfacing',
+            desc: 'SCR, MOSFET and IGBT switches, DC-DC Buck-Boost converters, Modulation schemes (AM, FM, PWM), Sensor ADC interfacing.',
+            subtopics: [
+              'Silicon Controlled Rectifiers (SCR), Triac & IGBT Switching',
+              'DC-DC Switched Mode Power Supplies: Buck, Boost, and Buck-Boost',
+              'Pulse Width Modulation (PWM) Inverter Topologies',
+              'Analog Modulation (AM, FM) vs Digital Keying (ASK, FSK, PSK)',
+              'Analog-to-Digital (ADC) & Digital-to-Analog (DAC) Converters',
+              'SPI, I2C, and UART Serial Communication Bus Interfacing'
+            ]
+          }
         ];
       }
 
       // Mechanical / Civil / Structural / Thermal
       if (sName.includes('mechanic') || sName.includes('thermal') || sName.includes('fluid') || sName.includes('manufact') || sName.includes('civil') || sName.includes('structur') || sName.includes('design')) {
         return [
-          { unit: 1, title: 'Fundamental Statics, Mechanics of Solids & Equilibrium', desc: 'Force resolution, Free body diagrams, Moment of inertia, Direct stress, Hooke law, Shear force and bending moments.' },
-          { unit: 2, title: 'Thermodynamics, Energy Conversion & Heat Transfer', desc: 'First and Second Laws of Thermodynamics, Carnot, Otto, and Diesel cycles, Conduction (Fourier Law), Convection, Radiation.' },
-          { unit: 3, title: 'Fluid Mechanics, Flow Dynamics & Hydraulic Machinery', desc: 'Fluid properties, Bernoulli theorem, Pipe friction losses (Darcy-Weisbach), Pelton and Francis turbines, Centrifugal pumps.' },
-          { unit: 4, title: 'Material Science, Casting, Welding & Machining', desc: 'Iron-Carbon phase equilibrium diagram, Metal casting techniques, Arc and resistance welding, Lathe and milling operations.' },
-          { unit: 5, title: 'CAD/CAM Integration, CNC Automation & Quality Engineering', desc: 'Computer-Aided Design modeling, CNC G-codes and M-codes, Coordinate Measuring Machines, Finite Element Analysis (FEA).' }
+          {
+            unit: 1,
+            title: 'Fundamental Statics, Mechanics of Solids & Equilibrium',
+            desc: 'Force resolution, Free body diagrams, Moment of inertia, Direct stress, Hooke law, Shear force and bending moments.',
+            subtopics: [
+              'Coplanar Concurrent Forces, Lami Theorem & Equilibrium',
+              'Centroid and Second Moment of Area for Symmetric & Unsymmetric Sections',
+              'Direct Stress, Lateral Strain, Poisson Ratio & Volumetric Strain',
+              'Shear Force Diagrams (SFD) & Bending Moment Diagrams (BMD)',
+              'Pure Bending Theory & Flexural Stress Distribution Across Beams',
+              'Torsion Equation for Solid and Hollow Circular Shafts'
+            ]
+          },
+          {
+            unit: 2,
+            title: 'Thermodynamics, Energy Conversion & Heat Transfer',
+            desc: 'First and Second Laws of Thermodynamics, Carnot, Otto, and Diesel cycles, Conduction (Fourier Law), Convection, Radiation.',
+            subtopics: [
+              'Zeroth and First Laws of Thermodynamics for Closed and Open Systems',
+              'Second Law of Thermodynamics: Kelvin-Planck and Clausius Statements',
+              'Carnot, Otto, and Diesel Air-Standard Cycles with P-V & T-S Diagrams',
+              'Fourier Law of One-Dimensional Heat Conduction',
+              'Free and Forced Convection Heat Transfer & Newton Law of Cooling',
+              'Stefan-Boltzmann Radiation Law & Emissivity Calculations'
+            ]
+          },
+          {
+            unit: 3,
+            title: 'Fluid Mechanics, Flow Dynamics & Hydraulic Machinery',
+            desc: 'Fluid properties, Bernoulli theorem, Pipe friction losses (Darcy-Weisbach), Pelton and Francis turbines, Centrifugal pumps.',
+            subtopics: [
+              'Fluid Properties: Density, Specific Gravity, Dynamic & Kinematic Viscosity',
+              'Continuity Equation & Bernoulli Theorem Derivation with Assumptions',
+              'Laminar vs Turbulent Flow in Circular Pipes & Reynolds Number',
+              'Major Friction Loss (Darcy-Weisbach) & Minor Pipe Head Losses',
+              'Pelton Wheel Impulse Turbine: Velocity Triangles & Efficiency',
+              'Centrifugal Pump Operating Characteristics & Cavitation Prevention'
+            ]
+          },
+          {
+            unit: 4,
+            title: 'Material Science, Casting, Welding & Machining',
+            desc: 'Iron-Carbon phase equilibrium diagram, Metal casting techniques, Arc and resistance welding, Lathe and milling operations.',
+            subtopics: [
+              'Iron-Iron Carbide (Fe-Fe3C) Equilibrium Phase Diagram',
+              'Heat Treatment Processes: Annealing, Normalizing, Hardening, Tempering',
+              'Sand Casting: Pattern Allowances, Molding Sand & Casting Defects',
+              'Shielded Metal Arc Welding (SMAW), TIG, MIG & Resistance Spot Welding',
+              'Lathe Operations: Turning, Facing, Thread Cutting & Tool Geometry',
+              'Milling Machines: Up-Milling vs Down-Milling and Gear Generation'
+            ]
+          },
+          {
+            unit: 5,
+            title: 'CAD/CAM Integration, CNC Automation & Quality Engineering',
+            desc: 'Computer-Aided Design modeling, CNC G-codes and M-codes, Coordinate Measuring Machines, Finite Element Analysis (FEA).',
+            subtopics: [
+              '2D Drafting, 3D Wireframe, Surface & Solid Modeling Primitives',
+              'Computer Numerical Control (CNC): G-Codes and M-Codes Programming',
+              'Linear and Circular Interpolation in CNC Milling and Turning',
+              'Coordinate Measuring Machines (CMM) & Non-Destructive Testing (NDT)',
+              'Finite Element Analysis (FEA) Modeling & Boundary Condition Assignment',
+              'Total Quality Management (TQM), Six Sigma & ISO Quality Frameworks'
+            ]
+          }
         ];
       }
 
-      // Generic Structured Engineering fallback
+      // Generic Structured Engineering Curriculum
       return [
-        { unit: 1, title: `Foundational Principles, Terminology & Physics of ${name}`, desc: `Historical evolution, fundamental physical and analytical laws, definitions, governing units, and industry standards.` },
-        { unit: 2, title: `Mathematical Modeling, State Equations & Component Design`, desc: `Formulation of governing differential equations, analytical modeling, parameter constraints, and structural layout.` },
-        { unit: 3, title: `Core Operational Mechanisms, Algorithms & Instrumentation`, desc: `Execution workflows, dynamic parameter monitoring, signal/process flowcharts, and control loop verification.` },
-        { unit: 4, title: `Performance Optimization, Error Diagnostics & Reliability`, desc: `Efficiency maximization, loss minimization, fault isolation protocols, safety margins, and maintenance schedules.` },
-        { unit: 5, title: `Industrial Case Studies, Emerging Standards & Future Frontiers`, desc: `Commercial scale deployment, automated system integration, compliance with regulatory codes, and emerging research.` }
+        {
+          unit: 1,
+          title: `Fundamental Concepts & Theoretical Framework of ${name}`,
+          desc: `Historical background, fundamental principles, standard definitions, terminology, and core domain foundations.`,
+          subtopics: [
+            `Core Theoretical Framework & Historical Evolution`,
+            `Key Principles, Standards & Terminology of ${name}`,
+            `Domain Classification & Operational Taxonomy`,
+            `Governing Formulations & Analytical Parameters`,
+            `Foundation Case Studies & High-Frequency Exam Topics`
+          ]
+        },
+        {
+          unit: 2,
+          title: `Analytical Modeling, Design Principles & Specifications`,
+          desc: `System equations, analytical modeling, parameter constraints, design specifications, and procedural methodologies.`,
+          subtopics: [
+            `Mathematical Modeling & Parameter Constraints`,
+            `System Specification & Component Design Criteria`,
+            `Step-by-Step Analytical Derivations & Solutions`,
+            `Comparative Evaluation of Design Alternatives`,
+            `Standard Practice Guidelines & Validation Rules`
+          ]
+        },
+        {
+          unit: 3,
+          title: `Core Architectural Mechanisms & Execution Workflows`,
+          desc: `Detailed workflows, functional subsystems, execution flowcharts, control logic, and instrumentation.`,
+          subtopics: [
+            `Subsystem Architecture & Structural Interconnections`,
+            `Execution Workflows & Signal/Process Flowcharts`,
+            `Instrumentation, Sensor Integration & Monitoring`,
+            `Dynamic Response Analysis & State Transformations`,
+            `Operational Benchmarks & Safety Standards`
+          ]
+        },
+        {
+          unit: 4,
+          title: `Optimization, Testing & Error Diagnostics`,
+          desc: `Performance tuning, loss minimization, fault isolation, testing protocols, and verification methods.`,
+          subtopics: [
+            `System Optimization & Performance Tuning`,
+            `Loss Reduction & Efficiency Improvement Schemes`,
+            `Error Detection, Fault Isolation & Diagnostics`,
+            `Testing Methodologies & Experimental Validation`,
+            `Preventative Maintenance & Failure Mode Analysis`
+          ]
+        },
+        {
+          unit: 5,
+          title: `Industrial Applications, Case Studies & Emerging Trends`,
+          desc: `Real-world deployments, automation integration, regulatory compliance, and cutting-edge research directions.`,
+          subtopics: [
+            `Enterprise & Industrial Deployment Case Studies`,
+            `Automation, Digital Integration & Smart Interfaces`,
+            `Regulatory Compliance, Environmental Standards & Safety Codes`,
+            `Recent Innovations & Emerging Research Directions`,
+            `Comprehensive Anna University Review & Solved Model Problems`
+          ]
+        }
       ];
     }
   };

@@ -94,6 +94,28 @@
       const name = (subject.name || '').toLowerCase();
       const code = (subject.code || '').toUpperCase();
 
+      // 0. English & Professional Communication
+      if (name.includes('english') || name.includes('communicat') || name.includes('language') || code.startsWith('EN') || code.startsWith('HS')) {
+        return [
+          { unit: 1, title: 'Vocabulary Building, Grammar Fundamentals & Word Formation', desc: 'Parts of speech, word formation (prefixes & suffixes), collocations, subject-verb agreement, tenses, and preposition usage.' },
+          { unit: 2, title: 'Reading Comprehension & Technical Analytical Skills', desc: 'Skimming, scanning, intensive reading, critical analysis of technical texts, note-making, and inferential comprehension.' },
+          { unit: 3, title: 'Professional Technical Writing & Paragraph Architecture', desc: 'Paragraph coherence, cohesion, formal email communication, technical reports, and transcoding visual data into text.' },
+          { unit: 4, title: 'Listening Comprehension, Phonetics & Verbal Fluency', desc: 'Active listening strategies, phonetics, syllable stress, intonation, self-introduction, and group discussion etiquette.' },
+          { unit: 5, title: 'Technical Presentations, Workplace Etiquette & Career Skills', desc: 'Oral presentations, slide architecture, non-verbal communication, interview preparation, resume and cover letters.' }
+        ];
+      }
+
+      // 0.1 C Programming & Problem Solving
+      if ((name.includes('program') && (name.includes('c') || name.includes(' c') || name.includes('c:'))) || name.includes('problem solving') || code === 'CS25C01' || code === 'CS3151') {
+        return [
+          { unit: 1, title: 'Problem Solving Techniques & C Language Fundamentals', desc: 'Algorithms, flowcharts, compilation stages, primitive data types, operators, precedence, and standard I/O.' },
+          { unit: 2, title: 'Control Structures, Conditional Branching & Loops', desc: 'If-else logic, nested selections, switch-case constructs, while, do-while, and for loops, and jump statements.' },
+          { unit: 3, title: 'Arrays, Multidimensional Matrices & String Processing', desc: '1D arrays, 2D matrix operations, strings as null-terminated character arrays, and string handling functions.' },
+          { unit: 4, title: 'Modular Functions, Storage Classes & Pointer Architecture', desc: 'Function prototypes, call by value vs reference, recursion, storage classes, pointer arithmetic, and pointers with arrays.' },
+          { unit: 5, title: 'Structures, Unions, Dynamic Memory & File Management', desc: 'User-defined structures, unions, memory allocation (malloc, calloc, free), and persistent disk file handling.' }
+        ];
+      }
+
       // 1. Mathematics & Statistics
       if (name.includes('math') || name.includes('calculus') || name.includes('statistics') || name.includes('algebra') || name.includes('numerical') || name.includes('discrete') || code.startsWith('MA')) {
         return [
