@@ -35,10 +35,10 @@ window.NavigationComponent = {
 
     // ── 1. TOP SECTION (Academic Resources - High Priority) ──
     const academicItems = [
-      { id: 'dashboard', label: 'Department Overview', icon: '🏛️' },
-      { id: 'semester-select', label: 'Year / Semester Selection', icon: '📅' },
-      { id: 'notes', label: 'Syllabus & Notes', icon: '📚' },
-      { id: 'question-papers', label: 'Previous Year Question Papers (QP)', icon: '📝' }
+      { id: 'dashboard', label: 'Dashboard', icon: '🏛️' },
+      { id: 'semester-select', label: 'Courses (All Semesters)', icon: '📅' },
+      { id: 'notes', label: 'Study Materials & Notes', icon: '📚' },
+      { id: 'question-papers', label: 'Question Papers (Past QPs)', icon: '📝' }
     ];
 
     // ── 2. BOTTOM SECTION (Career & Skills - Separate Pages) ──
@@ -51,7 +51,11 @@ window.NavigationComponent = {
 
     // ── Personal & Showcase ──
     const personalItems = [
-      { id: 'bookmarks', label: 'My Bookmarks', icon: '⭐' }
+      { id: 'bookmarks', label: 'My Bookmarks', icon: '⭐' },
+      { id: 'profile', label: 'Student Profile', icon: '👤' },
+      { id: 'settings', label: 'Preferences & Settings', icon: '⚙️' },
+      { id: 'project-report', label: 'Final Project Report', icon: '📄', url: 'project_report.html', isExternal: true },
+      { id: 'presentation-deck', label: 'Presentation Deck', icon: '📽️', url: 'presentation.html', isExternal: true }
     ];
 
     if (user && user.role === 'admin') {
@@ -59,7 +63,7 @@ window.NavigationComponent = {
     }
 
     const renderItem = (item) => `
-      <li class="sidebar-nav-item ${currentView === item.id ? 'active' : ''}" data-view="${item.id}" title="${item.label}" style="display: flex; align-items: center; justify-content: space-between;">
+      <li class="sidebar-nav-item ${currentView === item.id ? 'active' : ''}" data-view="${item.id}" data-url="${item.url || ''}" title="${item.label}" style="display: flex; align-items: center; justify-content: space-between;">
         <div style="display: flex; align-items: center; gap: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
           <span style="font-size: 1.15rem; flex-shrink: 0;">${item.icon}</span>
           <span style="font-size: 0.85rem; font-weight: ${currentView === item.id ? '700' : '500'};">${item.label}</span>
@@ -68,7 +72,9 @@ window.NavigationComponent = {
           <span class="badge ${currentView === item.id ? 'badge-primary' : 'badge-subtle'}" style="font-size: 0.62rem; padding: 2px 6px; font-weight: 700; margin-left: 6px; flex-shrink: 0;">
             ${item.pageBadge}
           </span>
-        ` : ''}
+        ` : (item.isExternal ? `
+          <span style="font-size: 0.72rem; opacity: 0.7;">↗</span>
+        ` : '')}
       </li>
     `;
 
@@ -128,6 +134,11 @@ window.NavigationComponent = {
     // Bind nav item clicks
     sidebar.querySelectorAll('.sidebar-nav-item').forEach(item => {
       item.addEventListener('click', () => {
+        const url = item.getAttribute('data-url');
+        if (url) {
+          window.open(url, '_blank');
+          return;
+        }
         const view = item.getAttribute('data-view');
         window.appState.setView(view);
       });

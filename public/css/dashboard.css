@@ -561,3 +561,202 @@
   font-size: 0.75rem;
   color: var(--text-muted);
 }
+
+/* ==========================================================================
+   Inspirational Study Quotes Showcase (Welcome Mindset View)
+   ========================================================================== */
+.welcome-quotes-section {
+  margin-bottom: var(--space-8);
+  padding: 24px 28px;
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  position: relative;
+  overflow: hidden;
+  transition: all var(--transition-normal);
+}
+
+.welcome-quotes-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #7c3aed, #3b82f6, #06b6d4, #10b981);
+}
+
+.welcome-quotes-header {
+  margin-bottom: 20px;
+}
+
+.quotes-header-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  background: rgba(124, 58, 237, 0.08);
+  border: 1px solid rgba(124, 58, 237, 0.2);
+  border-radius: 99px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: #7c3aed;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.quotes-header-title {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0 0 6px 0;
+  letter-spacing: -0.02em;
+}
+
+.quotes-header-subtitle {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.study-quotes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.study-quote-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 22px 20px;
+  background: var(--bg-subtle);
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+.study-quote-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.08);
+  border-color: #7c3aed;
+  background: var(--bg-surface);
+}
+
+.study-quote-card.quote-featured {
+  border-left: 4px solid #f59e0b;
+}
+
+.study-quote-card.quote-potential {
+  border-left: 4px solid #3b82f6;
+}
+
+.study-quote-card.quote-resistance {
+  border-left: 4px solid #ef4444;
+}
+
+.quote-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.quote-icon {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.quote-author-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 99px;
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+
+.quote-badge-pill {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 99px;
+  background: #dbeafe;
+  color: #1e40af;
+  border: 1px solid #bfdbfe;
+}
+
+.quote-badge-pill.resistance-pill {
+  background: #fee2e2;
+  color: #b91c1c;
+  border-color: #fecaca;
+}
+
+.quote-text {
+  font-size: 0.98rem;
+  font-weight: 600;
+  font-style: italic;
+  color: var(--text-primary);
+  line-height: 1.6;
+  margin: 0 0 16px 0;
+  position: relative;
+}
+
+.quote-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.quote-body {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0 0 16px 0;
+}
+
+.quote-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border-color);
+  font-size: 0.75rem;
+}
+
+.quote-author-name {
+  font-weight: 700;
+  color: #d97706;
+}
+
+.quote-category-tag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: var(--bg-hover);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.quote-micro-tip {
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 992px) {
+  .study-quotes-grid {
+    grid-template-columns: 1fr;
+  }
+}
+

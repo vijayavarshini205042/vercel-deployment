@@ -30,6 +30,8 @@ class AppRouter {
       'dept-roles': window.DeptRolesView,
       'role-detail': window.RoleDetailView,
       'bookmarks': window.BookmarksView,
+      'profile': window.ProfileView,
+      'settings': window.SettingsView,
       'admin': window.AdminView
     };
   }

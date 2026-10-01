@@ -30,6 +30,9 @@ window.PresentationModal = {
             </div>
 
             <div style="display: flex; align-items: center; gap: 10px;">
+              <a href="/DRMS_Review_3_Final_Presentation.pptx" download class="btn btn-ghost btn-sm" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.82rem; text-decoration: none; color: #10b981;" title="Download Editable PowerPoint File">
+                <span>📥 Download .PPTX</span>
+              </a>
               <a href="/presentation.html" target="_blank" class="btn btn-ghost btn-sm" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.82rem; text-decoration: none;" title="Open in dedicated tab (Projector Mode)">
                 <span>↗ Open Standalone</span>
               </a>

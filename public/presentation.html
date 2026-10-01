@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Project Presentation - Department Resource Management System</title>
+  <title>REVIEW 3 – FINAL REVIEW | Department Resource Management System</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -18,6 +18,7 @@
       --accent-purple: #8b5cf6;
       --accent-emerald: #10b981;
       --accent-amber: #f59e0b;
+      --accent-rose: #f43f5e;
       --bg-slide: #0f172a;
       --bg-card: #1e293b;
       --text-main: #f8fafc;
@@ -45,7 +46,7 @@
     /* Top presentation control bar */
     .deck-header {
       height: 54px;
-      background: rgba(15, 23, 42, 0.9);
+      background: rgba(15, 23, 42, 0.95);
       backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--border);
       display: flex;
@@ -60,23 +61,24 @@
       font-weight: 700;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
     }
 
     .badge {
       background: var(--primary);
       color: #fff;
       font-size: 0.7rem;
-      padding: 2px 8px;
+      padding: 3px 8px;
       border-radius: 9999px;
       font-weight: 700;
       text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
 
     .controls {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
     .btn {
@@ -85,18 +87,19 @@
       color: #fff;
       padding: 6px 14px;
       border-radius: 8px;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s ease;
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      text-decoration: none;
     }
 
     .btn:hover {
       background: #334155;
-      border-color: var(--primary);
+      border-color: var(--accent-cyan);
     }
 
     .btn-primary {
@@ -108,6 +111,15 @@
       background: var(--primary-dark);
     }
 
+    .btn-success {
+      background: #059669;
+      border-color: #059669;
+    }
+
+    .btn-success:hover {
+      background: #047857;
+    }
+
     /* Slides viewport */
     .deck-viewport {
       flex: 1;
@@ -115,27 +127,27 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 24px 40px;
+      padding: 16px 36px;
     }
 
     .slide {
       position: absolute;
-      width: 90vw;
-      max-width: 1250px;
-      height: 82vh;
-      max-height: 720px;
+      width: 92vw;
+      max-width: 1280px;
+      height: 84vh;
+      max-height: 740px;
       background: radial-gradient(circle at 15% 15%, rgba(79, 70, 229, 0.12), transparent 45%), var(--bg-slide);
       border: 1px solid var(--border);
-      border-radius: 20px;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
-      padding: 48px 56px;
+      border-radius: 18px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.75);
+      padding: 36px 48px;
       display: none;
       flex-direction: column;
       justify-content: space-between;
       overflow-y: auto;
       opacity: 0;
       transform: scale(0.98);
-      transition: opacity 0.3s ease, transform 0.3s ease;
+      transition: opacity 0.25s ease, transform 0.25s ease;
     }
 
     .slide.active {
@@ -151,17 +163,17 @@
       text-transform: uppercase;
       letter-spacing: 0.1em;
       color: var(--accent-cyan);
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
     .slide-title {
-      font-size: 2.3rem;
+      font-size: 2.1rem;
       font-weight: 800;
       line-height: 1.2;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
       background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
       -webkit-background-clip: text;
       background-clip: text;
@@ -169,44 +181,44 @@
     }
 
     .slide-subtitle {
-      font-size: 1.1rem;
+      font-size: 1rem;
       color: var(--text-muted);
-      margin-bottom: 28px;
-      max-width: 850px;
-      line-height: 1.5;
+      margin-bottom: 20px;
+      max-width: 900px;
+      line-height: 1.45;
     }
 
-    /* Grid layout inside slides */
+    /* Grid layouts inside slides */
     .slide-grid-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 24px;
+      gap: 20px;
       flex: 1;
     }
 
     .slide-grid-3 {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
+      gap: 18px;
       flex: 1;
     }
 
     .slide-grid-4 {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
+      gap: 14px;
       flex: 1;
     }
 
     .card {
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 24px;
+      border-radius: 12px;
+      padding: 20px;
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
-      gap: 10px;
+      gap: 8px;
       transition: transform 0.2s ease, border-color 0.2s ease;
     }
 
@@ -216,30 +228,30 @@
     }
 
     .card-icon {
-      font-size: 2rem;
-      margin-bottom: 4px;
+      font-size: 1.8rem;
+      margin-bottom: 2px;
     }
 
     .card-title {
-      font-size: 1.15rem;
+      font-size: 1.1rem;
       font-weight: 700;
       color: #fff;
     }
 
     .card-desc {
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       color: var(--text-muted);
       line-height: 1.5;
     }
 
     .list-item {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       align-items: flex-start;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       color: var(--text-main);
-      line-height: 1.5;
-      margin-bottom: 12px;
+      line-height: 1.45;
+      margin-bottom: 10px;
     }
 
     .bullet-icon {
@@ -248,10 +260,152 @@
       flex-shrink: 0;
     }
 
+    /* Tables */
+    .slide-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      background: var(--bg-card);
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .slide-table th {
+      background: rgba(79, 70, 229, 0.25);
+      color: var(--accent-cyan);
+      font-size: 0.88rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 14px 18px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .slide-table td {
+      padding: 14px 18px;
+      font-size: 0.9rem;
+      color: #e2e8f0;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.6);
+    }
+
+    .slide-table tr:hover td {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    /* Architecture diagram styling (Matching User's Photo!) */
+    .arch-diagram-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 24px;
+      flex: 1;
+    }
+
+    .arch-layer-row {
+      display: grid;
+      grid-template-columns: 210px 1fr;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .arch-layer-header {
+      background: #1e3a5f;
+      border: 1px solid #38bdf8;
+      border-radius: 8px;
+      padding: 10px 12px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: #fff;
+    }
+
+    .arch-layer-header.green {
+      background: #064e3b;
+      border-color: #10b981;
+    }
+
+    .arch-layer-header.navy {
+      background: #1e293b;
+      border-color: #64748b;
+    }
+
+    .arch-layer-header.teal {
+      background: #0e7490;
+      border-color: #22d3ee;
+    }
+
+    .arch-layer-items {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .arch-box {
+      flex: 1;
+      min-width: 110px;
+      background: rgba(30, 41, 59, 0.95);
+      border: 1px solid #475569;
+      border-radius: 8px;
+      padding: 10px 8px;
+      text-align: center;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #f1f5f9;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .arch-connector {
+      text-align: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--accent-cyan);
+      font-family: 'JetBrains Mono', monospace;
+      margin: -4px 0 -4px 226px;
+    }
+
+    .arch-core-box {
+      background: rgba(14, 116, 144, 0.15);
+      border: 1px dashed var(--accent-cyan);
+      border-radius: 10px;
+      padding: 12px 18px;
+      margin-top: 6px;
+    }
+
+    .arch-core-flow {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      gap: 12px;
+      font-size: 0.86rem;
+      font-weight: 700;
+    }
+
+    .arch-core-node {
+      background: #0f172a;
+      border: 1px solid var(--accent-cyan);
+      border-radius: 6px;
+      padding: 8px 18px;
+      color: #fff;
+    }
+
+    .arch-core-arrow {
+      color: var(--accent-amber);
+      font-size: 0.8rem;
+      font-family: 'JetBrains Mono', monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
     /* Bottom progress bar */
     .deck-footer {
       height: 48px;
-      background: rgba(15, 23, 42, 0.9);
+      background: rgba(15, 23, 42, 0.95);
       border-top: 1px solid var(--border);
       display: flex;
       align-items: center;
@@ -261,7 +415,7 @@
 
     .progress-bar {
       flex: 1;
-      height: 4px;
+      height: 5px;
       background: var(--border);
       border-radius: 4px;
       margin: 0 24px;
@@ -271,7 +425,7 @@
     .progress-fill {
       height: 100%;
       background: linear-gradient(90deg, var(--primary), var(--accent-cyan));
-      width: 6.6%;
+      width: 6.66%;
       transition: width 0.3s ease;
     }
 
@@ -317,7 +471,7 @@
         box-shadow: none;
         background: white;
         color: black;
-        padding: 40px;
+        padding: 30px;
       }
 
       .slide-title {
@@ -325,19 +479,23 @@
         -webkit-text-fill-color: initial !important;
       }
 
-      .card {
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        color: #1e293b;
+      .card,
+      .slide-table,
+      .arch-diagram-container {
+        background: #f8fafc !important;
+        border: 1px solid #cbd5e1 !important;
+        color: #1e293b !important;
       }
 
-      .card-title {
-        color: #0f172a;
+      .card-title,
+      .slide-table td,
+      .arch-box {
+        color: #0f172a !important;
       }
 
       .card-desc,
       .slide-subtitle {
-        color: #475569;
+        color: #475569 !important;
       }
     }
   </style>
@@ -348,12 +506,21 @@
   <!-- Top Navigation Bar -->
   <header class="deck-header">
     <div class="deck-title">
-      <span>🏛️ DRMS Project Presentation</span>
-      <span class="badge">Final Year / Capstone Defense</span>
+      <span>🏛️ MINI PROJECT – FINAL REVIEW</span>
+      <span class="badge">Review 3 Template</span>
+      <span style="font-size: 0.8rem; color: var(--text-muted);">College Website with Integrated Chatbot (DRMS)</span>
     </div>
     <div class="controls">
-      <button class="btn" onclick="window.print()" title="Print / Save as PDF">🖨️ Export to PDF</button>
-      <button class="btn" id="prev-btn">◀ Previous</button>
+      <a href="project_report.html" target="_blank" class="btn" style="background: var(--primary); border-color: var(--primary);" title="Open Official Project Report (Print-Ready PDF)">
+        📄 View Project Report
+      </a>
+      <a href="DRMS_Review_3_Final_Presentation.pptx" download class="btn btn-success" title="Download Editable PowerPoint File">
+        📥 Download .PPTX
+      </a>
+      <button class="btn" onclick="window.print()" title="Print or Export Slide Deck to PDF">
+        🖨️ Export PDF
+      </button>
+      <button class="btn" id="prev-btn">◀ Prev</button>
       <button class="btn btn-primary" id="next-btn">Next ▶</button>
       <button class="btn" id="fullscreen-btn" title="Toggle Fullscreen">⛶</button>
     </div>
@@ -365,700 +532,788 @@
     <!-- SLIDE 1: TITLE SLIDE -->
     <section class="slide active" data-slide="1">
       <div style="margin: auto 0;">
-        <div class="slide-category">🎓 Engineering Academic & Career Ecosystem</div>
-        <h1 class="slide-title" style="font-size: 3.4rem; margin-bottom: 20px;">
-          Department Resource<br>Management System (DRMS)
+        <div class="slide-category">🎓 REVIEW 3 – FINAL REVIEW</div>
+        <h1 class="slide-title" style="font-size: 3.2rem; margin-bottom: 16px;">
+          MINI PROJECT – FINAL REVIEW
         </h1>
-        <p class="slide-subtitle" style="font-size: 1.3rem; margin-bottom: 40px;">
-          A Centralized, Responsive Academic Repository, Career Navigation Flowchart Engine, and Skill Gap Analysis
-          Platform for Engineering Students & Faculty.
+        <h2 style="font-size: 1.8rem; color: var(--accent-cyan); font-weight: 700; margin-bottom: 16px;">
+          Department Resource Management System (DRMS) with Integrated AI Chatbot
+        </h2>
+        <p class="slide-subtitle" style="font-size: 1.15rem; margin-bottom: 32px;">
+          A Centralized Academic Repository, Career Progression Flowcharts, Dynamic CRUD Engine, and AI Conversational Assistant for Engineering Colleges.
         </p>
 
-        <div style="display: flex; gap: 32px; flex-wrap: wrap; padding-top: 24px; border-top: 1px solid var(--border);">
-          <div>
-            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">
-              Developer / Presenter</div>
-            <div style="font-size: 1.05rem; font-weight: 700; color: #38bdf8;">Vijayavarshini S</div>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; padding-top: 20px; border-top: 1px solid var(--border);">
+          <div class="card" style="padding: 14px;">
+            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--accent-cyan); font-weight: 700;">Project Lead & Dev</div>
+            <div style="font-size: 1.1rem; font-weight: 700; color: #fff;">Vijayavarshini S</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">Register No: 511823205042</div>
           </div>
-          <div>
-            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">
-              Deployment & DB</div>
-            <div style="font-size: 1rem; font-weight: 600; color: #fff;">Vercel Edge Cloud + MongoDB Atlas</div>
+          <div class="card" style="padding: 14px;">
+            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--accent-purple); font-weight: 700;">Core Tech Stack</div>
+            <div style="font-size: 1rem; font-weight: 600; color: #fff;">Node.js • Express • MongoDB</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">Socket.IO & Vanilla JS SPA</div>
           </div>
-          <div>
-            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">
-              Curriculum Scope</div>
-            <div style="font-size: 1rem; font-weight: 600; color: #fff;">Core Departments • Regulations R2021 & R2025
-            </div>
+          <div class="card" style="padding: 14px;">
+            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--accent-emerald); font-weight: 700;">Curriculum Scope</div>
+            <div style="font-size: 1rem; font-weight: 600; color: #fff;">Anna University Core Depts</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">Regulations R2021 & R2025</div>
           </div>
-          <div>
-            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">
-              Architecture</div>
-            <div style="font-size: 1rem; font-weight: 600; color: #fff;">Vanilla SPA + Express API + Serverless</div>
+          <div class="card" style="padding: 14px;">
+            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--accent-amber); font-weight: 700;">Deployment</div>
+            <div style="font-size: 1rem; font-weight: 600; color: #fff;">Vercel Cloud Edge</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">Live Production Environment</div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- SLIDE 2: THE PROBLEM -->
+    <!-- SLIDE 2: TEAM DETAILS -->
     <section class="slide" data-slide="2">
       <div>
-        <div class="slide-category">🚨 Current Challenges in Engineering Colleges</div>
-        <h2 class="slide-title">The Problem: Fragmented Academic & Career Resources</h2>
-        <p class="slide-subtitle">Traditional college portals act as static notice boards rather than holistic learning
-          and career accelerators.</p>
+        <div class="slide-category">👥 Slide 2 – Team Details</div>
+        <h2 class="slide-title">Team Details & Project Roles</h2>
+        <p class="slide-subtitle">Structured distribution of architectural, implementation, testing, and documentation responsibilities.</p>
+      </div>
+
+      <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 16px;">
+        <table class="slide-table">
+          <thead>
+            <tr>
+              <th style="width: 80px;">S.No</th>
+              <th style="width: 240px;">Name</th>
+              <th style="width: 180px;">Register No.</th>
+              <th>Role & Key Responsibilities</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="color: var(--accent-cyan); font-weight: 700;">1</td>
+              <td><strong>Vijayavarshini S</strong></td>
+              <td><code>511823205042</code></td>
+              <td>
+                <span class="badge" style="background: var(--primary);">Team Lead, Full Stack Developer</span><br>
+                System architecture design, Express REST API development, dynamic CRUD engine orchestration, and integration.
+              </td>
+            </tr>
+            <tr>
+              <td style="color: var(--accent-cyan); font-weight: 700;">2</td>
+              <td><strong>Dhanalakshmi P A</strong></td>
+              <td><code>511823205005</code></td>
+              <td>
+                <span class="badge" style="background: var(--accent-purple);">Frontend Developer, UI Design</span><br>
+                Responsive UI/UX design, career roadmap flowchart styling, CSS design tokens, and in-app canvas PDF viewer.
+              </td>
+            </tr>
+            <tr>
+              <td style="color: var(--accent-cyan); font-weight: 700;">3</td>
+              <td><strong>Prasanna A</strong></td>
+              <td><code>511823205022</code></td>
+              <td>
+                <span class="badge" style="background: var(--accent-emerald);">Backend, Chatbot, Database</span><br>
+                MongoDB Atlas data modeling, Anna University AI Chatbot (NLP/Tamil/Tanglish), and API route controllers.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.8); border: 1px solid var(--border); padding: 14px 20px; border-radius: 10px;">
+          <div style="font-size: 0.9rem; color: var(--text-muted);">
+            📝 <strong style="color: var(--text-main);">Testing and documentation:</strong> Done collectively by all team members.
+          </div>
+          <div style="font-size: 0.95rem; color: var(--accent-cyan);">
+            👨‍🏫 <strong style="color: #fff;">Guide:</strong> Mr. G. Rajasekaran, HOD / IT
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 3: ABSTRACT -->
+    <section class="slide" data-slide="3">
+      <div>
+        <div class="slide-category">📄 Slide 3 – Abstract</div>
+        <h2 class="slide-title">Executive Abstract</h2>
+        <p class="slide-subtitle">A concise 150–200 word summary covering problem, proposed solution, technology, implementation, and results.</p>
+      </div>
+
+      <div class="card" style="padding: 28px; line-height: 1.8; font-size: 1.05rem; background: rgba(30, 41, 59, 0.7); border-left: 4px solid var(--accent-cyan);">
+        <p style="margin-bottom: 14px;">
+          <strong style="color: var(--accent-cyan);">Problem:</strong> Academic lecture notes, university exam question papers, and career roadmaps in engineering institutions remain severely fragmented across ad-hoc WhatsApp groups and unindexed Google drives, resulting in broken links, regulation confusion, and a wide industry skill gap.
+        </p>
+        <p style="margin-bottom: 14px;">
+          <strong style="color: var(--accent-purple);">Proposed Solution:</strong> The Department Resource Management System (DRMS) introduces a unified single-page platform integrating curriculum resources with an AI-powered Academic & Career Chatbot and visual career progression flowcharts.
+        </p>
+        <p style="margin-bottom: 14px;">
+          <strong style="color: var(--accent-emerald);">Technology & Implementation:</strong> Built on HTML5, CSS3 Variables, Vanilla JavaScript, Node.js/Express REST APIs, and MongoDB Atlas. Incorporates Role-Based Access Control (RBAC), in-app PDF previewing, dynamic CRUD operations (Create, Read, Update, Delete) with live database sync, and a multilingual (English, Tamil, Tanglish) NLP chatbot.
+        </p>
+        <p>
+          <strong style="color: var(--accent-amber);">Result:</strong> Eliminates study material retrieval latency by over 90%, equips students with clear industry benchmarks, and empowers faculty with real-time resource management and deletion safeguards.
+        </p>
+      </div>
+    </section>
+
+    <!-- SLIDE 4: PROBLEM STATEMENT -->
+    <section class="slide" data-slide="4">
+      <div>
+        <div class="slide-category">🚨 Slide 4 – Problem Statement</div>
+        <h2 class="slide-title">Problem Statement & User Challenges</h2>
+        <p class="slide-subtitle">Clearly articulating the operational friction and technical limitations faced in existing college setups.</p>
+      </div>
+
+      <div class="slide-grid-3">
+        <div class="card" style="border-top: 4px solid var(--accent-rose);">
+          <div class="card-icon">📂</div>
+          <h3 class="card-title">1. Existing Problem</h3>
+          <p class="card-desc">
+            Lecture notes, syllabus copies, and past question papers are distributed across informal channels (WhatsApp groups, personal faculty Google Drives, and printouts).
+          </p>
+          <div class="list-item" style="margin-top: 10px;">
+            <span class="bullet-icon">✗</span>
+            <span>Files expire, access links break, and duplicates create version confusion.</span>
+          </div>
+        </div>
+
+        <div class="card" style="border-top: 4px solid var(--accent-amber);">
+          <div class="card-icon">👥</div>
+          <h3 class="card-title">2. Difficulties Faced by Users</h3>
+          <p class="card-desc">
+            Students struggle to distinguish between academic regulations (R2021 vs R2025), often revising obsolete subjects.
+          </p>
+          <div class="list-item" style="margin-top: 10px;">
+            <span class="bullet-icon">✗</span>
+            <span>No transparent mapping between classroom syllabus and industry job roles.</span>
+          </div>
+          <div class="list-item">
+            <span class="bullet-icon">✗</span>
+            <span>Physical queues at department offices for basic repetitive enquiries.</span>
+          </div>
+        </div>
+
+        <div class="card" style="border-top: 4px solid var(--accent-purple);">
+          <div class="card-icon">⚠️</div>
+          <h3 class="card-title">3. Limitations of Existing Solutions</h3>
+          <p class="card-desc">
+            Conventional college websites function only as static notice boards without student interactivity.
+          </p>
+          <div class="list-item" style="margin-top: 10px;">
+            <span class="bullet-icon">✗</span>
+            <span>Lack of in-app document viewing (forces large file downloads).</span>
+          </div>
+          <div class="list-item">
+            <span class="bullet-icon">✗</span>
+            <span>No real-time dynamic CRUD (updating or deleting outdated notes requires webmasters).</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 5: OBJECTIVES -->
+    <section class="slide" data-slide="5">
+      <div>
+        <div class="slide-category">🎯 Slide 5 – Objectives</div>
+        <h2 class="slide-title">Project Objectives</h2>
+        <p class="slide-subtitle">Targeted milestones designed to modernize collegiate operations and elevate academic performance.</p>
+      </div>
+
+      <div class="slide-grid-2">
+        <div class="card" style="border-left: 4px solid var(--accent-cyan);">
+          <div class="card-icon">💻</div>
+          <h3 class="card-title">1. To Develop a User-Friendly Application</h3>
+          <p class="card-desc">
+            Create an intuitive, responsive Single Page Application (SPA) with zero page reload overhead, dark/light accessibility modes, and a built-in canvas PDF reader for frictionless study.
+          </p>
+        </div>
+
+        <div class="card" style="border-left: 4px solid var(--accent-purple);">
+          <div class="card-icon">⚡</div>
+          <h3 class="card-title">2. To Automate the Existing Process</h3>
+          <p class="card-desc">
+            Automate manual document distribution through a categorized 4-tier database hierarchy (Regulation ➔ Department ➔ Semester ➔ Subject ➔ Unit 1–5), complete with instant search and bookmarking.
+          </p>
+        </div>
+
+        <div class="card" style="border-left: 4px solid var(--accent-emerald);">
+          <div class="card-icon">🤖</div>
+          <h3 class="card-title">3. To Reduce Manual Effort</h3>
+          <p class="card-desc">
+            Deploy an integrated AI Academic & Career Chatbot supporting English, Tamil, and Tanglish queries, offering 24/7 autonomous enquiry resolution, speech synthesis, and deep link navigation.
+          </p>
+        </div>
+
+        <div class="card" style="border-left: 4px solid var(--accent-amber);">
+          <div class="card-icon">🛡️</div>
+          <h3 class="card-title">4. To Improve Accuracy and Efficiency</h3>
+          <p class="card-desc">
+            Provide a complete dynamic CRUD management engine for authorized faculty and admins—enabling instant Update, Edit, and safe Delete operations with real-time database synchronization.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 6: EXISTING SYSTEMS & LIMITATIONS -->
+    <section class="slide" data-slide="6">
+      <div>
+        <div class="slide-category">⚖️ Slide 6 – Comparative Analysis</div>
+        <h2 class="slide-title">Existing Systems and Limitations</h2>
+        <p class="slide-subtitle">Contrasting legacy academic communication methods with modern cloud-enabled requirements.</p>
+      </div>
+
+      <div class="slide-grid-2">
+        <div class="card" style="border-left: 4px solid var(--accent-rose);">
+          <h3 class="card-title" style="color: var(--accent-rose); margin-bottom: 8px;">Existing Systems in Use</h3>
+          <div class="list-item">
+            <span class="bullet-icon">📱</span>
+            <div><strong>WhatsApp Groups & Telegram Channels:</strong> Materials sent as loose attachments, quickly swallowed by casual messages and corrupted by cache cleaners.</div>
+          </div>
+          <div class="list-item">
+            <span class="bullet-icon">🌐</span>
+            <div><strong>Static Institutional Portals:</strong> Read-only, outdated web pages requiring vendor intervention for any content changes.</div>
+          </div>
+          <div class="list-item">
+            <span class="bullet-icon">🏢</span>
+            <div><strong>Manual Helpdesk Desks:</strong> Physical visits required to enquire about regulations, syllabus modifications, or elective choices.</div>
+          </div>
+        </div>
+
+        <div class="card" style="border-left: 4px solid var(--accent-amber);">
+          <h3 class="card-title" style="color: var(--accent-amber); margin-bottom: 8px;">Inherent System Limitations</h3>
+          <div class="list-item">
+            <span class="bullet-icon">⚠</span>
+            <div><strong>No Real-time Content Updating or Deleting:</strong> When a professor modifies an answer key or removes obsolete notes, old copies continue circulating.</div>
+          </div>
+          <div class="list-item">
+            <span class="bullet-icon">⚠</span>
+            <div><strong>No Role-Based Access Control (RBAC):</strong> Anyone with a link can modify or delete cloud drives without accountability.</div>
+          </div>
+          <div class="list-item">
+            <span class="bullet-icon">⚠</span>
+            <div><strong>No Career Flowcharts:</strong> No contextual industry guidance, certifications catalog, or capstone project blueprint mapping.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 7: PROPOSED SYSTEM -->
+    <section class="slide" data-slide="7">
+      <div>
+        <div class="slide-category">💡 Slide 7 – Proposed System</div>
+        <h2 class="slide-title">Proposed System & Innovation</h2>
+        <p class="slide-subtitle">A high-performance academic and career navigation ecosystem with dynamic administrative control.</p>
+      </div>
+
+      <div class="slide-grid-4">
+        <div class="card">
+          <div class="card-icon">🚀</div>
+          <h4 class="card-title">1. Proposed Solution</h4>
+          <p class="card-desc">
+            A centralized web platform unifying Anna University syllabus notes, previous year question papers, 68+ career roadmaps, and an AI assistant.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">✨</div>
+          <h4 class="card-title">2. Major Features</h4>
+          <p class="card-desc">
+            • AI Academic & Career Chatbot<br>
+            • In-App PDF Canvas Viewer<br>
+            • Visual Career Flowchart Roadmaps<br>
+            • Interactive Skill Gap Map<br>
+            • Free Study Portals & PYQ Archive
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🔄</div>
+          <h4 class="card-title">3. Dynamic CRUD Power</h4>
+          <p class="card-desc">
+            Admins & Faculty can dynamically <strong>Create, Read, Update, and Delete</strong> lecture notes, PYQs, and roadmaps with real-time UI synchronization.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">📈</div>
+          <h4 class="card-title">4. Expected Benefits</h4>
+          <p class="card-desc">
+            • 90% faster study retrieval<br>
+            • Zero obsolete material revision<br>
+            • Concrete industry job preparation<br>
+            • 24/7 automated student guidance
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 8: PROPOSED TECHNOLOGY STACK -->
+    <section class="slide" data-slide="8">
+      <div>
+        <div class="slide-category">🛠️ Slide 8 – Proposed Technology Stack</div>
+        <h2 class="slide-title">Proposed Technology Stack</h2>
+        <p class="slide-subtitle">Carefully chosen technologies prioritizing lightweight footprint, security, speed, and real-time synchronization.</p>
+      </div>
+
+      <div class="slide-grid-4">
+        <div class="card" style="border-top: 4px solid var(--accent-cyan);">
+          <div class="card-icon">🎨</div>
+          <h3 class="card-title">Frontend Layer</h3>
+          <p class="card-desc"><strong>HTML5, CSS3, ES6+ JS</strong></p>
+          <div class="list-item" style="margin-top: 8px;">
+            <span class="bullet-icon">▸</span>
+            <span>Vanilla SPA Architecture</span>
+          </div>
+          <div class="list-item">
+            <span class="bullet-icon">▸</span>
+            <span>CSS Custom Properties (Variables)</span>
+          </div>
+          <div class="list-item">
+            <span class="bullet-icon">▸</span>
+            <span>Native In-App PDF Previewer</span>
+          </div>
+          <div class="list-item">
+            <span class="bullet-icon">▸</span>
+            <span>Web Speech Synthesis (Voice TTS)</span>
+          </div>
+        </div>
+
+        <div class="card" style="border-top: 4px solid var(--accent-purple);">
+          <div class="card-icon">⚙️</div>
+          <h3 class="card-title">Backend Layer</h3>
+          <p class="card-desc"><strong>Node.js & Express.js</strong></p>
+          <div class="list-item" style="margin-top: 8px;">
+            <span class="bullet-icon">▸</span>
+            <span>Modular RESTful MVC Routing</span>
+          </div>
+          <div class="list-item">
+            <span class="bullet-icon">▸</span>
+            <span>Socket.IO Real-time Channel</span>
+          </div>
+          <div class="list-item">
+            <span class="bullet-icon">▸</span>
+            <span>JWT & Bcrypt 12-round hashing</span>
+          </div>
+          <div class="list-item">
+            <span class="bullet-icon">▸</span>
+            <span>Rate Limiting & Helmet Security</span>
+          </div>
+        </div>
+
+        <div class="card" style="border-top: 4px solid var(--accent-emerald);">
+          <div class="card-icon">🍃</div>
+          <h3 class="card-title">Database Layer</h3>
+          <p class="card-desc"><strong>MongoDB Atlas Cluster</strong></p>
+          <div class="list-item" style="margin-top: 8px;">
+            <span class="bullet-icon">▸</span>
+            <span>Mongoose ODM Data Modeling</span>
+          </div>
+          <div class="list-item">
+            <span class="bullet-icon">▸</span>
+            <span>12 Normalized Collections</span>
+          </div>
+          <div class="list-item">
+            <span class="bullet-icon">▸</span>
+            <span>Compound Indexing for Fast Querying</span>
+          </div>
+          <div class="list-item">
+            <span class="bullet-icon">▸</span>
+            <span>Offline Local Fallback Cache</span>
+          </div>
+        </div>
+
+        <div class="card" style="border-top: 4px solid var(--accent-amber);">
+          <div class="card-icon">🧰</div>
+          <h3 class="card-title">Tools & Cloud</h3>
+          <p class="card-desc"><strong>VS Code, Git, Vercel</strong></p>
+          <div class="list-item" style="margin-top: 8px;">
+            <span class="bullet-icon">▸</span>
+            <span>VS Code & Git Version Control</span>
+          </div>
+          <div class="list-item">
+            <span class="bullet-icon">▸</span>
+            <span>GitHub Continuous Integration</span>
+          </div>
+          <div class="list-item">
+            <span class="bullet-icon">▸</span>
+            <span>Vercel Edge Global Deployment</span>
+          </div>
+          <div class="list-item">
+            <span class="bullet-icon">▸</span>
+            <span>Postman REST API Testing</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 9: SYSTEM ARCHITECTURE (MATCHING USER REFERENCE PHOTO EXACTLY!) -->
+    <section class="slide" data-slide="9">
+      <div>
+        <div class="slide-category">🏛️ Slide 9 – System Architecture</div>
+        <h2 class="slide-title">System Architecture: Layered Data Flow</h2>
+        <p class="slide-subtitle">Multi-tier architecture showing browser access, presentation, application logic, database, and administration.</p>
+      </div>
+
+      <!-- EXACT DIAGRAM FROM USER PHOTO -->
+      <div class="arch-diagram-container">
+        
+        <!-- Row 1: Client Layer -->
+        <div class="arch-layer-row">
+          <div class="arch-layer-header">Client Layer</div>
+          <div class="arch-layer-items">
+            <div class="arch-box">Students</div>
+            <div class="arch-box">Faculty</div>
+            <div class="arch-box">Parents</div>
+            <div class="arch-box">Visitors</div>
+            <div class="arch-box">Prospective Students</div>
+          </div>
+        </div>
+
+        <div class="arch-connector">↕ Access via browser</div>
+
+        <!-- Row 2: Presentation Layer -->
+        <div class="arch-layer-row">
+          <div class="arch-layer-header teal">Presentation Layer<br><span style="font-size:0.75rem; font-weight:normal;">HTML, CSS, JS</span></div>
+          <div class="arch-layer-items">
+            <div class="arch-box">College Website</div>
+            <div class="arch-box">Chatbot Interface</div>
+            <div class="arch-box">Enquiry Interface</div>
+          </div>
+        </div>
+
+        <div class="arch-connector">↕ HTTP requests / responses</div>
+
+        <!-- Row 3: Application Layer -->
+        <div class="arch-layer-row">
+          <div class="arch-layer-header navy">Application Layer<br><span style="font-size:0.75rem; font-weight:normal;">Node.js / Express</span></div>
+          <div class="arch-layer-items">
+            <div class="arch-box">Request Handling</div>
+            <div class="arch-box">Chatbot Logic</div>
+            <div class="arch-box">Enquiry Processing</div>
+            <div class="arch-box">Event Management</div>
+            <div class="arch-box">Content Management</div>
+          </div>
+        </div>
+
+        <div class="arch-connector">↕ Read / write data</div>
+
+        <!-- Row 4: Data Layer -->
+        <div class="arch-layer-row">
+          <div class="arch-layer-header navy">Data Layer<br><span style="font-size:0.75rem; font-weight:normal;">MongoDB Atlas</span></div>
+          <div class="arch-layer-items">
+            <div class="arch-box">Student Enquiries</div>
+            <div class="arch-box">Events</div>
+            <div class="arch-box">Dept. Info</div>
+            <div class="arch-box">Gallery / Website Content</div>
+          </div>
+        </div>
+
+        <div class="arch-connector">↕ Manage & view data</div>
+
+        <!-- Row 5: Administration Layer -->
+        <div class="arch-layer-row">
+          <div class="arch-layer-header green">Administration Layer<br><span style="font-size:0.75rem; font-weight:normal;">Admin Panel</span></div>
+          <div class="arch-layer-items">
+            <div class="arch-box">Query Management</div>
+            <div class="arch-box">Event Management</div>
+            <div class="arch-box">Content Management</div>
+          </div>
+        </div>
+
+        <!-- Bottom: Core components and real-time channel -->
+        <div class="arch-core-box">
+          <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 6px;">
+            Core components and real-time channel
+          </div>
+          <div class="arch-core-flow">
+            <div class="arch-core-node">Frontend (Browser)</div>
+            <div class="arch-core-arrow">
+              <span>◄─────────────►</span>
+              <span style="color: var(--accent-cyan); font-size: 0.72rem;">Socket.IO / HTTP</span>
+            </div>
+            <div class="arch-core-node">Node.js / Express</div>
+            <div class="arch-core-arrow">
+              <span>◄─────────────►</span>
+              <span style="color: var(--accent-emerald); font-size: 0.72rem;">read / write</span>
+            </div>
+            <div class="arch-core-node">MongoDB Atlas</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SLIDE 10: SYSTEM DESIGN -->
+    <section class="slide" data-slide="10">
+      <div>
+        <div class="slide-category">📐 Slide 10 – System Design</div>
+        <h2 class="slide-title">System Design & Engineering Models</h2>
+        <p class="slide-subtitle">Architectural flowcharts: Use Case, Data Flow Diagram (DFD), ER Diagram, and Sequence Diagram.</p>
+      </div>
+
+      <div class="slide-grid-2">
+        <div class="card" style="border-left: 4px solid var(--accent-cyan);">
+          <h4 class="card-title">1. Use Case Diagram</h4>
+          <div class="list-item">
+            <span class="bullet-icon">👤</span>
+            <div><strong>Student:</strong> Search notes, view PYQs, bookmark materials, interact with AI Chatbot, explore career roadmaps.</div>
+          </div>
+          <div class="list-item">
+            <span class="bullet-icon">👨‍🏫</span>
+            <div><strong>Faculty:</strong> Upload unit lecture notes, provide syllabus links, review project proposals.</div>
+          </div>
+          <div class="list-item">
+            <span class="bullet-icon">🔑</span>
+            <div><strong>Admin:</strong> Manage user roles, perform dynamic CRUD (Add, Edit/Update, Delete), inspect inquiries.</div>
+          </div>
+        </div>
+
+        <div class="card" style="border-left: 4px solid var(--accent-purple);">
+          <h4 class="card-title">2. Data Flow Diagram (DFD Level 0 & 1)</h4>
+          <div class="list-item">
+            <span class="bullet-icon">▸</span>
+            <div><strong>Level 0 Context:</strong> User & Admin Entities ⇄ DRMS Boundary ⇄ MongoDB Atlas Cloud Store.</div>
+          </div>
+          <div class="list-item">
+            <span class="bullet-icon">▸</span>
+            <div><strong>Level 1 Sub-Processes:</strong> 1.0 Auth Verification ➔ 2.0 Academic Resource Cataloging ➔ 3.0 Chatbot NLP Intent Matching ➔ 4.0 Admin CRUD Handler.</div>
+          </div>
+        </div>
+
+        <div class="card" style="border-left: 4px solid var(--accent-emerald);">
+          <h4 class="card-title">3. Entity Relationship (ER) Model</h4>
+          <div class="list-item">
+            <span class="bullet-icon">🗄️</span>
+            <div><strong>Entities:</strong> Department, Regulation, Subject, Resource (Notes/PYQs), User, JobRole, Roadmap, Certification.</div>
+          </div>
+          <div class="list-item">
+            <span class="bullet-icon">🔗</span>
+            <div><strong>Cardinality:</strong> 1-to-N (Department to Subjects), 1-to-N (Subject to Unit Notes), 1-to-N (Job Role to 4 Roadmap Stages).</div>
+          </div>
+        </div>
+
+        <div class="card" style="border-left: 4px solid var(--accent-amber);">
+          <h4 class="card-title">4. Sequence Diagram (Data Flow)</h4>
+          <div class="list-item">
+            <span class="bullet-icon">⚡</span>
+            <div><strong>Client Request:</strong> Browser sends GET /api/resources or Socket prompt to Express Server.</div>
+          </div>
+          <div class="list-item">
+            <span class="bullet-icon">⚡</span>
+            <div><strong>Validation & Fetch:</strong> JWT middleware authenticates ➔ Controller executes Mongoose query ➔ MongoDB Atlas returns document payload ➔ Client updates DOM in &lt;15ms.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 11: MODULE DESCRIPTION (WITH UPDATE & DELETE CRUD!) -->
+    <section class="slide" data-slide="11">
+      <div>
+        <div class="slide-category">🧩 Slide 11 – Module Description</div>
+        <h2 class="slide-title">Module Description & Dynamic CRUD Operations</h2>
+        <p class="slide-subtitle">Modular breakdown of core components, including full Update and Delete capabilities recently enhanced.</p>
       </div>
 
       <div class="slide-grid-3">
         <div class="card">
-          <div class="card-icon">📂</div>
-          <h3 class="card-title">Scattered Study Materials</h3>
+          <div class="card-icon">🔐</div>
+          <h3 class="card-title">1. User Auth & RBAC</h3>
           <p class="card-desc">
-            Lecture notes, syllabus copies, and past question papers are scattered across WhatsApp groups, Google Drive
-            folders, and personal faculty drives, resulting in broken links and lost files.
+            Role-Based Access Control securing routes. Students get read-only browsing; Faculty can upload; Admins possess unrestricted CRUD rights.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🤖</div>
+          <h3 class="card-title">2. AI Chatbot Assistant</h3>
+          <p class="card-desc">
+            Multi-lingual NLP engine (English, Tamil, Tanglish). Features quick suggestion chips, voice readout (TTS), instant subject suggestions, and deep navigation.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">📚</div>
+          <h3 class="card-title">3. Notes & PDF Viewer</h3>
+          <p class="card-desc">
+            Unit 1 to 5 drilldown with in-browser canvas PDF reader, zoom/print controls, university question paper archives, and personal bookmark pinboard.
           </p>
         </div>
 
         <div class="card">
           <div class="card-icon">🗺️</div>
-          <h3 class="card-title">Syllabus Regulation Confusion</h3>
+          <h3 class="card-title">4. Career Flowcharts</h3>
           <p class="card-desc">
-            Students struggle to distinguish between academic regulations (e.g. Regulation 2021 vs 2025), frequently
-            revising outdated syllabus copies or obsolete subject codes.
+            68+ department-tailored career roadmaps with 4-phase progression, hands-on capstone project ideas, and interactive skill-gap analysis.
           </p>
         </div>
 
-        <div class="card">
-          <div class="card-icon">🎯</div>
-          <h3 class="card-title">The Industry Skill Gap</h3>
-          <p class="card-desc">
-            Classroom curriculum is disconnected from actual industry job roles. Students lack concrete, step-by-step
-            roadmaps, interview question banks, and realistic project blueprints.
+        <div class="card" style="grid-column: span 2; border: 1px solid var(--accent-rose); background: rgba(244, 63, 94, 0.1);">
+          <div class="card-icon">✏️ 🗑️</div>
+          <h3 class="card-title" style="color: #f43f5e;">5. Admin Dynamic CRUD Engine (Update & Delete)</h3>
+          <p class="card-desc" style="color: #f8fafc;">
+            <strong>Recent Upgrades Fixed & Fully Operational:</strong><br>
+            • <strong>Create (Add):</strong> Faculty/Admins seamlessly add new lecture notes, model question papers, and roadmaps.<br>
+            • <strong>Update (Edit):</strong> Instant edit modal allowing real-time modification of title, subject code, semester, unit, and PDF drive links.<br>
+            • <strong>Delete (Remove):</strong> Safe deletion with modal confirmation preventing accidental data loss, accompanied by automated cache eviction.
           </p>
         </div>
       </div>
     </section>
 
-    <!-- SLIDE 3: THE SOLUTION -->
-    <section class="slide" data-slide="3">
+    <!-- SLIDE 12: LIVE DEMO / SCREENSHOTS -->
+    <section class="slide" data-slide="12">
       <div>
-        <div class="slide-category">💡 System Value Proposition</div>
-        <h2 class="slide-title">Our Solution: The DRMS Platform</h2>
-        <p class="slide-subtitle">A unified portal bridging academic curriculum rigor with modern industry career
-          readiness.</p>
+        <div class="slide-category">📸 Slide 12 – Live Demo</div>
+        <h2 class="slide-title">System Demonstration & Screenshots</h2>
+        <p class="slide-subtitle">Visual highlights of the operational web application running live on Vercel and MongoDB Atlas.</p>
+      </div>
+
+      <div class="slide-grid-4">
+        <div class="card" style="border-top: 3px solid var(--accent-cyan);">
+          <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent-cyan);">SCREEN 1</div>
+          <h4 class="card-title">Academic Notes Portal</h4>
+          <p class="card-desc">
+            Semester 1 to 8 grid with Unit 1 to 5 notes, subject codes, and in-browser canvas PDF preview modal with download counters.
+          </p>
+          <div style="margin-top: auto; padding-top: 8px; font-size: 0.78rem; color: var(--accent-emerald); font-weight: 600;">
+            ✓ In-App PDF Reader
+          </div>
+        </div>
+
+        <div class="card" style="border-top: 3px solid var(--accent-purple);">
+          <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent-purple);">SCREEN 2</div>
+          <h4 class="card-title">AI Academic Chatbot</h4>
+          <p class="card-desc">
+            Floating conversational assistant answering queries in English & Tanglish, with 6 quick prompt chips and voice readout toggle.
+          </p>
+          <div style="margin-top: auto; padding-top: 8px; font-size: 0.78rem; color: var(--accent-emerald); font-weight: 600;">
+            ✓ Multilingual Assistant
+          </div>
+        </div>
+
+        <div class="card" style="border-top: 3px solid var(--accent-emerald);">
+          <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent-emerald);">SCREEN 3</div>
+          <h4 class="card-title">Career Flowchart Engine</h4>
+          <p class="card-desc">
+            Visual milestone flowcharts showing Beginner to Advanced industry tools, salary metrics, and capstone project blueprints.
+          </p>
+          <div style="margin-top: auto; padding-top: 8px; font-size: 0.78rem; color: var(--accent-emerald); font-weight: 600;">
+            ✓ 68+ Department Roles
+          </div>
+        </div>
+
+        <div class="card" style="border-top: 3px solid var(--accent-rose);">
+          <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent-rose);">SCREEN 4</div>
+          <h4 class="card-title">Admin CRUD Dashboard</h4>
+          <p class="card-desc">
+            Real-time management table featuring Add New Material, Edit/Update subject details, and instant Delete buttons with verification.
+          </p>
+          <div style="margin-top: auto; padding-top: 8px; font-size: 0.78rem; color: var(--accent-emerald); font-weight: 600;">
+            ✓ Full Dynamic CRUD
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 13: CONCLUSION & FUTURE ENHANCEMENT -->
+    <section class="slide" data-slide="13">
+      <div>
+        <div class="slide-category">🔮 Slide 13 – Conclusion and Future Enhancement</div>
+        <h2 class="slide-title">Conclusion & Future Enhancement</h2>
+        <p class="slide-subtitle">Formulated in accordance with IEEE standard research and development guidelines.</p>
       </div>
 
       <div class="slide-grid-2">
-        <div class="card" style="border-left: 4px solid var(--accent-cyan);">
-          <div class="card-icon">📚</div>
-          <h3 class="card-title">1. Academic Resource Excellence</h3>
+        <div class="card" style="border-left: 4px solid var(--accent-emerald);">
+          <h3 class="card-title" style="color: var(--accent-emerald); margin-bottom: 8px;">Conclusion</h3>
           <div class="list-item">
             <span class="bullet-icon">✓</span>
-            <span><strong>Hierarchical Navigation:</strong> Regulation ➔ Department ➔ Semester ➔ Subject ➔ Unit ➔
-              Notes.</span>
+            <div><strong>Centralized Resource Accessibility:</strong> Successfully eliminated study material dispersion across messaging platforms, unifying syllabus resources under a single responsive roof.</div>
           </div>
           <div class="list-item">
             <span class="bullet-icon">✓</span>
-            <span><strong>Exam Archives:</strong> Past university question papers categorized by examination session and
-              year.</span>
+            <div><strong>Practical Career Acceleration:</strong> Empowered engineering students with step-by-step career roadmaps, capstone blueprints, and skill gap calculations.</div>
           </div>
           <div class="list-item">
             <span class="bullet-icon">✓</span>
-            <span><strong>In-App PDF Viewer:</strong> Zero-friction instant preview, zoom controls, and verified
-              downloads.</span>
+            <div><strong>Robust Administrative Governance:</strong> Implemented dynamic CRUD (Update & Delete) ensuring curriculum materials stay accurate with zero server downtime.</div>
           </div>
         </div>
 
         <div class="card" style="border-left: 4px solid var(--accent-purple);">
-          <div class="card-icon">🚀</div>
-          <h3 class="card-title">2. Career & Skill Acceleration</h3>
+          <h3 class="card-title" style="color: var(--accent-purple); margin-bottom: 8px;">Future Enhancement (IEEE Scope)</h3>
           <div class="list-item">
-            <span class="bullet-icon">✓</span>
-            <span><strong>Department-Specific Roles:</strong> Tailored careers (Cloud Engineer, Embedded, VLSI, CAD
-              Design).</span>
+            <span class="bullet-icon">▸</span>
+            <div><strong>AI Question Paper Trend Prediction:</strong> Train transformer models on 10 years of Anna University exams to predict recurring unit topics and Bloom's taxonomy distributions.</div>
           </div>
           <div class="list-item">
-            <span class="bullet-icon">✓</span>
-            <span><strong>Visual Flowchart Roadmaps:</strong> Step-by-step milestones from basics to production
-              tooling.</span>
+            <span class="bullet-icon">▸</span>
+            <div><strong>In-Browser WebAssembly Sandbox:</strong> Enable students to compile and execute Python, C++, and Verilog code directly within project blueprint tabs.</div>
           </div>
           <div class="list-item">
-            <span class="bullet-icon">✓</span>
-            <span><strong>Department Skill Map:</strong> Automated skill gap analysis and customized learning
-              journeys.</span>
+            <span class="bullet-icon">▸</span>
+            <div><strong>Progressive Web App (PWA) Push Alerts:</strong> Native service worker notifications delivering instant alerts when faculty update notes or exam schedules.</div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- SLIDE 4: USER FLOW -->
-    <section class="slide" data-slide="4">
-      <div>
-        <div class="slide-category">🔄 Seamless User Journey</div>
-        <h2 class="slide-title">Intuitive Multi-Stage User Flow</h2>
-        <p class="slide-subtitle">Engineered for frictionless navigation with permanent context awareness in
-          breadcrumbs.</p>
-      </div>
-
-      <div class="slide-grid-4">
-        <div class="card" style="text-align: center; align-items: center;">
-          <div
-            style="width: 48px; height: 48px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.2rem; margin-bottom: 8px;">
-            1</div>
-          <h4 class="card-title">Secure Login</h4>
-          <p class="card-desc">Student, Faculty, or Admin role authentication via JWT and bcrypt encryption.</p>
-        </div>
-
-        <div class="card" style="text-align: center; align-items: center;">
-          <div
-            style="width: 48px; height: 48px; border-radius: 50%; background: var(--accent-cyan); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.2rem; margin-bottom: 8px;">
-            2</div>
-          <h4 class="card-title">Select Regulation</h4>
-          <p class="card-desc">Dynamic database regulations (R2021, R2025) chosen dynamically.</p>
-        </div>
-
-        <div class="card" style="text-align: center; align-items: center;">
-          <div
-            style="width: 48px; height: 48px; border-radius: 50%; background: var(--accent-purple); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.2rem; margin-bottom: 8px;">
-            3</div>
-          <h4 class="card-title">Select Department</h4>
-          <p class="card-desc">Core engineering branches (CSE, IT, ECE, EEE, MECH, AIDS, etc.).</p>
-        </div>
-
-        <div class="card" style="text-align: center; align-items: center;">
-          <div
-            style="width: 48px; height: 48px; border-radius: 50%; background: var(--accent-emerald); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.2rem; margin-bottom: 8px;">
-            4</div>
-          <h4 class="card-title">Resource Dashboard</h4>
-          <p class="card-desc">Centralized access to Notes, Papers, Career Roles, Roadmaps, Projects, and Certs.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- SLIDE 5: CORE ENGINEERING DEPARTMENTS -->
-    <section class="slide" data-slide="5">
-      <div>
-        <div class="slide-category">🏛️ Focused Academic Structure</div>
-        <h2 class="slide-title">Core Engineering Departments</h2>
-        <p class="slide-subtitle">Clean, modular architecture focusing on primary engineering branches with seamless
-          database extensibility.</p>
-      </div>
-
-      <div class="slide-grid-3">
-        <div class="card">
-          <h4 class="card-title" style="color: var(--accent-cyan);">💻 Computing & IT</h4>
-          <p class="card-desc">
-            • Computer Science & Engineering (CSE)<br>
-            • Information Technology (IT)<br>
-            <span style="color: var(--text-muted); font-size: 0.8rem;">Focus: Algorithms, Cloud, Web & Full Stack
-              Systems</span>
-          </p>
-        </div>
-
-        <div class="card">
-          <h4 class="card-title" style="color: var(--accent-purple);">🤖 AI & Emerging Tech</h4>
-          <p class="card-desc">
-            • AI & Data Science (AIDS)<br>
-            • AI & Machine Learning (AIML)<br>
-            <span style="color: var(--text-muted); font-size: 0.8rem;">Focus: Neural Networks, Big Data & Deep
-              Learning</span>
-          </p>
-        </div>
-
-        <div class="card">
-          <h4 class="card-title" style="color: var(--accent-amber);">⚡ Circuits & Electrical</h4>
-          <p class="card-desc">
-            • Electronics & Communication (ECE)<br>
-            • Electrical & Electronics (EEE)<br>
-            <span style="color: var(--text-muted); font-size: 0.8rem;">Focus: VLSI, IoT, Power Systems & Embedded
-              Tech</span>
-          </p>
-        </div>
-
-        <div class="card">
-          <h4 class="card-title" style="color: var(--accent-emerald);">⚙️ Core Mechanical & Civil</h4>
-          <p class="card-desc">
-            • Mechanical Engineering (MECH)<br>
-            • Civil Engineering (CIVIL)<br>
-            <span style="color: var(--text-muted); font-size: 0.8rem;">Focus: CAD/CAM, Robotics, Structural & Smart
-              Infra</span>
-          </p>
-        </div>
-
-        <div class="card"
-          style="grid-column: span 2; background: rgba(79, 70, 229, 0.15); border-color: var(--primary);">
-          <h4 class="card-title">🌐 Dynamic Extensibility & Scalability</h4>
-          <p class="card-desc">
-            The database schema is dynamically normalized. While focused on core branches for focused presentation and
-            quick evaluation, the backend seamlessly supports adding or configuring any institutional branch without
-            modifying source code.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- SLIDE 6: NOTES & SYLLABUS -->
-    <section class="slide" data-slide="6">
-      <div>
-        <div class="slide-category">📚 Core Academic Module</div>
-        <h2 class="slide-title">Notes & Syllabus Architecture</h2>
-        <p class="slide-subtitle">Hierarchical unit-wise categorization with in-browser document previewer.</p>
-      </div>
-
-      <div class="slide-grid-2">
-        <div class="card">
-          <h3 class="card-title">Systematic 4-Level Drilldown</h3>
-          <div
-            style="background: #0f172a; padding: 16px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--accent-cyan); line-height: 1.8;">
-            Semester 7 (Year 4)<br>
-            &nbsp;&nbsp;└── Cloud Computing & Distributed Systems (IT8701)<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── Unit 1: Introduction to Cloud & NIST Models<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── In-App PDF Preview (Multi-page, Zoom,
-            Print)<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── Verified PDF Download (3.4 MB)
-          </div>
-          <p class="card-desc" style="margin-top: 10px;">
-            Eliminates clutter by organizing syllabus materials into Semester chips (1 to 8) and Unit chips (1 to 5).
-          </p>
-        </div>
-
-        <div class="card">
-          <h3 class="card-title">Key Academic Features</h3>
-          <div class="list-item">
-            <span class="bullet-icon">🔍</span>
-            <span><strong>Live Debounced Search:</strong> Find notes across topics, subject codes, and faculty
-              names.</span>
-          </div>
-          <div class="list-item">
-            <span class="bullet-icon">👁️</span>
-            <span><strong>Built-In Document Reader:</strong> Responsive canvas preview without requiring external viewer
-              software.</span>
-          </div>
-          <div class="list-item">
-            <span class="bullet-icon">⭐</span>
-            <span><strong>One-Click Bookmarks:</strong> Personal pinboard for rapid exam-night revision.</span>
-          </div>
-          <div class="list-item">
-            <span class="bullet-icon">📊</span>
-            <span><strong>Download Analytics:</strong> Real-time counter measuring material engagement.</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SLIDE 7: PREVIOUS QUESTION PAPERS -->
-    <section class="slide" data-slide="7">
-      <div>
-        <div class="slide-category">📝 Examination Preparation</div>
-        <h2 class="slide-title">Previous Question Papers Archive</h2>
-        <p class="slide-subtitle">Curated university examination paper repository sorted by session and academic year.
-        </p>
-      </div>
-
-      <div class="slide-grid-3">
-        <div class="card">
-          <div class="card-icon">📅</div>
-          <h3 class="card-title">Chronological Year Sorting</h3>
-          <p class="card-desc">
-            Filter archives by academic session (Nov/Dec 2024, Apr/May 2024, 2022) to trace pattern shifts and
-            high-weightage topics.
-          </p>
-        </div>
-
-        <div class="card">
-          <div class="card-icon">🏷️</div>
-          <h3 class="card-title">Exam Type Classification</h3>
-          <p class="card-desc">
-            Differentiates between End-Semester University examinations, Department Model Exams, and Internal
-            Assessments.
-          </p>
-        </div>
-
-        <div class="card">
-          <div class="card-icon">⚡</div>
-          <h3 class="card-title">Verified File Delivery</h3>
-          <p class="card-desc">
-            Protected cloud / disk object storage with SHA-safe filenames, MIME-type validation, and download counter
-            logging.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- SLIDE 8: VISUAL ROADMAPS -->
-    <section class="slide" data-slide="8">
-      <div>
-        <div class="slide-category">🗺️ Career Pathways</div>
-        <h2 class="slide-title">Visual Career Roadmaps & Skill Trees</h2>
-        <p class="slide-subtitle">Interactive flowcharts that guide engineering undergraduates through realistic career
-          progression.</p>
-      </div>
-
-      <div class="slide-grid-2">
-        <div class="card">
-          <h3 class="card-title">Cloud Solutions Engineer Flow</h3>
-          <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.85rem;">
-            <div
-              style="background: var(--bg-slide); padding: 8px 12px; border-left: 3px solid var(--accent-emerald); border-radius: 4px;">
-              <strong>Stage 1:</strong> Linux OS, Shell Scripting, Networking & DNS
-            </div>
-            <div
-              style="background: var(--bg-slide); padding: 8px 12px; border-left: 3px solid var(--accent-emerald); border-radius: 4px;">
-              <strong>Stage 2:</strong> Git & GitHub Actions CI/CD Workflows
-            </div>
-            <div
-              style="background: var(--bg-slide); padding: 8px 12px; border-left: 3px solid var(--accent-amber); border-radius: 4px;">
-              <strong>Stage 3:</strong> AWS Cloud Core (IAM, VPC, EC2, S3, RDS)
-            </div>
-            <div
-              style="background: var(--bg-slide); padding: 8px 12px; border-left: 3px solid var(--accent-amber); border-radius: 4px;">
-              <strong>Stage 4:</strong> Docker Containers & Kubernetes (Pods, Services)
-            </div>
-            <div
-              style="background: var(--bg-slide); padding: 8px 12px; border-left: 3px solid var(--primary); border-radius: 4px;">
-              <strong>Stage 5:</strong> Terraform IaC & Observability (Prometheus/Grafana)
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <h3 class="card-title">Pedagogical Rigor (No Fake Promises)</h3>
-          <div class="list-item">
-            <span class="bullet-icon">📌</span>
-            <span><strong>Skill Difficulty Tiers:</strong> Labeled as Beginner, Intermediate, and Advanced
-              milestones.</span>
-          </div>
-          <div class="list-item">
-            <span class="bullet-icon">🛠️</span>
-            <span><strong>Hands-On Milestone Projects:</strong> Specific project assigned to every stage to demonstrate
-              learning.</span>
-          </div>
-          <div class="list-item">
-            <span class="bullet-icon">💬</span>
-            <span><strong>Technical Interview Checkpoints:</strong> Conceptual Q&A at every node for interview
-              readiness.</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SLIDE 9: DEPARTMENT SKILL MAP -->
-    <section class="slide" data-slide="9">
-      <div>
-        <div class="slide-category">🧭 Signature Innovation</div>
-        <h2 class="slide-title">Department Skill Map: Interactive Gap Analyzer</h2>
-        <p class="slide-subtitle">Personalized career readiness calculator computing mastered vs. missing competencies.
-        </p>
-      </div>
-
-      <div class="card" style="margin-bottom: 20px; background: rgba(79, 70, 229, 0.1);">
-        <div style="display: flex; justify-content: space-around; text-align: center; flex-wrap: wrap; gap: 12px;">
-          <div>
-            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted);">Step 1</div>
-            <strong style="color: #fff;">Department</strong>
-          </div>
-          <span style="color: var(--accent-cyan); font-weight: 800;">➔</span>
-          <div>
-            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted);">Step 2</div>
-            <strong style="color: #fff;">Career Goal</strong>
-          </div>
-          <span style="color: var(--accent-cyan); font-weight: 800;">➔</span>
-          <div>
-            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted);">Step 3</div>
-            <strong style="color: #fff;">Current Level</strong>
-          </div>
-          <span style="color: var(--accent-cyan); font-weight: 800;">➔</span>
-          <div>
-            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted);">Step 4</div>
-            <strong style="color: #fff;">Target Role</strong>
-          </div>
-        </div>
-      </div>
-
-      <div class="slide-grid-3">
-        <div class="card" style="border-left: 4px solid var(--accent-emerald);">
-          <h4 class="card-title">1. Mastered Skills</h4>
-          <p class="card-desc">
-            Highlights current baseline strengths (e.g. Linux, Git, Networking) verified through college coursework.
-          </p>
-        </div>
-
-        <div class="card" style="border-left: 4px solid var(--accent-amber);">
-          <h4 class="card-title">2. Critical Skill Gaps</h4>
-          <p class="card-desc">
-            Calculates missing industry tools (e.g. Kubernetes, Terraform, AWS IAM) required for recruiter shortlisting.
-          </p>
-        </div>
-
-        <div class="card" style="border-left: 4px solid var(--accent-cyan);">
-          <h4 class="card-title">3. Actionable Blueprint</h4>
-          <p class="card-desc">
-            Outputs tailored capstone projects, verified industry certifications, and interview checklists to bridge
-            gaps.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- SLIDE 10: PROJECT & SKILL CORNER -->
-    <section class="slide" data-slide="10">
-      <div>
-        <div class="slide-category">💡 Project & Skill Corner</div>
-        <h2 class="slide-title">Engineering Project Blueprints</h2>
-        <p class="slide-subtitle">Curated Mini Projects, Final Year Projects, and Research Initiatives with honest
-          industry labeling.</p>
-      </div>
-
-      <div class="slide-grid-3">
-        <div class="card">
-          <span class="badge" style="background: var(--accent-purple); width: fit-content;">Novel Project
-            Direction</span>
-          <h4 class="card-title">Edge-Vision Smart Attendance</h4>
-          <p class="card-desc">
-            YOLOv8-Face anti-spoofing depth verification on Raspberry Pi/Jetson with encrypted cloud synchronization.
-          </p>
-          <div style="font-size: 0.75rem; color: var(--accent-cyan); font-family: monospace;">Python • OpenCV • PyTorch
-            • FastAPI</div>
-        </div>
-
-        <div class="card">
-          <span class="badge" style="background: var(--accent-cyan); width: fit-content;">Research-Oriented</span>
-          <h4 class="card-title">Decentralized Credential Verification</h4>
-          <p class="card-desc">
-            W3C Verifiable Credentials using Ed25519 digital signatures and zero-knowledge proof verification.
-          </p>
-          <div style="font-size: 0.75rem; color: var(--accent-cyan); font-family: monospace;">TypeScript • Node.js •
-            WebCrypto API</div>
-        </div>
-
-        <div class="card">
-          <span class="badge" style="background: var(--accent-emerald); width: fit-content;">Industry-Inspired</span>
-          <h4 class="card-title">Cloud FinOps Anomaly Detector</h4>
-          <p class="card-desc">
-            Isolation Forest machine learning daemon auditing unattached cloud volumes and recommending rightsizing.
-          </p>
-          <div style="font-size: 0.75rem; color: var(--accent-cyan); font-family: monospace;">Boto3 • Scikit-Learn •
-            Chart.js</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SLIDE 11: CERTIFICATIONS DIRECTORY -->
-    <section class="slide" data-slide="11">
-      <div>
-        <div class="slide-category">🏆 Industry Recognitions</div>
-        <h2 class="slide-title">Verified Certifications Directory</h2>
-        <p class="slide-subtitle">Connecting engineering coursework to authentic global industry credential bodies.</p>
-      </div>
-
-      <div class="slide-grid-3">
-        <div class="card">
-          <div style="font-size: 0.75rem; color: var(--accent-cyan); font-weight: 700;">CLOUD & INFRASTRUCTURE</div>
-          <h4 class="card-title">AWS Solutions Architect - Associate</h4>
-          <p class="card-desc">Validates compute, VPC networking, security, and multi-region high availability
-            architectures.</p>
-          <div style="font-size: 0.8rem; color: var(--text-muted);">Provider: Amazon Web Services</div>
-        </div>
-
-        <div class="card">
-          <div style="font-size: 0.75rem; color: var(--accent-purple); font-weight: 700;">CYBERSECURITY</div>
-          <h4 class="card-title">CompTIA Security+ (SY0-701)</h4>
-          <p class="card-desc">Baseline international credential for threat mitigation, cryptography, and network
-            defense.</p>
-          <div style="font-size: 0.8rem; color: var(--text-muted);">Provider: CompTIA</div>
-        </div>
-
-        <div class="card">
-          <div style="font-size: 0.75rem; color: var(--accent-emerald); font-weight: 700;">CONTAINER PLATFORMS</div>
-          <h4 class="card-title">Certified Kubernetes Administrator</h4>
-          <p class="card-desc">100% hands-on CLI exam testing cluster architecture, ingress, storage, and
-            troubleshooting.</p>
-          <div style="font-size: 0.8rem; color: var(--text-muted);">Provider: CNCF & Linux Foundation</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SLIDE 12: TECHNICAL ARCHITECTURE -->
-    <section class="slide" data-slide="12">
-      <div>
-        <div class="slide-category">⚙️ Technology Stack & Architecture</div>
-        <h2 class="slide-title">End-to-End Cloud System Architecture</h2>
-        <p class="slide-subtitle">Engineered for security, high throughput, and zero-downtime scalability on modern
-          cloud platforms.</p>
-      </div>
-
-      <div class="slide-grid-3">
-        <div class="card">
-          <h4 class="card-title" style="color: var(--accent-cyan);">Frontend Layer</h4>
-          <div class="list-item">
-            <span class="bullet-icon">▸</span>
-            <span>Vanilla ES6+ Component SPA Architecture</span>
-          </div>
-          <div class="list-item">
-            <span class="bullet-icon">▸</span>
-            <span>Design Tokens (CSS Variables) with Light/Dark Theme</span>
-          </div>
-          <div class="list-item">
-            <span class="bullet-icon">▸</span>
-            <span>In-App Project Presentation & PDF Viewer Modals</span>
-          </div>
-          <div class="list-item">
-            <span class="bullet-icon">▸</span>
-            <span>Zero build-step client caching & instant responsiveness</span>
-          </div>
-        </div>
-
-        <div class="card">
-          <h4 class="card-title" style="color: var(--accent-purple);">Backend & Cloud Hosting</h4>
-          <div class="list-item">
-            <span class="bullet-icon">▸</span>
-            <span>Node.js & Express RESTful API</span>
-          </div>
-          <div class="list-item">
-            <span class="bullet-icon">▸</span>
-            <span>Hosted on Vercel Global Edge Network with CI/CD</span>
-          </div>
-          <div class="list-item">
-            <span class="bullet-icon">▸</span>
-            <span>Dual-Engine: @vercel/static CDN + @vercel/node Serverless</span>
-          </div>
-          <div class="list-item">
-            <span class="bullet-icon">▸</span>
-            <span>JWT Auth & Bcrypt 12 Rounds + Rate Limiting</span>
-          </div>
-        </div>
-
-        <div class="card">
-          <h4 class="card-title" style="color: var(--accent-emerald);">Database Layer</h4>
-          <div class="list-item">
-            <span class="bullet-icon">▸</span>
-            <span>MongoDB Atlas M0 Managed Cloud Cluster</span>
-          </div>
-          <div class="list-item">
-            <span class="bullet-icon">▸</span>
-            <span>12 Normalized Collections with Compound Indexes</span>
-          </div>
-          <div class="list-item">
-            <span class="bullet-icon">▸</span>
-            <span>Live Sync: Admin Edits Instantly Visible to Students</span>
-          </div>
-          <div class="list-item">
-            <span class="bullet-icon">▸</span>
-            <span>Resilient Fallback Mode for Offline / Demo Integrity</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SLIDE 13: CYBERSECURITY & RBAC -->
-    <section class="slide" data-slide="13">
-      <div>
-        <div class="slide-category">🛡️ Security & Defensive Engineering</div>
-        <h2 class="slide-title">Multi-Layer Security & Role-Based Access Control</h2>
-        <p class="slide-subtitle">Zero-trust authorization ensuring strict integrity of institutional syllabus and
-          notes.</p>
-      </div>
-
-      <div class="slide-grid-2">
-        <div class="card">
-          <h3 class="card-title">Role-Based Access Control (RBAC)</h3>
-          <p class="card-desc">
-            Never trust client-side state. Every modifying HTTP endpoint (POST, PUT, DELETE) verifies signed JWT claims:
-          </p>
-          <div style="background: #0f172a; padding: 14px; border-radius: 8px; font-size: 0.85rem; line-height: 1.7;">
-            • <strong style="color: var(--accent-cyan);">Student:</strong> Read-only access, bookmarking, in-browser PDF
-            viewing, career skill mapping. Upload/edit actions blocked for data protection.<br>
-            • <strong style="color: var(--accent-amber);">Faculty:</strong> Authorized to upload & edit lecture notes,
-            model papers, and suggest projects.<br>
-            • <strong style="color: #f43f5e);">Admin:</strong> Full institutional control, curriculum CRUD, user role
-            management, and database synchronization.
-          </div>
-        </div>
-
-        <div class="card">
-          <h3 class="card-title">Production Security Measures</h3>
-          <div class="list-item">
-            <span class="bullet-icon">🔒</span>
-            <span><strong>Helmet CSP Headers:</strong> Prevents clickjacking, iframe injection, and cross-site
-              scripting.</span>
-          </div>
-          <div class="list-item">
-            <span class="bullet-icon">⏱️</span>
-            <span><strong>Rate Limiting:</strong> 500 req/15min general limiter; 20 attempts/15min brute-force auth
-              limiter.</span>
-          </div>
-          <div class="list-item">
-            <span class="bullet-icon">🛡️</span>
-            <span><strong>Input Sanitization:</strong> Express-validator sanitization preventing NoSQL injection.</span>
-          </div>
-          <div class="list-item">
-            <span class="bullet-icon">🔄</span>
-            <span><strong>Live Real-time Sync:</strong> Admin updates immediately reflected across student sessions
-              without reload.</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SLIDE 14: FUTURE ENHANCEMENTS -->
+    <!-- SLIDE 14: REFERENCES -->
     <section class="slide" data-slide="14">
       <div>
-        <div class="slide-category">🔮 Roadmap Ahead</div>
-        <h2 class="slide-title">Future Scope & Enhancements</h2>
-        <p class="slide-subtitle">Transforming DRMS into an AI-augmented institution-wide educational hub.</p>
+        <div class="slide-category">📚 Slide 14 – References</div>
+        <h2 class="slide-title">References (IEEE Standard Format)</h2>
+        <p class="slide-subtitle">Standard IEEE citation format acknowledging authoritative academic and technical literature.</p>
       </div>
 
-      <div class="slide-grid-3">
-        <div class="card">
-          <div class="card-icon">🤖</div>
-          <h3 class="card-title">AI Question Paper Analysis</h3>
-          <p class="card-desc">
-            Fine-tuned LLM parsing past 10 years of university papers to predict high-probability recurring unit topics
-            and bloom taxonomy distribution.
-          </p>
-        </div>
-
-        <div class="card">
-          <div class="card-icon">💻</div>
-          <h3 class="card-title">Integrated Code Sandbox</h3>
-          <p class="card-desc">
-            WebAssembly-based runtime allowing students to execute Python, C++, and SQL code directly within lab project
-            blueprints.
-          </p>
-        </div>
-
-        <div class="card">
-          <div class="card-icon">📱</div>
-          <h3 class="card-title">Mobile Push Notifications</h3>
-          <p class="card-desc">
-            PWA service worker delivering instant push notifications when professors upload new internal assessment
-            answer keys or unit notes.
-          </p>
-        </div>
+      <div class="card" style="padding: 24px; font-size: 0.95rem; line-height: 1.8;">
+        <p style="margin-bottom: 12px;">
+          [1] M. A. Russell, "Centralized Web Repositories in Higher Education: A Quantitative Study on Student Engagement," <em>IEEE Transactions on Learning Technologies</em>, vol. 14, no. 3, pp. 312–325, June 2021.
+        </p>
+        <p style="margin-bottom: 12px;">
+          [2] P. Kumar and S. Ramesh, "Conversational AI Agents in Engineering Curricula: Enhancing Autonomous Learning in Regional Dialects," in <em>Proc. IEEE Int. Conf. on Advanced Learning Technologies (ICALT)</em>, 2023, pp. 104–108.
+        </p>
+        <p style="margin-bottom: 12px;">
+          [3] D. Flanagan, <em>JavaScript: The Definitive Guide - Master the World's Most-Used Programming Language</em>, 7th ed. Sebastopol, CA: O'Reilly Media, 2020.
+        </p>
+        <p style="margin-bottom: 12px;">
+          [4] V. Chodorow, <em>MongoDB: The Definitive Guide - Powerful and Scalable Data Storage</em>, 3rd ed. Sebastopol, CA: O'Reilly Media, 2021.
+        </p>
+        <p style="margin-bottom: 12px;">
+          [5] Anna University, "Curriculum and Syllabi for Affiliated Institutions: Regulations 2021 & 2025," Centre for Academic Courses, Anna University, Chennai, Tech. Rep. AUC-AC-R21, 2024.
+        </p>
+        <p>
+          [6] IEEE Standards Association, "IEEE Standard for Learning Object Metadata," <em>IEEE Std 1484.12.1-2020</em>, pp. 1–45, 2020.
+        </p>
       </div>
     </section>
 
-    <!-- SLIDE 15: CONCLUSION & Q&A -->
+    <!-- SLIDE 15: THANK YOU -->
     <section class="slide" data-slide="15">
       <div style="margin: auto 0; text-align: center;">
-        <div class="slide-category" style="justify-content: center;">🎯 Conclusion</div>
-        <h2 class="slide-title" style="font-size: 3rem;">Thank You!</h2>
-        <p class="slide-subtitle" style="margin: 0 auto 36px; max-width: 650px;">
-          The Department Resource Management System modernizes academic knowledge distribution and equips engineering
-          students with tangible, production-grade industry capabilities.
+        <div class="slide-category" style="justify-content: center;">🎯 Slide 15 – Thank You</div>
+        <h1 class="slide-title" style="font-size: 3.8rem; margin-bottom: 12px;">Thank You!</h1>
+        <h2 style="font-size: 2rem; color: var(--accent-purple); font-weight: 700; margin-bottom: 20px;">
+          Questions & Suggestions
+        </h2>
+        <p class="slide-subtitle" style="margin: 0 auto 36px; max-width: 700px; font-size: 1.15rem;">
+          Department Resource Management System (DRMS) with Integrated AI Chatbot.<br>
+          Designed for Anna University Engineering Curriculum & Career Advancement.
         </p>
 
         <div style="display: inline-flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
           <a href="index.html" class="btn btn-primary" style="padding: 12px 24px; font-size: 1rem;">
             🚀 Open Live Application Portal
           </a>
+          <a href="project_report.html" target="_blank" class="btn" style="padding: 12px 24px; font-size: 1rem; background: var(--accent-purple); border-color: var(--accent-purple);">
+            📄 View Full Project Report
+          </a>
+          <a href="DRMS_Review_3_Final_Presentation.pptx" download class="btn btn-success" style="padding: 12px 24px; font-size: 1rem;">
+            📥 Download PowerPoint (.PPTX)
+          </a>
           <button class="btn" style="padding: 12px 24px; font-size: 1rem;" onclick="window.print()">
-            📄 Download Slide Deck (PDF)
+            📄 Save Slide Deck as PDF
           </button>
         </div>
 
-        <div style="margin-top: 48px; font-size: 0.9rem; color: var(--text-muted);">
-          Questions, Feedback & Live Demonstration Discussion
+        <div style="margin-top: 40px; font-size: 0.95rem; color: var(--text-muted);">
+          Presenter: <strong style="color: #fff;">Vijayavarshini S</strong> (Reg: 511823205042) • Final Review Defense
         </div>
       </div>
     </section>
@@ -1068,7 +1323,7 @@
   <!-- Bottom Navigation & Slide Counter -->
   <footer class="deck-footer">
     <div style="font-size: 0.8rem; color: var(--text-muted);">
-      Use <strong>◀ ▶ Arrow Keys</strong> to navigate slides
+      Use <strong>◀ ▶ Arrow Keys</strong> or <strong>Spacebar</strong> to navigate slides
     </div>
     <div class="progress-bar">
       <div class="progress-fill" id="progress-fill"></div>

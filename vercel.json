@@ -20,7 +20,7 @@
       "dest": "server.js"
     },
     {
-      "src": "/(.*\\.(css|js|json|png|jpg|jpeg|svg|ico|pdf|html|txt|woff|woff2|ttf))",
+      "src": "/(.*\\.(css|js|json|png|jpg|jpeg|svg|ico|pdf|html|txt|woff|woff2|ttf|pptx))",
       "dest": "public/$1"
     },
     {

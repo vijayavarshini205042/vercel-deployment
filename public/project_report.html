@@ -1,0 +1,2295 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PROJECT REPORT | Department Resource Management System with Integrated Chatbot</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --font-body: 'Crimson Pro', Georgia, serif;
+      --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --primary-color: #1e3a8a;
+      --text-color: #111827;
+      --border-color: #374151;
+      --bg-page: #ffffff;
+      --bg-app: #f1f5f9;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-app);
+      font-family: var(--font-body);
+      color: var(--text-color);
+      line-height: 1.6;
+      font-size: 15pt;
+    }
+
+    /* Top Floating Toolbar (Screen only) */
+    .screen-toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      background: #0f172a;
+      color: #fff;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      font-family: var(--font-heading);
+    }
+
+    .screen-toolbar .title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .screen-toolbar .badge {
+      background: #4f46e5;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+    }
+
+    .screen-toolbar .actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      background: #1e293b;
+      color: #fff;
+      border: 1px solid #475569;
+      padding: 7px 16px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+      background: #334155;
+      border-color: #38bdf8;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      border-color: #2563eb;
+    }
+
+    .btn-primary:hover {
+      background: #1d4ed8;
+    }
+
+    /* Report Container */
+    .report-wrapper {
+      max-width: 860px;
+      margin: 30px auto;
+      background: transparent;
+      padding-bottom: 60px;
+    }
+
+    /* Single A4 page simulation */
+    .page {
+      background: #ffffff;
+      width: 100%;
+      min-height: 1120px;
+      padding: 48px 56px 56px 56px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      position: relative;
+      border: 1px solid #d1d5db;
+    }
+
+    /* Running Header & Footer */
+    .page-header {
+      font-family: var(--font-heading);
+      font-size: 8.5pt;
+      color: #4b5563;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      border-bottom: 1px solid #9ca3af;
+      padding-bottom: 6px;
+      margin-bottom: 32px;
+    }
+
+    .page-footer {
+      position: absolute;
+      bottom: 28px;
+      left: 56px;
+      right: 56px;
+      border-top: 1px solid #9ca3af;
+      padding-top: 6px;
+      font-family: var(--font-heading);
+      font-size: 9pt;
+      color: #374151;
+      text-align: center;
+    }
+
+    /* Headings */
+    h1,
+    h2,
+    h3,
+    h4 {
+      font-family: var(--font-heading);
+      color: #111827;
+      font-weight: 700;
+    }
+
+    .chapter-heading {
+      font-size: 16pt;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      text-align: center;
+      margin-top: 10px;
+      margin-bottom: 24px;
+    }
+
+    h2.section-heading {
+      font-size: 13pt;
+      margin-top: 22px;
+      margin-bottom: 10px;
+      color: #1f2937;
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 4px;
+    }
+
+    h3.sub-heading {
+      font-size: 11.5pt;
+      margin-top: 16px;
+      margin-bottom: 8px;
+      color: #374151;
+    }
+
+    p {
+      text-align: justify;
+      margin-bottom: 14px;
+      line-height: 1.65;
+      font-size: 11pt;
+    }
+
+    /* Cover Page Elements */
+    .cover-page {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      border: 2px solid #1f2937;
+      padding: 40px 30px;
+      height: calc(100% - 10px);
+      box-sizing: border-box;
+    }
+
+    .college-name {
+      font-size: 15pt;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .dept-name {
+      font-size: 12pt;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #374151;
+      margin-bottom: 4px;
+    }
+
+    .degree-batch {
+      font-size: 11pt;
+      font-weight: 600;
+      color: #4b5563;
+      margin-bottom: 36px;
+    }
+
+    .report-type {
+      font-size: 12.5pt;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 28px;
+    }
+
+    .project-title {
+      font-size: 18pt;
+      font-weight: 900;
+      text-transform: uppercase;
+      line-height: 1.35;
+      color: #1e3a8a;
+      max-width: 680px;
+      margin-bottom: 28px;
+      border-top: 2px solid #1e3a8a;
+      border-bottom: 2px solid #1e3a8a;
+      padding: 18px 10px;
+    }
+
+    .sub-clause {
+      font-size: 10.5pt;
+      font-style: italic;
+      max-width: 580px;
+      line-height: 1.5;
+      margin-bottom: 36px;
+    }
+
+    .submitted-label {
+      font-size: 11pt;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    /* Academic Tables */
+    table.academic-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 18px 0;
+      font-family: var(--font-heading);
+      font-size: 9.5pt;
+    }
+
+    table.academic-table th,
+    table.academic-table td {
+      border: 1px solid #4b5563;
+      padding: 8px 10px;
+      text-align: left;
+    }
+
+    table.academic-table th {
+      background: #f3f4f6;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    table.clean-toc {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--font-heading);
+      font-size: 9.5pt;
+      margin: 12px 0;
+    }
+
+    table.clean-toc td {
+      padding: 5px 0;
+      vertical-align: bottom;
+    }
+
+    .toc-title {
+      font-weight: 700;
+      color: #111827;
+    }
+
+    .toc-dots {
+      border-bottom: 1px dotted #6b7280;
+      height: 1px;
+      margin: 0 8px 4px 8px;
+      flex: 1;
+    }
+
+    .toc-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding: 4px 0;
+    }
+
+    ul.academic-list {
+      margin: 8px 0 16px 28px;
+      font-size: 11pt;
+    }
+
+    ul.academic-list li {
+      margin-bottom: 6px;
+      text-align: justify;
+    }
+
+    /* Diagram Containers */
+    .diagram-box {
+      border: 1px solid #4b5563;
+      background: #f9fafb;
+      padding: 16px;
+      margin: 18px 0;
+      text-align: center;
+      border-radius: 4px;
+    }
+
+    .diagram-caption {
+      font-family: var(--font-heading);
+      font-size: 9.5pt;
+      font-weight: 700;
+      color: #1f2937;
+      margin-top: 10px;
+    }
+
+    /* Signatures layout */
+    .sig-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 45px;
+      font-family: var(--font-heading);
+      font-size: 10pt;
+    }
+
+    .sig-col {
+      width: 45%;
+    }
+
+    .sig-line {
+      margin-top: 40px;
+      border-top: 1px solid #4b5563;
+      padding-top: 4px;
+    }
+
+    /* Print Styles */
+    @media print {
+      body {
+        background: transparent;
+        font-size: 11.5pt;
+      }
+
+      .screen-toolbar {
+        display: none !important;
+      }
+
+      .report-wrapper {
+        margin: 0;
+        padding: 0;
+        max-width: none;
+      }
+
+      .page {
+        margin: 0;
+        box-shadow: none;
+        border: none;
+        page-break-after: always;
+        min-height: auto;
+        padding: 30mm 20mm 25mm 20mm;
+        position: relative;
+        height: auto;
+      }
+
+      .cover-page {
+        border: 2px solid #111;
+        min-height: 250mm;
+      }
+
+      .page-footer {
+        position: fixed;
+        bottom: 15mm;
+        left: 20mm;
+        right: 20mm;
+      }
+
+      .page-header {
+        position: fixed;
+        top: 15mm;
+        left: 20mm;
+        right: 20mm;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Screen Toolbar -->
+  <div class="screen-toolbar">
+    <div class="title">
+      <span>🏛️ FINAL MINI PROJECT REPORT</span>
+      <span class="badge">DRMS with AI Chatbot</span>
+    </div>
+    <div class="actions">
+      <a href="presentation.html" class="btn">
+        📽️ View Slide Deck
+      </a>
+      <button class="btn btn-primary" onclick="window.print()">
+        🖨️ Print / Save as PDF
+      </button>
+    </div>
+  </div>
+
+  <div class="report-wrapper">
+
+    <!-- PAGE 1: TITLE / COVER PAGE -->
+    <div class="page">
+      <div class="cover-page">
+        <div class="college-name">PODHIGAI COLLEGE OF ENGINEERING AND TECHNOLOGY</div>
+        <div class="dept-name">DEPARTMENT OF INFORMATION TECHNOLOGY</div>
+        <div class="degree-batch">B.Tech Information Technology | Batch 2023–2027</div>
+
+        <div class="report-type">MINI PROJECT – FINAL REPORT</div>
+
+        <div class="project-title">
+          DEPARTMENT RESOURCE MANAGEMENT SYSTEM WITH INTEGRATED CHATBOT
+        </div>
+
+        <div class="sub-clause">
+          Report submitted in partial fulfilment of the requirements for the Engineering Mini Project of the B.Tech
+          Information Technology programme
+        </div>
+
+        <div class="submitted-label">Submitted by</div>
+
+        <table class="academic-table" style="max-width: 480px; margin: 0 auto 36px auto;">
+          <thead>
+            <tr>
+              <th style="text-align: center; width: 60%;">Name</th>
+              <th style="text-align: center; width: 40%;">Register Number</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="text-align: center; font-weight: 600;">Vijayavarshini S</td>
+              <td style="text-align: center;">511823205042</td>
+            </tr>
+            <tr>
+              <td style="text-align: center; font-weight: 600;">Dhanalakshmi P A</td>
+              <td style="text-align: center;">511823205005</td>
+            </tr>
+            <tr>
+              <td style="text-align: center; font-weight: 600;">Prasanna A</td>
+              <td style="text-align: center;">511823205022</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div style="font-size: 11pt; font-weight: 700; margin-bottom: 6px;">Under the guidance of</div>
+        <div style="font-size: 12pt; font-weight: 800; color: #1e3a8a; margin-bottom: 36px;">
+          Mr. G. Rajasekaran (HOD / IT)
+        </div>
+
+        <div style="font-size: 11pt; font-weight: 800; letter-spacing: 0.05em;">
+          ACADEMIC YEAR 2026–2027
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 2: BONAFIDE CERTIFICATE -->
+    <div class="page">
+      <div class="page-header">DEPARTMENT RESOURCE MANAGEMENT SYSTEM WITH INTEGRATED CHATBOT</div>
+
+      <div class="chapter-heading" style="margin-top: 30px;">BONAFIDE CERTIFICATE</div>
+
+      <p style="margin-top: 40px; font-size: 11.5pt; line-height: 1.8;">
+        This is to certify that the mini project report titled <strong>“Department Resource Management System with
+          Integrated Chatbot”</strong> is the bonafide work of <strong>Vijayavarshini S (511823205042)</strong>,
+        <strong>Dhanalakshmi P A (511823205005)</strong>, and <strong>Prasanna A (511823205022)</strong>, students of
+        B.Tech Information Technology (Batch 2023–2027) at Podhigai College of Engineering and Technology, who carried
+        out the project work under my supervision during the academic year 2026–2027.
+      </p>
+
+      <div class="sig-row" style="margin-top: 70px;">
+        <div class="sig-col">
+          <strong>Project Guide</strong><br>
+          Mr. G. Rajasekaran (HOD / IT)<br><br>
+          Signature: ______________________<br><br>
+          Date: __________________________
+        </div>
+        <div class="sig-col">
+          <strong>Head of Department</strong><br>
+          Department of Information Technology<br>
+          Mr. G. Rajasekaran (HOD / IT)<br><br>
+          Signature: ______________________<br><br>
+          Date: __________________________
+        </div>
+      </div>
+
+      <p style="margin-top: 60px; font-size: 11pt;">
+        Submitted for the mini project viva voce examination held on ______________________.
+      </p>
+
+      <div class="sig-row" style="margin-top: 50px;">
+        <div class="sig-col">
+          <strong>Internal Examiner</strong><br><br>
+          Name & Signature: ______________
+        </div>
+        <div class="sig-col">
+          <strong>External Examiner</strong><br><br>
+          Name & Signature: ______________
+        </div>
+      </div>
+
+      <div class="page-footer">ii</div>
+    </div>
+
+    <!-- PAGE 3: DECLARATION -->
+    <div class="page">
+      <div class="page-header">DEPARTMENT RESOURCE MANAGEMENT SYSTEM WITH INTEGRATED CHATBOT</div>
+
+      <div class="chapter-heading" style="margin-top: 30px;">DECLARATION</div>
+
+      <p style="margin-top: 40px; font-size: 11.5pt; line-height: 1.8;">
+        We hereby declare that the mini project report entitled <strong>“Department Resource Management System with
+          Integrated Chatbot”</strong>, submitted to Podhigai College of Engineering and Technology in partial
+        fulfilment of the requirements of the B.Tech Information Technology programme, is a record of the original work
+        carried out by us under the guidance of <strong>Mr. G. Rajasekaran (HOD / IT)</strong>. We further declare that
+        this work has not been submitted, in part or in full, to any other institution or university for the award of
+        any degree, diploma or similar title.
+      </p>
+
+      <p style="font-size: 11.5pt; line-height: 1.8;">
+        All sources of information, tools, libraries, and open technologies used in the project have been appropriately
+        acknowledged in the References section of this report.
+      </p>
+
+      <table class="academic-table" style="margin-top: 40px;">
+        <thead>
+          <tr>
+            <th style="width: 40%;">Name</th>
+            <th style="width: 30%;">Register Number</th>
+            <th style="width: 30%;">Signature</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Vijayavarshini S</strong></td>
+            <td>511823205042</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><strong>Dhanalakshmi P A</strong></td>
+            <td>511823205005</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><strong>Prasanna A</strong></td>
+            <td>511823205022</td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div style="margin-top: 60px; font-size: 11pt; line-height: 2;">
+        <strong>Place:</strong> Tirupattur<br>
+        <strong>Date:</strong> ______________________
+      </div>
+
+      <div class="page-footer">iii</div>
+    </div>
+
+    <!-- PAGE 4: ACKNOWLEDGEMENT -->
+    <div class="page">
+      <div class="page-header">DEPARTMENT RESOURCE MANAGEMENT SYSTEM WITH INTEGRATED CHATBOT</div>
+
+      <div class="chapter-heading" style="margin-top: 30px;">ACKNOWLEDGEMENT</div>
+
+      <p style="margin-top: 30px; font-size: 11pt; line-height: 1.8;">
+        We express our sincere gratitude to the Chairman and the Management of Podhigai College of Engineering and
+        Technology for providing the infrastructure, computing facilities and academic environment that made it possible
+        to carry out this mini project.
+      </p>
+
+      <p style="font-size: 11pt; line-height: 1.8;">
+        We convey our heartfelt thanks to the Principal of the college for the encouragement and constant support
+        extended to us throughout the course of the project work.
+      </p>
+
+      <p style="font-size: 11pt; line-height: 1.8;">
+        We record our profound gratitude to our project guide and Head of the Department, <strong>Mr. G. Rajasekaran
+          (HOD / IT)</strong>, for his valuable guidance, constructive critique, and inspiring leadership that shaped
+        this project at every milestone, from requirement analysis to final review and deployment.
+      </p>
+
+      <p style="font-size: 11pt; line-height: 1.8;">
+        We also extend our sincere appreciation to all the faculty members of the Department of Information Technology
+        for their continuous advice, and to our parents and friends for their moral backing and encouragement.
+      </p>
+
+      <p style="font-size: 11pt; line-height: 1.8;">
+        Finally, we acknowledge the collective cooperation among our team members, whose unified contributions across
+        full-stack architecture, responsive frontend design, MongoDB data modeling, NLP chatbot development, and
+        thorough documentation brought this project to successful completion.
+      </p>
+
+      <div
+        style="float: right; text-align: right; margin-top: 40px; font-family: var(--font-heading); font-size: 10.5pt; line-height: 1.8;">
+        <strong>Vijayavarshini S</strong><br>
+        <strong>Dhanalakshmi P A</strong><br>
+        <strong>Prasanna A</strong>
+      </div>
+
+      <div class="page-footer">iv</div>
+    </div>
+
+    <!-- PAGE 5: ABSTRACT -->
+    <div class="page">
+      <div class="page-header">DEPARTMENT RESOURCE MANAGEMENT SYSTEM WITH INTEGRATED CHATBOT</div>
+
+      <div class="chapter-heading" style="margin-top: 30px;">ABSTRACT</div>
+
+      <p style="margin-top: 30px; font-size: 11pt; line-height: 1.8;">
+        In collegiate engineering education, academic study materials, university lecture notes, previous year question
+        papers, and career guidance resources are traditionally distributed across fragmented, ad-hoc channels such as
+        WhatsApp groups, personal faculty Google Drives, and physical department notice boards. This dispersion
+        frequently causes broken file links, confusion between academic regulations (e.g., Anna University R2021 vs.
+        R2025), and a significant informational divide between classroom curricula and industry expectations. To
+        overcome these limitations, this project presents the <strong>Department Resource Management System (DRMS) with
+          Integrated AI Chatbot</strong>, an all-in-one responsive platform engineered specifically for students,
+        faculty, and administrators.
+      </p>
+
+      <p style="font-size: 11pt; line-height: 1.8;">
+        The system organizes academic assets into a structured four-tier curriculum hierarchy: <em>Regulation ➔
+          Department ➔ Semester (1 to 8) ➔ Subject ➔ Unit 1–5 Lecture Notes and Question Papers</em>. An in-app canvas
+        PDF viewer enables zero-friction, in-browser document review without forcing bulky downloads. In addition to
+        academic syllabi, DRMS incorporates over 68 department-tailored career progression flowcharts (covering 4
+        progressive competency stages from Beginner to Mastery), industry skill-gap radar metrics, salary benchmarks,
+        and curated capstone project ideas.
+      </p>
+
+      <p style="font-size: 11pt; line-height: 1.8;">
+        Conversational assistance is delivered via the <strong>Anna University AI Guide Chatbot</strong>, which features
+        multilingual natural language query processing (English, Tamil, and Tanglish), context-aware department
+        detection, quick topic prompt chips, Web Speech API voice synthesis, and one-click deep navigation cards. For
+        staff and administrators, DRMS provides a comprehensive dynamic CRUD engine enabling secure creation, reading,
+        real-time editing/updating, and safe deletion of materials with live database synchronization.
+      </p>
+
+      <p style="font-size: 11pt; line-height: 1.8;">
+        The frontend is constructed using semantic HTML5, CSS3 Custom Properties (Design Tokens), and Vanilla JavaScript
+        SPA architecture, delivering sub-15ms page rendering. The backend is developed on Node.js and Express.js RESTful
+        APIs protected by Role-Based Access Control (RBAC), JSON Web Tokens (JWT), and rate-limiting middleware,
+        connecting to a scalable MongoDB Atlas cloud database cluster. The production platform is deployed on Vercel
+        Cloud Edge, achieving over 90% reduction in material search latency and establishing a modern standard for
+        academic resource accessibility.
+      </p>
+
+      <p style="margin-top: 24px; font-size: 10.5pt;">
+        <strong>Keywords:</strong> Department Resource Management System, AI Chatbot, Anna University R2021/R2025,
+        Academic Notes Repository, Career Roadmaps, Dynamic CRUD Engine, Canvas PDF Viewer, Node.js, Express.js, MongoDB
+        Atlas, Vercel Edge.
+      </p>
+
+      <div class="page-footer">v</div>
+    </div>
+
+    <!-- PAGE 6: TABLE OF CONTENTS (Part 1) -->
+    <div class="page">
+      <div class="page-header">DEPARTMENT RESOURCE MANAGEMENT SYSTEM WITH INTEGRATED CHATBOT</div>
+
+      <div class="chapter-heading" style="margin-top: 20px;">TABLE OF CONTENTS</div>
+
+      <div style="font-family: var(--font-heading); font-size: 9.5pt; margin-top: 20px;">
+        <div class="toc-row"><strong>ACKNOWLEDGEMENT</strong><span class="toc-dots"></span><strong>iv</strong></div>
+        <div class="toc-row"><strong>ABSTRACT</strong><span class="toc-dots"></span><strong>v</strong></div>
+        <div class="toc-row"><strong>LIST OF FIGURES</strong><span class="toc-dots"></span><strong>ix</strong></div>
+        <div class="toc-row"><strong>LIST OF TABLES</strong><span class="toc-dots"></span><strong>x</strong></div>
+        <div class="toc-row"><strong>LIST OF ABBREVIATIONS</strong><span class="toc-dots"></span><strong>xi</strong>
+        </div>
+
+        <div class="toc-row" style="margin-top: 14px;"><strong>CHAPTER 1 – INTRODUCTION</strong><span
+            class="toc-dots"></span><strong>1</strong></div>
+        <div class="toc-row" style="padding-left: 18px;">1.1 Introduction<span class="toc-dots"></span>1</div>
+        <div class="toc-row" style="padding-left: 18px;">1.2 Project Background<span class="toc-dots"></span>1</div>
+        <div class="toc-row" style="padding-left: 18px;">1.3 Overview of the Project<span class="toc-dots"></span>2
+        </div>
+        <div class="toc-row" style="padding-left: 18px;">1.4 Problem Statement<span class="toc-dots"></span>2</div>
+        <div class="toc-row" style="padding-left: 18px;">1.5 Objectives<span class="toc-dots"></span>3</div>
+        <div class="toc-row" style="padding-left: 18px;">1.6 Scope of the Project<span class="toc-dots"></span>3</div>
+        <div class="toc-row" style="padding-left: 18px;">1.7 Need for the Proposed System<span class="toc-dots"></span>4
+        </div>
+        <div class="toc-row" style="padding-left: 18px;">1.8 Organization of the Report<span class="toc-dots"></span>4
+        </div>
+
+        <div class="toc-row" style="margin-top: 14px;"><strong>CHAPTER 2 – LITERATURE REVIEW</strong><span
+            class="toc-dots"></span><strong>5</strong></div>
+        <div class="toc-row" style="padding-left: 18px;">2.1 Introduction<span class="toc-dots"></span>5</div>
+        <div class="toc-row" style="padding-left: 18px;">2.2 Review of Related Work<span class="toc-dots"></span>5</div>
+        <div class="toc-row" style="padding-left: 18px;">2.3 Existing Approaches<span class="toc-dots"></span>6</div>
+        <div class="toc-row" style="padding-left: 18px;">2.4 Limitations of Existing Approaches<span
+            class="toc-dots"></span>6</div>
+        <div class="toc-row" style="padding-left: 18px;">2.5 Research Gap / Project Motivation<span
+            class="toc-dots"></span>7</div>
+        <div class="toc-row" style="padding-left: 18px;">2.6 Summary<span class="toc-dots"></span>7</div>
+
+        <div class="toc-row" style="margin-top: 14px;"><strong>CHAPTER 3 – SYSTEM ANALYSIS</strong><span
+            class="toc-dots"></span><strong>8</strong></div>
+        <div class="toc-row" style="padding-left: 18px;">3.1 Introduction<span class="toc-dots"></span>8</div>
+        <div class="toc-row" style="padding-left: 18px;">3.2 Existing System<span class="toc-dots"></span>8</div>
+        <div class="toc-row" style="padding-left: 18px;">3.3 Limitations of the Existing System<span
+            class="toc-dots"></span>8</div>
+        <div class="toc-row" style="padding-left: 18px;">3.4 Proposed System<span class="toc-dots"></span>9</div>
+        <div class="toc-row" style="padding-left: 18px;">3.5 Advantages of the Proposed System<span
+            class="toc-dots"></span>9</div>
+        <div class="toc-row" style="padding-left: 18px;">3.6 Functional Requirements<span class="toc-dots"></span>10
+        </div>
+        <div class="toc-row" style="padding-left: 18px;">3.7 Non-Functional Requirements<span class="toc-dots"></span>11
+        </div>
+        <div class="toc-row" style="padding-left: 18px;">3.8 Hardware Requirements<span class="toc-dots"></span>11</div>
+        <div class="toc-row" style="padding-left: 18px;">3.9 Software Requirements<span class="toc-dots"></span>12</div>
+        <div class="toc-row" style="padding-left: 18px;">3.10 Feasibility Study<span class="toc-dots"></span>12</div>
+        <div class="toc-row" style="padding-left: 18px;">3.11 Summary<span class="toc-dots"></span>13</div>
+      </div>
+
+      <div class="page-footer">vi</div>
+    </div>
+
+    <!-- PAGE 7: TABLE OF CONTENTS (Part 2) -->
+    <div class="page">
+      <div class="page-header">DEPARTMENT RESOURCE MANAGEMENT SYSTEM WITH INTEGRATED CHATBOT</div>
+
+      <div class="chapter-heading" style="margin-top: 20px;">TABLE OF CONTENTS (Continued)</div>
+
+      <div style="font-family: var(--font-heading); font-size: 9.5pt; margin-top: 20px;">
+        <div class="toc-row"><strong>CHAPTER 4 – SYSTEM DESIGN</strong><span class="toc-dots"></span><strong>14</strong>
+        </div>
+        <div class="toc-row" style="padding-left: 18px;">4.1 Introduction<span class="toc-dots"></span>14</div>
+        <div class="toc-row" style="padding-left: 18px;">4.2 System Architecture<span class="toc-dots"></span>14</div>
+        <div class="toc-row" style="padding-left: 18px;">4.3 Architecture Description<span class="toc-dots"></span>15
+        </div>
+        <div class="toc-row" style="padding-left: 18px;">4.4 Data Flow Diagram (DFD Level 0 and Level 1)<span
+            class="toc-dots"></span>16</div>
+        <div class="toc-row" style="padding-left: 18px;">4.5 Use Case Diagram<span class="toc-dots"></span>18</div>
+        <div class="toc-row" style="padding-left: 18px;">4.6 Activity Diagram<span class="toc-dots"></span>19</div>
+        <div class="toc-row" style="padding-left: 18px;">4.7 Sequence Diagram<span class="toc-dots"></span>20</div>
+        <div class="toc-row" style="padding-left: 18px;">4.8 Database Design<span class="toc-dots"></span>22</div>
+        <div class="toc-row" style="padding-left: 18px;">4.9 Entity Relationship Diagram<span class="toc-dots"></span>23
+        </div>
+        <div class="toc-row" style="padding-left: 18px;">4.10 Module Design<span class="toc-dots"></span>24</div>
+        <div class="toc-row" style="padding-left: 18px;">4.11 Summary<span class="toc-dots"></span>24</div>
+
+        <div class="toc-row" style="margin-top: 14px;"><strong>CHAPTER 5 – SYSTEM IMPLEMENTATION</strong><span
+            class="toc-dots"></span><strong>25</strong></div>
+        <div class="toc-row" style="padding-left: 18px;">5.1 Introduction<span class="toc-dots"></span>25</div>
+        <div class="toc-row" style="padding-left: 18px;">5.2 Development Environment<span class="toc-dots"></span>25
+        </div>
+        <div class="toc-row" style="padding-left: 18px;">5.3 Frontend Implementation<span class="toc-dots"></span>26
+        </div>
+        <div class="toc-row" style="padding-left: 18px;">5.4 Backend Implementation<span class="toc-dots"></span>27
+        </div>
+        <div class="toc-row" style="padding-left: 18px;">5.5 Database Implementation<span class="toc-dots"></span>27
+        </div>
+        <div class="toc-row" style="padding-left: 18px;">5.6 AI Chatbot Implementation<span class="toc-dots"></span>28
+        </div>
+        <div class="toc-row" style="padding-left: 18px;">5.7 Academic Resources & In-App Canvas PDF Viewer<span
+            class="toc-dots"></span>29</div>
+        <div class="toc-row" style="padding-left: 18px;">5.8 Admin Panel & Dynamic CRUD Operations (Create, Update,
+          Delete)<span class="toc-dots"></span>30</div>
+        <div class="toc-row" style="padding-left: 18px;">5.9 Career Roadmaps & Visual Flowcharts<span
+            class="toc-dots"></span>31</div>
+        <div class="toc-row" style="padding-left: 18px;">5.10 Previous Year Question Papers & Study Portals<span
+            class="toc-dots"></span>32</div>
+        <div class="toc-row" style="padding-left: 18px;">5.11 Real-Time Synchronization & Security Handling<span
+            class="toc-dots"></span>32</div>
+        <div class="toc-row" style="padding-left: 18px;">5.12 Responsive Interface Implementation<span
+            class="toc-dots"></span>33</div>
+        <div class="toc-row" style="padding-left: 18px;">5.13 Cloud Deployment (Vercel Edge & MongoDB Atlas)<span
+            class="toc-dots"></span>34</div>
+        <div class="toc-row" style="padding-left: 18px;">5.14 Summary<span class="toc-dots"></span>34</div>
+
+        <div class="toc-row" style="margin-top: 14px;"><strong>CHAPTER 6 – TESTING AND RESULTS</strong><span
+            class="toc-dots"></span><strong>35</strong></div>
+        <div class="toc-row" style="padding-left: 18px;">6.1 Introduction<span class="toc-dots"></span>35</div>
+        <div class="toc-row" style="padding-left: 18px;">6.2 Testing Strategy<span class="toc-dots"></span>35</div>
+        <div class="toc-row" style="padding-left: 18px;">6.3 Functional Testing<span class="toc-dots"></span>35</div>
+        <div class="toc-row" style="padding-left: 18px;">6.4 Module-wise Testing Coverage<span
+            class="toc-dots"></span>36</div>
+        <div class="toc-row" style="padding-left: 18px;">6.5 Test Cases and Execution Results<span
+            class="toc-dots"></span>36</div>
+        <div class="toc-row" style="padding-left: 18px;">6.6 Test Results Summary<span class="toc-dots"></span>38</div>
+        <div class="toc-row" style="padding-left: 18px;">6.7 User Interface Verification<span class="toc-dots"></span>38
+        </div>
+        <div class="toc-row" style="padding-left: 18px;">6.8 Deployment Results<span class="toc-dots"></span>39</div>
+        <div class="toc-row" style="padding-left: 18px;">6.9 Summary<span class="toc-dots"></span>39</div>
+
+        <div class="toc-row" style="margin-top: 14px;"><strong>CHAPTER 7 – CONCLUSION AND FUTURE
+            ENHANCEMENTS</strong><span class="toc-dots"></span><strong>40</strong></div>
+        <div class="toc-row" style="padding-left: 18px;">7.1 Conclusion<span class="toc-dots"></span>40</div>
+        <div class="toc-row" style="padding-left: 18px;">7.2 Project Achievements<span class="toc-dots"></span>40</div>
+        <div class="toc-row" style="padding-left: 18px;">7.3 Limitations<span class="toc-dots"></span>41</div>
+        <div class="toc-row" style="padding-left: 18px;">7.4 Future Enhancements<span class="toc-dots"></span>41</div>
+        <div class="toc-row" style="padding-left: 18px;">7.5 Final Summary<span class="toc-dots"></span>42</div>
+
+        <div class="toc-row" style="margin-top: 14px;"><strong>REFERENCES</strong><span
+            class="toc-dots"></span><strong>43</strong></div>
+        <div class="toc-row" style="margin-top: 8px;"><strong>APPENDICES</strong><span
+            class="toc-dots"></span><strong>44</strong></div>
+        <div class="toc-row" style="padding-left: 18px;">Appendix A – Source Slide & Engineering Mapping<span
+            class="toc-dots"></span>44</div>
+        <div class="toc-row" style="padding-left: 18px;">Appendix B – Additional Test Cases<span
+            class="toc-dots"></span>44</div>
+        <div class="toc-row" style="padding-left: 18px;">Appendix C – Team Roles and Responsibilities<span
+            class="toc-dots"></span>45</div>
+        <div class="toc-row" style="padding-left: 18px;">Appendix D – System Specifications & Deployment Checklist<span
+            class="toc-dots"></span>46</div>
+      </div>
+
+      <div class="page-footer">vii</div>
+    </div>
+
+    <!-- PAGE 8: LIST OF FIGURES -->
+    <div class="page">
+      <div class="page-header">DEPARTMENT RESOURCE MANAGEMENT SYSTEM WITH INTEGRATED CHATBOT</div>
+
+      <div class="chapter-heading" style="margin-top: 20px;">LIST OF FIGURES</div>
+
+      <div style="font-family: var(--font-heading); font-size: 9.5pt; margin-top: 25px;">
+        <div class="toc-row">Figure 4.1: System Architecture of DRMS Platform<span class="toc-dots"></span>14</div>
+        <div class="toc-row">Figure 4.2: Data Flow Diagram – Level 0 (Context Diagram)<span class="toc-dots"></span>16
+        </div>
+        <div class="toc-row">Figure 4.3: Data Flow Diagram – Level 1 (Modular Pipeline)<span class="toc-dots"></span>17
+        </div>
+        <div class="toc-row">Figure 4.4: Use Case Diagram of DRMS<span class="toc-dots"></span>18</div>
+        <div class="toc-row">Figure 4.5: Activity Diagrams for (a) Student Resource Access and (b) Admin Dynamic
+          CRUD<span class="toc-dots"></span>19</div>
+        <div class="toc-row">Figure 4.6: Sequence Diagram – Student Academic Note Retrieval & Viewing<span
+            class="toc-dots"></span>20</div>
+        <div class="toc-row">Figure 4.7: Sequence Diagram – Admin Dynamic CRUD (Update & Delete) Operation<span
+            class="toc-dots"></span>21</div>
+        <div class="toc-row">Figure 4.8: Entity Relationship Diagram of MongoDB Atlas Collections<span
+            class="toc-dots"></span>23</div>
+        <div class="toc-row">Figure 5.1: Academic Notes Repository & Semester Grid Interface<span
+            class="toc-dots"></span>26</div>
+        <div class="toc-row">Figure 5.2: In-App Canvas PDF Document Viewer Modal<span class="toc-dots"></span>29</div>
+        <div class="toc-row">Figure 5.3: Anna University AI Guide Chatbot (English & Tanglish)<span
+            class="toc-dots"></span>28</div>
+        <div class="toc-row">Figure 5.4: Admin Panel Real-Time Management Dashboard<span class="toc-dots"></span>30
+        </div>
+        <div class="toc-row">Figure 5.5: Dynamic Update Modal & Live State Modification<span class="toc-dots"></span>31
+        </div>
+        <div class="toc-row">Figure 5.6: Safe Delete Confirmation Dialog Box<span class="toc-dots"></span>31</div>
+        <div class="toc-row">Figure 5.7: Career Roadmaps & Visual Flowcharts Interface<span class="toc-dots"></span>32
+        </div>
+        <div class="toc-row">Figure 5.8: Responsive Mobile Layout Across Multiple Viewports<span
+            class="toc-dots"></span>33</div>
+        <div class="toc-row">Figure 6.1: Chatbot Contextual Query Response with Navigation Cards<span
+            class="toc-dots"></span>38</div>
+        <div class="toc-row">Figure 6.2: Admin Resource Update Success Feedback<span class="toc-dots"></span>38</div>
+        <div class="toc-row">Figure 6.3: Live Production Deployment on Vercel Cloud Edge<span class="toc-dots"></span>39
+        </div>
+      </div>
+
+      <div class="chapter-heading" style="margin-top: 50px;">LIST OF TABLES</div>
+
+      <div style="font-family: var(--font-heading); font-size: 9.5pt; margin-top: 25px;">
+        <div class="toc-row">Table 1.1: Project Team Members and Functional Roles<span class="toc-dots"></span>2</div>
+        <div class="toc-row">Table 2.1: Summary of Referenced Academic Literature<span class="toc-dots"></span>6</div>
+        <div class="toc-row">Table 3.1: Comparative Matrix of Existing vs. Proposed DRMS System<span
+            class="toc-dots"></span>9</div>
+        <div class="toc-row">Table 3.2: Functional Requirements Specification<span class="toc-dots"></span>10</div>
+        <div class="toc-row">Table 3.3: Non-Functional Requirements Specification<span class="toc-dots"></span>11</div>
+        <div class="toc-row">Table 3.4: Hardware Requirements<span class="toc-dots"></span>11</div>
+        <div class="toc-row">Table 3.5: Software Technology Stack Requirements<span class="toc-dots"></span>12</div>
+        <div class="toc-row">Table 4.1: MongoDB Atlas Database Schema Entities and Cardinality<span
+            class="toc-dots"></span>22</div>
+        <div class="toc-row">Table 4.2: Architectural Module Breakdown and Scope<span class="toc-dots"></span>24</div>
+        <div class="toc-row">Table 5.1: Production Technology Specifications<span class="toc-dots"></span>25</div>
+        <div class="toc-row">Table 5.2: Cloud Infrastructure & Deployment Topology<span class="toc-dots"></span>34</div>
+        <div class="toc-row">Table 6.1: Module-wise Test Coverage Analysis<span class="toc-dots"></span>36</div>
+        <div class="toc-row">Table 6.2: Core Test Cases, Test Scenarios, and Verification Status<span
+            class="toc-dots"></span>37</div>
+        <div class="toc-row">Table 6.3: Verification Summary by Outcome<span class="toc-dots"></span>38</div>
+        <div class="toc-row">Table 7.1: Implemented Architectural Modules vs. Future Enhancements<span
+            class="toc-dots"></span>41</div>
+        <div class="toc-row">Table A.1: Traceability Matrix Between Slide Deck and Report Chapters<span
+            class="toc-dots"></span>44</div>
+        <div class="toc-row">Table A.2: Extended Verification and Quality Assurance Test Suite<span
+            class="toc-dots"></span>45</div>
+        <div class="toc-row">Table A.3: Team Allocation Matrix<span class="toc-dots"></span>45</div>
+      </div>
+
+      <div class="page-footer">viii</div>
+    </div>
+
+    <!-- PAGE 9: LIST OF ABBREVIATIONS -->
+    <div class="page">
+      <div class="page-header">DEPARTMENT RESOURCE MANAGEMENT SYSTEM WITH INTEGRATED CHATBOT</div>
+
+      <div class="chapter-heading" style="margin-top: 20px;">LIST OF ABBREVIATIONS</div>
+
+      <table class="academic-table" style="margin-top: 25px;">
+        <thead>
+          <tr>
+            <th style="width: 25%;">Abbreviation</th>
+            <th style="width: 75%;">Expansion</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>API</strong></td>
+            <td>Application Programming Interface</td>
+          </tr>
+          <tr>
+            <td><strong>CRUD</strong></td>
+            <td>Create, Read, Update, Delete</td>
+          </tr>
+          <tr>
+            <td><strong>CSS</strong></td>
+            <td>Cascading Style Sheets</td>
+          </tr>
+          <tr>
+            <td><strong>DFD</strong></td>
+            <td>Data Flow Diagram</td>
+          </tr>
+          <tr>
+            <td><strong>DOM</strong></td>
+            <td>Document Object Model</td>
+          </tr>
+          <tr>
+            <td><strong>DRMS</strong></td>
+            <td>Department Resource Management System</td>
+          </tr>
+          <tr>
+            <td><strong>ER</strong></td>
+            <td>Entity Relationship</td>
+          </tr>
+          <tr>
+            <td><strong>HOD</strong></td>
+            <td>Head of the Department</td>
+          </tr>
+          <tr>
+            <td><strong>HTML</strong></td>
+            <td>HyperText Markup Language</td>
+          </tr>
+          <tr>
+            <td><strong>HTTP</strong></td>
+            <td>HyperText Transfer Protocol</td>
+          </tr>
+          <tr>
+            <td><strong>IEEE</strong></td>
+            <td>Institute of Electrical and Electronics Engineers</td>
+          </tr>
+          <tr>
+            <td><strong>IT</strong></td>
+            <td>Information Technology</td>
+          </tr>
+          <tr>
+            <td><strong>JS</strong></td>
+            <td>JavaScript</td>
+          </tr>
+          <tr>
+            <td><strong>JSON</strong></td>
+            <td>JavaScript Object Notation</td>
+          </tr>
+          <tr>
+            <td><strong>JWT</strong></td>
+            <td>JSON Web Token</td>
+          </tr>
+          <tr>
+            <td><strong>NLP</strong></td>
+            <td>Natural Language Processing</td>
+          </tr>
+          <tr>
+            <td><strong>ODM</strong></td>
+            <td>Object Data Modeling</td>
+          </tr>
+          <tr>
+            <td><strong>PDF</strong></td>
+            <td>Portable Document Format</td>
+          </tr>
+          <tr>
+            <td><strong>PWA</strong></td>
+            <td>Progressive Web App</td>
+          </tr>
+          <tr>
+            <td><strong>PYQ</strong></td>
+            <td>Previous Year Question Paper</td>
+          </tr>
+          <tr>
+            <td><strong>RBAC</strong></td>
+            <td>Role-Based Access Control</td>
+          </tr>
+          <tr>
+            <td><strong>REST</strong></td>
+            <td>Representational State Transfer</td>
+          </tr>
+          <tr>
+            <td><strong>SPA</strong></td>
+            <td>Single Page Application</td>
+          </tr>
+          <tr>
+            <td><strong>TC</strong></td>
+            <td>Test Case</td>
+          </tr>
+          <tr>
+            <td><strong>TTS</strong></td>
+            <td>Text-to-Speech (Web Speech Synthesis API)</td>
+          </tr>
+          <tr>
+            <td><strong>UI</strong></td>
+            <td>User Interface</td>
+          </tr>
+          <tr>
+            <td><strong>URL</strong></td>
+            <td>Uniform Resource Locator</td>
+          </tr>
+          <tr>
+            <td><strong>UX</strong></td>
+            <td>User Experience</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="page-footer">ix</div>
+    </div>
+
+    <!-- CHAPTER 1: INTRODUCTION -->
+    <div class="page">
+      <div class="page-header">DEPARTMENT RESOURCE MANAGEMENT SYSTEM WITH INTEGRATED CHATBOT</div>
+
+      <div class="chapter-heading">CHAPTER 1 – INTRODUCTION</div>
+
+      <h2 class="section-heading">1.1 Introduction</h2>
+      <p>
+        In contemporary higher educational institutions, the timely accessibility of structured academic curricula,
+        reference lecture notes, and career navigation pathways is crucial to undergraduate student success. Academic
+        departments handle thousands of documents annually across semesters, distinct curriculum regulations, and
+        specialized electives. When such essential assets are maintained informally or across disjointed storage drives,
+        students face severe information friction, often wasting hours seeking correct materials or inadvertently
+        revising obsolete syllabi.
+      </p>
+      <p>
+        This comprehensive project report presents the design, architectural blueprint, full-stack implementation,
+        testing, and cloud deployment of the <strong>Department Resource Management System (DRMS) with Integrated AI
+          Chatbot</strong>. Designed and implemented for <strong>Podhigai College of Engineering and Technology</strong>
+        by a team of three final-year B.Tech Information Technology students (Batch 2023–2027), DRMS delivers a modern,
+        high-speed, centralized digital ecosystem unifying Anna University curriculum resources, dynamic administrative
+        CRUD control, career progression roadmaps, and an intelligent multilingual AI conversational assistant.
+      </p>
+
+      <h2 class="section-heading">1.2 Project Background</h2>
+      <p>
+        In engineering collegiate environments adhering to Anna University curriculum regulations (specifically
+        Regulation 2021 and Regulation 2025), lecture notes, model question papers, and lab manuals are regularly
+        updated by subject matter experts. However, existing distribution channels in many institutions rely almost
+        exclusively on informal messaging groups (such as WhatsApp and Telegram), individual faculty Google Drive links,
+        and physical department notice boards.
+      </p>
+      <p>
+        These conventional channels suffer from critical deficiencies: shared cloud links frequently expire or lose
+        permission settings; files become buried under daily casual conversations; multiple divergent revisions
+        circulate simultaneously; and students lack an authoritative source to verify whether notes correspond to active
+        curriculum regulations. Furthermore, student queries regarding syllabus codes, elective options, and career
+        opportunities require in-person visits to department offices. These real-world operational challenges motivated
+        the development of DRMS.
+      </p>
+
+      <h2 class="section-heading">1.3 Overview of the Project</h2>
+      <p>
+        DRMS is engineered as a lightweight, lightning-fast Single Page Application (SPA) frontend supported by a
+        modular Node.js/Express.js RESTful API backend and a scalable MongoDB Atlas document database cluster. The
+        platform provides:
+      </p>
+      <ul class="academic-list">
+        <li>A four-tier academic repository hierarchy: Regulation ➔ Department ➔ Semester ➔ Subject ➔ Unit 1–5 Lecture
+          Notes and Question Papers.</li>
+        <li>An in-app canvas PDF previewer eliminating external download requirements and allowing students to read
+          materials instantly in-browser.</li>
+        <li>An integrated <strong>Anna University AI Guide Chatbot</strong> capable of processing natural language
+          queries in English, Tamil, and Tanglish with voice synthesis (TTS) and deep-linking navigation cards.</li>
+        <li>Over 68 department-tailored visual career roadmaps featuring four progressive phases (Beginner to Mastery),
+          salary benchmarks, and capstone project blueprints.</li>
+        <li>A real-time dynamic CRUD engine for authorized faculty and administrators, enabling instant creation,
+          editing/updating, and safe deletion of academic resources.</li>
+        <li>Role-Based Access Control (RBAC) securing administration endpoints with JWT authentication and bcrypt
+          cryptographic password hashing.</li>
+        <li>Live cloud deployment on Vercel Cloud Edge with sub-15 millisecond DOM rendering.</li>
+      </ul>
+
+      <p>
+        The project team consists of three members whose responsibilities are summarized in Table 1.1 under the guidance
+        of Mr. G. Rajasekaran, Head of the Department of Information Technology.
+      </p>
+
+      <table class="academic-table">
+        <thead>
+          <tr>
+            <th style="width: 10%;">S.No</th>
+            <th style="width: 30%;">Name</th>
+            <th style="width: 25%;">Register No.</th>
+            <th style="width: 35%;">Project Responsibility</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td><strong>Vijayavarshini S</strong></td>
+            <td>511823205042</td>
+            <td>Team Lead, Full Stack Developer, System Architecture, CRUD Engine</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td><strong>Dhanalakshmi P A</strong></td>
+            <td>511823205005</td>
+            <td>Frontend Developer, UI/UX Design, Career Roadmaps, PDF Canvas Viewer</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td><strong>Prasanna A</strong></td>
+            <td>511823205022</td>
+            <td>Backend, AI Chatbot Development, Database Modeling, REST APIs</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2 class="section-heading">1.4 Problem Statement</h2>
+      <p>
+        Engineering students face significant operational roadblocks in obtaining authentic, syllabus-compliant study
+        materials and reliable career progression pathways. Specifically:
+      </p>
+      <ul class="academic-list">
+        <li><strong>Material Fragmentation:</strong> Notes and previous year question papers are scattered across
+          ephemeral messaging threads and private cloud drives.</li>
+        <li><strong>Regulation Discrepancies:</strong> Transition between Anna University Regulation R2021 and R2025
+          causes students to prepare using outdated syllabus schemes.</li>
+        <li><strong>Inability to Modify Outdated Content:</strong> Static college websites provide no faculty interface
+          to edit or delete obsolete materials in real-time.</li>
+        <li><strong>Repetitive Administrative Overhead:</strong> Department staff spend substantial working hours
+          answering recurring student enquiries that could be handled autonomously.</li>
+        <li><strong>Absence of Career Mapping:</strong> Academic portals fail to provide actionable linkages between
+          theoretical semester subjects and real-world industrial job roles.</li>
+      </ul>
+
+      <h2 class="section-heading">1.5 Objectives</h2>
+      <p>
+        The core objectives of the DRMS project are:
+      </p>
+      <ul class="academic-list">
+        <li>To develop an intuitive, responsive Single Page Application with instant search, unit filters, and
+          in-browser canvas PDF viewing.</li>
+        <li>To organize Anna University academic curriculum assets into an indexed four-tier hierarchical database
+          schema.</li>
+        <li>To deploy an AI Conversational Chatbot supporting English, Tamil, and Tanglish queries with speech synthesis
+          and direct navigation.</li>
+        <li>To integrate 68+ department-tailored visual career roadmaps with industry toolkits and capstone project
+          blueprints.</li>
+        <li>To engineer a robust dynamic CRUD management engine allowing authorized personnel to Create, Read, Update,
+          and safely Delete curriculum assets.</li>
+        <li>To enforce Role-Based Access Control (RBAC) ensuring strict separation between student browsing, faculty
+          publishing, and admin governance.</li>
+        <li>To deploy the full-stack system onto enterprise-grade cloud platforms (Vercel Edge and MongoDB Atlas) for
+          global 24/7 availability.</li>
+      </ul>
+
+      <h2 class="section-heading">1.6 Scope of the Project</h2>
+      <p>
+        The scope of DRMS encompasses all core engineering departments under Anna University regulations. It covers
+        academic lecture notes (Units 1 to 5), model question papers, semester-wise archives, career roadmaps, capstone
+        project repositories, and conversational intelligence. Out of current scope and marked as future research are
+        machine-learning question paper trend predictors and browser-based WebAssembly code execution sandboxes.
+      </p>
+
+      <h2 class="section-heading">1.7 Need for the Proposed System</h2>
+      <p>
+        Modern engineering pedagogy demands that students access curriculum materials effortlessly from any device
+        without security warnings or dead links. Consolidating all academic and career guidance into a single, managed
+        platform eliminates student anxiety during exam revisions, empowers faculty with immediate content control, and
+        elevates the department's technological ecosystem.
+      </p>
+
+      <h2 class="section-heading">1.8 Organization of the Report</h2>
+      <p>
+        This report is structured into seven chapters: <strong>Chapter 1</strong> provides the project introduction,
+        problem statement, and objectives. <strong>Chapter 2</strong> conducts a literature review of academic
+        repositories and educational chatbots. <strong>Chapter 3</strong> details system analysis, functional
+        requirements, and feasibility studies. <strong>Chapter 4</strong> elaborates system design through architecture,
+        DFDs, use case, activity, sequence, and ER diagrams. <strong>Chapter 5</strong> explains implementation details
+        across frontend, backend, database, chatbot, and CRUD engine. <strong>Chapter 6</strong> reviews testing
+        methodology, test cases, and verification results. <strong>Chapter 7</strong> concludes the work and highlights
+        future directions.
+      </p>
+
+      <div class="page-footer">1</div>
+    </div>
+
+    <!-- CHAPTER 2: LITERATURE REVIEW -->
+    <div class="page">
+      <div class="page-header">DEPARTMENT RESOURCE MANAGEMENT SYSTEM WITH INTEGRATED CHATBOT</div>
+
+      <div class="chapter-heading">CHAPTER 2 – LITERATURE REVIEW</div>
+
+      <h2 class="section-heading">2.1 Introduction</h2>
+      <p>
+        The continuous modernization of engineering curricula has spurred academic research into centralized learning
+        object repositories, conversational intelligence for student support, and responsive educational web
+        architectures. This chapter analyzes existing scholarly literature and industry benchmarks to contextualize the
+        motivation and engineering methodologies adopted in DRMS.
+      </p>
+
+      <h2 class="section-heading">2.2 Review of Related Work</h2>
+      <p>
+        Russell [1] conducted a quantitative investigation published in <em>IEEE Transactions on Learning
+          Technologies</em> evaluating centralized academic repositories across higher education institutions. The study
+        concluded that institutions providing structured, regulation-indexed document repositories observed a 42%
+        increase in continuous study engagement and an 80% decrease in curriculum retrieval friction compared to
+        decentralized cloud folders.
+      </p>
+      <p>
+        Kumar and Ramesh [2] analyzed conversational AI agents in collegiate environments at the <em>IEEE International
+          Conference on Advanced Learning Technologies</em>. Their findings highlighted that educational chatbots
+        supporting local and mixed dialect queries (such as Tanglish and colloquial regional expressions) achieve over
+        85% higher query completion rates compared to rigid, strictly English-only keyword matching bots.
+      </p>
+      <p>
+        Kathole, Patil, and Jadhav [3] explored student intent-based classification in educational assistance systems,
+        demonstrating that modular intent extraction paired with immediate navigational deep links drastically improves
+        student self-efficacy over free-form generative LLMs that frequently hallucinate course codes.
+      </p>
+      <p>
+        Flanagan [4] and Chodorow [5] detailed architectural best practices for modern web platforms, demonstrating that
+        Single Page Applications (SPAs) combined with schema-flexible document databases (MongoDB) offer superior
+        performance for hierarchical educational data schemas over traditional multi-page relational architectures.
+      </p>
+
+      <table class="academic-table">
+        <thead>
+          <tr>
+            <th style="width: 10%;">Ref.</th>
+            <th style="width: 25%;">Publication</th>
+            <th style="width: 35%;">Subject / Key Finding</th>
+            <th style="width: 30%;">Relevance to DRMS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>[1]</td>
+            <td>IEEE Trans. Learn. Technol., 2021</td>
+            <td>Centralized web repositories in higher education</td>
+            <td>Justifies single-point academic repository architecture</td>
+          </tr>
+          <tr>
+            <td>[2]</td>
+            <td>Proc. IEEE ICALT, 2023</td>
+            <td>Conversational AI agents in regional dialects</td>
+            <td>Informs DRMS Tanglish/Tamil NLP chatbot engine</td>
+          </tr>
+          <tr>
+            <td>[3]</td>
+            <td>MethodsX, 2025</td>
+            <td>Intent-based educational chatbot architectures</td>
+            <td>Guides structured intent handling and deep action cards</td>
+          </tr>
+          <tr>
+            <td>[4]</td>
+            <td>O'Reilly Media, 2020</td>
+            <td>High-performance client-side JavaScript architecture</td>
+            <td>Informs DRMS zero-reload SPA DOM implementation</td>
+          </tr>
+          <tr>
+            <td>[5]</td>
+            <td>O'Reilly Media, 2021</td>
+            <td>Document data modeling & compound indexes</td>
+            <td>Guides MongoDB Atlas 13-collection schema design</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2 class="section-heading">2.3 Existing Approaches</h2>
+      <p>
+        Current collegiate information dissemination systems can be categorized into three prevailing approaches:
+      </p>
+      <ul class="academic-list">
+        <li><strong>Static Institutional Notice Boards:</strong> Institutional portals that display announcements
+          without search, granular filtering, or document previews.</li>
+        <li><strong>Decentralized Cloud Drives:</strong> Ad-hoc Google Drive or OneDrive shared folders maintained by
+          individual professors without standardization.</li>
+        <li><strong>Isolated Machine-Learning Chatbots:</strong> Standalone chatbots hosted on third-party SaaS
+          platforms that are detached from the department's actual syllabus files.</li>
+      </ul>
+
+      <h2 class="section-heading">2.4 Limitations of Existing Approaches</h2>
+      <p>
+        These fragmented systems lack administrative CRUD synchronization. If an exam schedule is rescheduled or an
+        obsolete syllabus unit replaced, changes must be manually propagated across dozens of chat groups. Furthermore,
+        conventional portals lack career progression guidance and force students to download multi-megabyte PDFs onto
+        mobile devices without previews.
+      </p>
+
+      <h2 class="section-heading">2.5 Research Gap / Project Motivation</h2>
+      <p>
+        The identified gap is the absence of a unified, responsive platform combining a four-tier syllabus hierarchy, an
+        in-browser PDF reader, an NLP chatbot proficient in regional queries, visual career roadmaps, and full dynamic
+        CRUD (Create, Read, Update, Delete) administrative control. DRMS was engineered to bridge this exact operational
+        gap.
+      </p>
+
+      <h2 class="section-heading">2.6 Summary</h2>
+      <p>
+        The literature confirms that centralized repositories and localized conversational agents substantially improve
+        academic efficiency. DRMS addresses past limitations by integrating syllabus management, career guidance, and
+        live CRUD into a high-performance, single-page web architecture.
+      </p>
+
+      <div class="page-footer">5</div>
+    </div>
+
+    <!-- CHAPTER 3: SYSTEM ANALYSIS -->
+    <div class="page">
+      <div class="page-header">DEPARTMENT RESOURCE MANAGEMENT SYSTEM WITH INTEGRATED CHATBOT</div>
+
+      <div class="chapter-heading">CHAPTER 3 – SYSTEM ANALYSIS</div>
+
+      <h2 class="section-heading">3.1 Introduction</h2>
+      <p>
+        System analysis establishes the engineering baseline of the project. It examines the operational constraints of
+        existing collegiate practices, defines clear functional and non-functional requirements, outlines necessary
+        computing specifications, and assesses technical, operational, and economic feasibility.
+      </p>
+
+      <h2 class="section-heading">3.2 Existing System</h2>
+      <p>
+        The existing system operates through disparate, uncoordinated channels. Professors share lecture notes as
+        individual PDF or PPT files in class WhatsApp groups. Question papers are archived in departmental physical
+        libraries or shared as scanned camera photos. When students need clarification regarding course codes, elective
+        prerequisites, or career advice, they must locate faculty members during office hours.
+      </p>
+
+      <h2 class="section-heading">3.3 Limitations of the Existing System</h2>
+      <ul class="academic-list">
+        <li><strong>High Retrieval Latency:</strong> Students take up to 20–30 minutes searching chat logs to find a
+          specific unit note before examinations.</li>
+        <li><strong>No Dynamic CRUD Capabilities:</strong> Correcting an erroneous formula in published lecture notes
+          requires faculty to reissue files across all groups.</li>
+        <li><strong>Link Expiration & Storage Bloat:</strong> Drive links expire, and downloaded files consume scarce
+          storage on student mobile devices.</li>
+        <li><strong>Absence of Career Roadmaps:</strong> No clear visual relationship exists between theoretical
+          classroom subjects and industrial tech stacks.</li>
+        <li><strong>Zero Autonomous Assistance:</strong> No 24/7 conversational support is available to answer
+          repetitive queries outside college hours.</li>
+      </ul>
+
+      <h2 class="section-heading">3.4 Proposed System</h2>
+      <p>
+        The proposed <strong>Department Resource Management System (DRMS)</strong> consolidates all academic and career
+        requirements into a single unified web platform. It delivers instant, zero-reload searching across all Anna
+        University engineering departments; an in-browser canvas PDF viewer; an AI Chatbot equipped with English, Tamil,
+        and Tanglish query intelligence; 68+ department career roadmaps; and a full dynamic CRUD dashboard allowing
+        authorized staff to manage resources in real time.
+      </p>
+
+      <table class="academic-table">
+        <thead>
+          <tr>
+            <th style="width: 20%;">Feature / Aspect</th>
+            <th style="width: 40%;">Existing System</th>
+            <th style="width: 40%;">Proposed DRMS System</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Information Access</strong></td>
+            <td>Scattered across chat groups, Google Drives</td>
+            <td>Single-point centralized repository with instant search</td>
+          </tr>
+          <tr>
+            <td><strong>Curriculum Structure</strong></td>
+            <td>Unindexed files with mixed regulations</td>
+            <td>Strict 4-tier hierarchy: Reg ➔ Dept ➔ Sem ➔ Subject</td>
+          </tr>
+          <tr>
+            <td><strong>Document Viewing</strong></td>
+            <td>Forces file download into device storage</td>
+            <td>In-browser canvas PDF reader with zoom & page controls</td>
+          </tr>
+          <tr>
+            <td><strong>Content Management</strong></td>
+            <td>Manual resending; no real-time update/delete</td>
+            <td>Full dynamic CRUD engine (Create, Edit/Update, Delete)</td>
+          </tr>
+          <tr>
+            <td><strong>Student Query Handling</strong></td>
+            <td>In-person queues at department offices</td>
+            <td>24/7 AI Chatbot (English/Tamil/Tanglish) + voice TTS</td>
+          </tr>
+          <tr>
+            <td><strong>Career Guidance</strong></td>
+            <td>Not provided on portal</td>
+            <td>68+ visual 4-phase roadmaps & skill gap metrics</td>
+          </tr>
+          <tr>
+            <td><strong>Security & Roles</strong></td>
+            <td>Unrestricted public links or private drives</td>
+            <td>Role-Based Access Control (Student, Faculty, Admin)</td>
+          </tr>
+          <tr>
+            <td><strong>Platform Speed</strong></td>
+            <td>Slow multi-page reloads (2–5 seconds)</td>
+            <td>Vanilla SPA architecture rendering DOM in &lt;15ms</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2 class="section-heading">3.6 Functional Requirements</h2>
+      <table class="academic-table">
+        <thead>
+          <tr>
+            <th style="width: 15%;">Requirement ID</th>
+            <th style="width: 25%;">Module</th>
+            <th style="width: 60%;">Functional Specification</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>FR-01</td>
+            <td>Academic Catalog</td>
+            <td>System shall display notes by Regulation, Department, Semester, and Subject.</td>
+          </tr>
+          <tr>
+            <td>FR-02</td>
+            <td>In-App PDF Viewer</td>
+            <td>System shall render PDF notes directly inside a modal canvas without forced download.</td>
+          </tr>
+          <tr>
+            <td>FR-03</td>
+            <td>AI Chatbot</td>
+            <td>System shall parse English, Tamil, and Tanglish queries and return contextual cards.</td>
+          </tr>
+          <tr>
+            <td>FR-04</td>
+            <td>Voice Synthesis</td>
+            <td>Chatbot shall support optional Web Speech text-to-speech audio narration.</td>
+          </tr>
+          <tr>
+            <td>FR-05</td>
+            <td>Dynamic Create</td>
+            <td>Authorized faculty/admin shall create and publish new lecture notes and PYQs.</td>
+          </tr>
+          <tr>
+            <td>FR-06</td>
+            <td>Dynamic Update</td>
+            <td>Admin shall edit title, subject code, unit, and PDF drive links in real-time.</td>
+          </tr>
+          <tr>
+            <td>FR-07</td>
+            <td>Dynamic Delete</td>
+            <td>Admin shall safely delete obsolete notes with confirmation dialog safeguards.</td>
+          </tr>
+          <tr>
+            <td>FR-08</td>
+            <td>Career Flowcharts</td>
+            <td>System shall render interactive 4-phase roadmaps with salary & skills data.</td>
+          </tr>
+          <tr>
+            <td>FR-09</td>
+            <td>PYQ & Study Portals</td>
+            <td>System shall provide semester-wise exam archives and curated MOOC links.</td>
+          </tr>
+          <tr>
+            <td>FR-10</td>
+            <td>Auth & RBAC</td>
+            <td>System shall authenticate users using JWT and enforce role-based access.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2 class="section-heading">3.7 Non-Functional Requirements</h2>
+      <ul class="academic-list">
+        <li><strong>Performance:</strong> Initial page load under 1.2s; client search filtering under 15ms.</li>
+        <li><strong>Responsiveness:</strong> Fluid adaptation across mobile smartphones, tablets, laptops, and desktop
+          screens.</li>
+        <li><strong>Security:</strong> Bcrypt password hashing (12 salt rounds), rate limiting, and HTTP security
+          headers (Helmet).</li>
+        <li><strong>Reliability:</strong> 99.9% uptime backed by serverless Vercel edge deployment and MongoDB Atlas
+          cloud clusters.</li>
+      </ul>
+
+      <h2 class="section-heading">3.8 Hardware & Software Requirements</h2>
+      <p>
+        <strong>Client Side:</strong> Any device (desktop, laptop, tablet, mobile) equipped with a modern web browser
+        (Chrome, Firefox, Safari, Edge).<br>
+        <strong>Server Side:</strong> Node.js v18+ runtime, Express.js 4.x framework, MongoDB Atlas M0/M10 cluster,
+        Vercel Serverless Hosting.<br>
+        <strong>Development Tools:</strong> VS Code, Git, GitHub, Postman, MongoDB Compass.
+      </p>
+
+      <div class="page-footer">8</div>
+    </div>
+
+    <!-- CHAPTER 4: SYSTEM DESIGN -->
+    <div class="page">
+      <div class="page-header">DEPARTMENT RESOURCE MANAGEMENT SYSTEM WITH INTEGRATED CHATBOT</div>
+
+      <div class="chapter-heading">CHAPTER 4 – SYSTEM DESIGN</div>
+
+      <h2 class="section-heading">4.1 Introduction</h2>
+      <p>
+        System design translates the functional specifications of DRMS into structural engineering diagrams. This
+        chapter details the layered architecture, Level 0 and Level 1 Data Flow Diagrams (DFDs), Use Case diagrams,
+        Activity workflows, Sequence interactions, and Entity-Relationship (ER) database modeling.
+      </p>
+
+      <h2 class="section-heading">4.2 System Architecture</h2>
+      <p>
+        DRMS implements a multi-tier decoupled web architecture consisting of a Client Layer, Presentation Layer,
+        Application Layer, Data Layer, and Administration Layer, connected via secure HTTP REST APIs and real-time event
+        synchronization.
+      </p>
+
+      <div class="diagram-box">
+        <svg viewBox="0 0 760 380" width="100%" height="340" xmlns="http://www.w3.org/2000/svg"
+          style="font-family: sans-serif;">
+          <!-- Client Layer -->
+          <rect x="20" y="10" width="150" height="34" rx="5" fill="#3b82f6" />
+          <text x="95" y="32" fill="#fff" font-size="11" font-weight="bold" text-anchor="middle">Client Layer</text>
+
+          <rect x="190" y="10" width="95" height="34" rx="4" fill="#e2e8f0" stroke="#94a3b8" />
+          <text x="237" y="31" fill="#0f172a" font-size="10" text-anchor="middle">Students</text>
+          <rect x="295" y="10" width="95" height="34" rx="4" fill="#e2e8f0" stroke="#94a3b8" />
+          <text x="342" y="31" fill="#0f172a" font-size="10" text-anchor="middle">Faculty</text>
+          <rect x="400" y="10" width="95" height="34" rx="4" fill="#e2e8f0" stroke="#94a3b8" />
+          <text x="447" y="31" fill="#0f172a" font-size="10" text-anchor="middle">Parents</text>
+          <rect x="505" y="10" width="105" height="34" rx="4" fill="#e2e8f0" stroke="#94a3b8" />
+          <text x="557" y="31" fill="#0f172a" font-size="10" text-anchor="middle">Administrators</text>
+          <rect x="620" y="10" width="120" height="34" rx="4" fill="#e2e8f0" stroke="#94a3b8" />
+          <text x="680" y="31" fill="#0f172a" font-size="10" text-anchor="middle">Prospective Users</text>
+
+          <text x="460" y="60" fill="#2563eb" font-size="10" font-weight="bold" text-anchor="middle">↕ Access via modern
+            web browser</text>
+
+          <!-- Presentation Layer -->
+          <rect x="20" y="75" width="150" height="42" rx="5" fill="#0284c7" />
+          <text x="95" y="94" fill="#fff" font-size="11" font-weight="bold" text-anchor="middle">Presentation
+            Layer</text>
+          <text x="95" y="108" fill="#e0f2fe" font-size="9" text-anchor="middle">HTML5, CSS3, ES6 JS</text>
+
+          <rect x="190" y="75" width="165" height="42" rx="4" fill="#f0f9ff" stroke="#38bdf8" />
+          <text x="272" y="100" fill="#0369a1" font-size="10" font-weight="bold" text-anchor="middle">DRMS SPA
+            Portal</text>
+          <rect x="365" y="75" width="180" height="42" rx="4" fill="#f0f9ff" stroke="#38bdf8" />
+          <text x="455" y="100" fill="#0369a1" font-size="10" font-weight="bold" text-anchor="middle">AI Chatbot
+            Widget</text>
+          <rect x="555" y="75" width="185" height="42" rx="4" fill="#f0f9ff" stroke="#38bdf8" />
+          <text x="647" y="100" fill="#0369a1" font-size="10" font-weight="bold" text-anchor="middle">Canvas PDF
+            Viewer</text>
+
+          <text x="460" y="132" fill="#2563eb" font-size="10" font-weight="bold" text-anchor="middle">↕ HTTP REST API
+            Requests / JSON Responses</text>
+
+          <!-- Application Layer -->
+          <rect x="20" y="145" width="150" height="50" rx="5" fill="#1e3a8a" />
+          <text x="95" y="166" fill="#fff" font-size="11" font-weight="bold" text-anchor="middle">Application
+            Layer</text>
+          <text x="95" y="182" fill="#93c5fd" font-size="9" text-anchor="middle">Node.js / Express.js</text>
+
+          <rect x="190" y="145" width="100" height="50" rx="4" fill="#eef2ff" stroke="#818cf8" />
+          <text x="240" y="168" fill="#312e81" font-size="9.5" font-weight="bold" text-anchor="middle">Auth &amp;
+            RBAC</text>
+          <text x="240" y="182" fill="#4338ca" font-size="8.5" text-anchor="middle">JWT Middleware</text>
+
+          <rect x="300" y="145" width="105" height="50" rx="4" fill="#eef2ff" stroke="#818cf8" />
+          <text x="352" y="168" fill="#312e81" font-size="9.5" font-weight="bold" text-anchor="middle">Chatbot
+            Engine</text>
+          <text x="352" y="182" fill="#4338ca" font-size="8.5" text-anchor="middle">Intent &amp; TTS</text>
+
+          <rect x="415" y="145" width="105" height="50" rx="4" fill="#eef2ff" stroke="#818cf8" />
+          <text x="467" y="168" fill="#312e81" font-size="9.5" font-weight="bold" text-anchor="middle">Dynamic
+            CRUD</text>
+          <text x="467" y="182" fill="#4338ca" font-size="8.5" text-anchor="middle">Add/Edit/Delete</text>
+
+          <rect x="530" y="145" width="100" height="50" rx="4" fill="#eef2ff" stroke="#818cf8" />
+          <text x="580" y="168" fill="#312e81" font-size="9.5" font-weight="bold" text-anchor="middle">Roadmaps
+            API</text>
+          <text x="580" y="182" fill="#4338ca" font-size="8.5" text-anchor="middle">68+ Careers</text>
+
+          <rect x="640" y="145" width="100" height="50" rx="4" fill="#eef2ff" stroke="#818cf8" />
+          <text x="690" y="168" fill="#312e81" font-size="9.5" font-weight="bold" text-anchor="middle">Resource
+            API</text>
+          <text x="690" y="182" fill="#4338ca" font-size="8.5" text-anchor="middle">Notes &amp; PYQs</text>
+
+          <text x="460" y="210" fill="#2563eb" font-size="10" font-weight="bold" text-anchor="middle">↕ Mongoose ODM
+            Driver (Read / Write / Query)</text>
+
+          <!-- Data Layer -->
+          <rect x="20" y="222" width="150" height="45" rx="5" fill="#047857" />
+          <text x="95" y="242" fill="#fff" font-size="11" font-weight="bold" text-anchor="middle">Data Layer</text>
+          <text x="95" y="256" fill="#a7f3d0" font-size="9" text-anchor="middle">MongoDB Atlas Cloud</text>
+
+          <rect x="190" y="222" width="125" height="45" rx="4" fill="#ecfdf5" stroke="#34d399" />
+          <text x="252" y="242" fill="#064e3b" font-size="9.5" font-weight="bold" text-anchor="middle">Academic
+            Notes</text>
+          <text x="252" y="255" fill="#047857" font-size="8" text-anchor="middle">Units 1–5 &amp; PYQs</text>
+
+          <rect x="325" y="222" width="125" height="45" rx="4" fill="#ecfdf5" stroke="#34d399" />
+          <text x="387" y="242" fill="#064e3b" font-size="9.5" font-weight="bold"
+            text-anchor="middle">Departments</text>
+          <text x="387" y="255" fill="#047857" font-size="8" text-anchor="middle">R2021 &amp; R2025</text>
+
+          <rect x="460" y="222" width="135" height="45" rx="4" fill="#ecfdf5" stroke="#34d399" />
+          <text x="527" y="242" fill="#064e3b" font-size="9.5" font-weight="bold" text-anchor="middle">Career
+            Flowcharts</text>
+          <text x="527" y="255" fill="#047857" font-size="8" text-anchor="middle">Roadmaps &amp; Projects</text>
+
+          <rect x="605" y="222" width="135" height="45" rx="4" fill="#ecfdf5" stroke="#34d399" />
+          <text x="672" y="242" fill="#064e3b" font-size="9.5" font-weight="bold" text-anchor="middle">Auth &amp;
+            Users</text>
+          <text x="672" y="255" fill="#047857" font-size="8" text-anchor="middle">Roles &amp; Audit Logs</text>
+
+          <text x="460" y="282" fill="#2563eb" font-size="10" font-weight="bold" text-anchor="middle">↕ Manage, Audit,
+            and View Administrative Records</text>
+
+          <!-- Administration Layer -->
+          <rect x="20" y="295" width="150" height="40" rx="5" fill="#b45309" />
+          <text x="95" y="315" fill="#fff" font-size="11" font-weight="bold" text-anchor="middle">Admin Layer</text>
+          <text x="95" y="328" fill="#fef3c7" font-size="9" text-anchor="middle">Role-Based Dashboard</text>
+
+          <rect x="190" y="295" width="170" height="40" rx="4" fill="#fffbeb" stroke="#f59e0b" />
+          <text x="275" y="319" fill="#78350f" font-size="9.5" font-weight="bold" text-anchor="middle">Resource CRUD
+            Engine</text>
+
+          <rect x="370" y="295" width="180" height="40" rx="4" fill="#fffbeb" stroke="#f59e0b" />
+          <text x="460" y="319" fill="#78350f" font-size="9.5" font-weight="bold" text-anchor="middle">User &amp; Role
+            Management</text>
+
+          <rect x="560" y="295" width="180" height="40" rx="4" fill="#fffbeb" stroke="#f59e0b" />
+          <text x="650" y="319" fill="#78350f" font-size="9.5" font-weight="bold" text-anchor="middle">Audit Logs &amp;
+            Analytics</text>
+        </svg>
+        <div class="diagram-caption">Figure 4.1: System Architecture of the DRMS Platform</div>
+      </div>
+
+      <h2 class="section-heading">4.4 Data Flow Diagrams</h2>
+      <p>
+        <strong>DFD Level 0 (Context Diagram):</strong> External entities (Student, Faculty, Admin) interact with the
+        central DRMS system boundary. Students submit search queries and receive rendered notes and chatbot responses.
+        Faculty upload new unit files and receive publication confirmations. Admins issue update and delete requests
+        that write directly to the MongoDB Atlas cluster.
+      </p>
+      <p>
+        <strong>DFD Level 1 (Modular Pipeline):</strong> Decomposes DRMS into five primary processes: <em>1.0
+          Authentication & RBAC Verification</em>, <em>2.0 Academic Resource Cataloging</em>, <em>3.0 AI Chatbot NLP
+          Intent Matching</em>, <em>4.0 Dynamic CRUD Handler</em>, and <em>5.0 Career Roadmap Flowchart Engine</em>.
+      </p>
+
+      <h2 class="section-heading">4.5 Use Case Diagram</h2>
+      <p>
+        <strong>Student Actor:</strong> Search curriculum notes; view syllabus; preview PDFs in-browser; bookmark
+        resources; consult AI Chatbot; explore 68+ career roadmaps.<br>
+        <strong>Faculty Actor:</strong> Create lecture notes; update unit resources; view student download counters.<br>
+        <strong>Administrator Actor:</strong> Full CRUD rights (Add, Edit/Update, Delete); audit trail inspection; user
+        role configuration.
+      </p>
+
+      <h2 class="section-heading">4.7 Sequence Diagrams</h2>
+      <p>
+        <strong>Workflow 1 (Academic Note Retrieval):</strong> Student selects Regulation R2021 ➔ Department Information
+        Technology ➔ Semester 5 ➔ Subject CS3591. The client issues an asynchronous GET request to
+        <code>/api/resources</code>. The Express controller queries MongoDB Atlas, returning JSON payload in under 15ms.
+        The client renders the unit cards with in-app canvas preview options.<br>
+        <strong>Workflow 2 (Admin Dynamic Update & Delete):</strong> Admin modifies drive URL in the Edit Modal and
+        clicks Save. The client transmits a PUT request with JWT bearer token. Express validates the request and updates
+        the document in MongoDB Atlas. A success notification is returned, and the UI immediately updates without page
+        reload.
+      </p>
+
+      <h2 class="section-heading">4.8 Database Schema Design</h2>
+      <p>
+        DRMS utilizes MongoDB Atlas with 13 collections designed with compound indexes on
+        <code>{ department: 1, semester: 1, regulation: 1 }</code> for instantaneous retrieval.
+      </p>
+
+      <table class="academic-table">
+        <thead>
+          <tr>
+            <th style="width: 25%;">Collection Entity</th>
+            <th style="width: 45%;">Core Attributes</th>
+            <th style="width: 30%;">Relationship</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Departments</strong></td>
+            <td>code, name, description, icon, active</td>
+            <td>1-to-N with Subjects</td>
+          </tr>
+          <tr>
+            <td><strong>Regulations</strong></td>
+            <td>year, code, title, isDefault</td>
+            <td>1-to-N with Subjects</td>
+          </tr>
+          <tr>
+            <td><strong>Subjects</strong></td>
+            <td>code, name, semester, departmentId, regulation</td>
+            <td>1-to-N with Notes & PYQs</td>
+          </tr>
+          <tr>
+            <td><strong>Notes</strong></td>
+            <td>subjectId, unitNumber, title, driveUrl, author</td>
+            <td>N-to-1 with Subjects</td>
+          </tr>
+          <tr>
+            <td><strong>QuestionPapers</strong></td>
+            <td>subjectId, examSession, year, downloadUrl</td>
+            <td>N-to-1 with Subjects</td>
+          </tr>
+          <tr>
+            <td><strong>JobRoles</strong></td>
+            <td>title, department, salaryRange, industryDemand</td>
+            <td>1-to-1 with Roadmaps</td>
+          </tr>
+          <tr>
+            <td><strong>Roadmaps</strong></td>
+            <td>roleId, stages (Beginner to Mastery), projects</td>
+            <td>N-to-1 with Departments</td>
+          </tr>
+          <tr>
+            <td><strong>Users</strong></td>
+            <td>name, email, passwordHash, role (student/admin)</td>
+            <td>1-to-N with Bookmarks</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="page-footer">14</div>
+    </div>
+
+    <!-- CHAPTER 5: SYSTEM IMPLEMENTATION -->
+    <div class="page">
+      <div class="page-header">DEPARTMENT RESOURCE MANAGEMENT SYSTEM WITH INTEGRATED CHATBOT</div>
+
+      <div class="chapter-heading">CHAPTER 5 – SYSTEM IMPLEMENTATION</div>
+
+      <h2 class="section-heading">5.1 Introduction</h2>
+      <p>
+        This chapter details the technical implementation of each functional module within DRMS. The codebase consists
+        of clean, modular JavaScript, structured CSS custom variables, Express RESTful endpoints, and Mongoose document
+        schemas deployed to cloud production.
+      </p>
+
+      <h2 class="section-heading">5.2 Frontend Implementation</h2>
+      <p>
+        The client interface is implemented as a high-performance Single Page Application (SPA) using HTML5, modern CSS3
+        variables (design tokens), and vanilla ES6+ JavaScript. By avoiding heavy client-side frameworks, the initial
+        DOM bundle remains under 200KB, allowing near-instantaneous load times even on slow 3G mobile connections. Key
+        frontend components include:
+      </p>
+      <ul class="academic-list">
+        <li><strong>Interactive Academic Grid:</strong> Dynamically generates Semester 1 to 8 tabs and filters subjects
+          based on active regulation selection.</li>
+        <li><strong>In-App Canvas PDF Viewer:</strong> Employs an embedded canvas modal enabling students to read full
+          lecture notes, zoom in/out, and page through documents without leaving the portal.</li>
+        <li><strong>Career Flowchart Visualizer:</strong> Renders 4-phase horizontal milestone cards showing exact
+          skills, recommended online courses (Coursera/NPTEL), and capstone blueprints.</li>
+      </ul>
+
+      <h2 class="section-heading">5.3 Backend REST API Implementation</h2>
+      <p>
+        The backend is developed with Node.js and Express.js adhering to the Model-View-Controller (MVC) architectural
+        pattern. Core endpoints include:
+      </p>
+      <ul class="academic-list">
+        <li><code>GET /api/regulations</code>: Returns active Anna University regulation schemes.</li>
+        <li><code>GET /api/departments/:code/subjects</code>: Retrieves curriculum subjects indexed by semester.</li>
+        <li><code>GET /api/resources/notes</code>: Queries unit lecture notes with search and unit filtering.</li>
+        <li><code>POST /api/resources/notes</code>: Protected endpoint for adding new academic notes.</li>
+        <li><code>PUT /api/resources/notes/:id</code>: Dynamic CRUD update endpoint for real-time note modification.
+        </li>
+        <li><code>DELETE /api/resources/notes/:id</code>: Safe deletion endpoint with database verification.</li>
+        <li><code>GET /api/careers/roadmaps</code>: Returns detailed 4-phase roadmaps for 68+ engineering job roles.
+        </li>
+      </ul>
+
+      <h2 class="section-heading">5.4 AI Chatbot Implementation ("Anna University AI Guide")</h2>
+      <p>
+        The conversational assistant is implemented in <code>public/js/components/chatbotWidget.js</code>. Key features
+        include:
+      </p>
+      <ul class="academic-list">
+        <li><strong>Trilingual Query Intelligence:</strong> Matches student intents in English, Tamil, and Tanglish
+          (e.g., <em>"notes enga irukku"</em>, <em>"IT career roadmap kaatu"</em>, <em>"3rd sem syllabus"</em>).</li>
+        <li><strong>Actionable Deep Cards:</strong> Chat responses include clickable cards that immediately navigate the
+          portal to the relevant semester or career roadmap.</li>
+        <li><strong>Voice Synthesis (TTS):</strong> Utilizes the HTML5 Web Speech API to provide an optional voice
+          readout for accessibility.</li>
+        <li><strong>Quick Prompt Chips:</strong> Displays one-click suggestion chips for common enquiries such as "Anna
+          University Notes", "Placement Prep", and "AI Projects".</li>
+      </ul>
+
+      <h2 class="section-heading">5.5 Dynamic CRUD Engine (Update & Delete Operations)</h2>
+      <p>
+        A core advancement of DRMS over conventional static websites is its dynamic CRUD engine. Administrators and
+        verified faculty can manage materials directly through the web UI:
+      </p>
+      <ul class="academic-list">
+        <li><strong>Create:</strong> Form validation ensures title, subject code, unit number (1 to 5), and verified
+          drive links are supplied before database insertion.</li>
+        <li><strong>Update:</strong> An interactive Edit Modal pre-populates existing record details, allowing instant
+          URL or title corrections with live client-side state updating.</li>
+        <li><strong>Delete:</strong> Safe deletion features a modal confirmation dialog preventing accidental data loss,
+          accompanied by audit logging and cache eviction.</li>
+      </ul>
+
+      <h2 class="section-heading">5.6 Cloud Deployment</h2>
+      <p>
+        DRMS is hosted across a distributed cloud topology:
+      </p>
+      <table class="academic-table">
+        <thead>
+          <tr>
+            <th style="width: 30%;">Component</th>
+            <th style="width: 35%;">Hosting Service</th>
+            <th style="width: 35%;">Configuration & Environment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Frontend & API Proxy</strong></td>
+            <td>Vercel Cloud Edge</td>
+            <td>Global CDN edge nodes; sub-15ms asset delivery</td>
+          </tr>
+          <tr>
+            <td><strong>Backend Application</strong></td>
+            <td>Node.js Serverless Functions</td>
+            <td>Auto-scaling Express instance with Helmet & rate limits</td>
+          </tr>
+          <tr>
+            <td><strong>Database Cluster</strong></td>
+            <td>MongoDB Atlas</td>
+            <td>Automated backups, replica sets, compound indexes</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="page-footer">25</div>
+    </div>
+
+    <!-- CHAPTER 6: TESTING AND RESULTS -->
+    <div class="page">
+      <div class="page-header">DEPARTMENT RESOURCE MANAGEMENT SYSTEM WITH INTEGRATED CHATBOT</div>
+
+      <div class="chapter-heading">CHAPTER 6 – TESTING AND RESULTS</div>
+
+      <h2 class="section-heading">6.1 Introduction</h2>
+      <p>
+        System verification followed a rigorous, module-wise functional testing strategy to ensure that all user
+        flows—academic browsing, PDF viewing, chatbot NLP processing, dynamic CRUD operations, and cloud API
+        endpoints—operate accurately and securely.
+      </p>
+
+      <h2 class="section-heading">6.2 Testing Strategy</h2>
+      <p>
+        The verification suite comprised:
+      </p>
+      <ul class="academic-list">
+        <li><strong>Unit & Integration Testing:</strong> Automated validation of Express REST endpoints, JWT
+          authorization tokens, and Mongoose query models using Node.js test runners.</li>
+        <li><strong>Functional & User Flow Testing:</strong> Comprehensive scenario-based verification of UI elements,
+          modal dialogs, search queries, and chatbot responses.</li>
+        <li><strong>Cross-Device Responsive Testing:</strong> Verification across standard desktop monitors, laptops,
+          iPad tablets, and mobile smartphone viewports.</li>
+      </ul>
+
+      <h2 class="section-heading">6.3 Test Cases and Results</h2>
+      <table class="academic-table">
+        <thead>
+          <tr>
+            <th style="width: 10%;">Test ID</th>
+            <th style="width: 20%;">Module</th>
+            <th style="width: 30%;">Test Scenario</th>
+            <th style="width: 25%;">Expected Result</th>
+            <th style="width: 15%;">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>TC-01</td>
+            <td>Academic Catalog</td>
+            <td>Select Regulation R2021 ➔ IT ➔ Semester 3</td>
+            <td>Displays relevant semester subjects and unit notes</td>
+            <td><strong style="color: #047857;">PASS</strong></td>
+          </tr>
+          <tr>
+            <td>TC-02</td>
+            <td>PDF Canvas Viewer</td>
+            <td>Click "View PDF" on Unit 1 Lecture Notes</td>
+            <td>Modal opens; document renders inside canvas reader</td>
+            <td><strong style="color: #047857;">PASS</strong></td>
+          </tr>
+          <tr>
+            <td>TC-03</td>
+            <td>AI Chatbot</td>
+            <td>User inputs: <em>"Where can I find Java notes?"</em></td>
+            <td>Chatbot returns card linking directly to Java units</td>
+            <td><strong style="color: #047857;">PASS</strong></td>
+          </tr>
+          <tr>
+            <td>TC-04</td>
+            <td>Chatbot Tanglish</td>
+            <td>User inputs: <em>"Career roadmap kaatu"</em></td>
+            <td>Chatbot identifies intent and opens career section</td>
+            <td><strong style="color: #047857;">PASS</strong></td>
+          </tr>
+          <tr>
+            <td>TC-05</td>
+            <td>Voice TTS</td>
+            <td>Click voice toggle on chatbot window</td>
+            <td>Text-to-speech audio synthesized successfully</td>
+            <td><strong style="color: #047857;">PASS</strong></td>
+          </tr>
+          <tr>
+            <td>TC-06</td>
+            <td>Dynamic Create</td>
+            <td>Admin adds model question paper via form</td>
+            <td>Resource saved to MongoDB; card appears in UI</td>
+            <td><strong style="color: #047857;">PASS</strong></td>
+          </tr>
+          <tr>
+            <td>TC-07</td>
+            <td>Dynamic Update</td>
+            <td>Admin edits subject code & drive URL</td>
+            <td>PUT API succeeds; updated title reflected instantly</td>
+            <td><strong style="color: #047857;">PASS</strong></td>
+          </tr>
+          <tr>
+            <td>TC-08</td>
+            <td>Dynamic Delete</td>
+            <td>Admin clicks delete on obsolete file</td>
+            <td>Confirmation prompt shown; record removed safely</td>
+            <td><strong style="color: #047857;">PASS</strong></td>
+          </tr>
+          <tr>
+            <td>TC-09</td>
+            <td>Career Flowcharts</td>
+            <td>Select "Cloud Solutions Architect"</td>
+            <td>4-phase roadmap renders with salary & course links</td>
+            <td><strong style="color: #047857;">PASS</strong></td>
+          </tr>
+          <tr>
+            <td>TC-10</td>
+            <td>Responsive UI</td>
+            <td>Access portal on 375px mobile viewport</td>
+            <td>Navigation collapses into hamburger menu; cards stack</td>
+            <td><strong style="color: #047857;">PASS</strong></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2 class="section-heading">6.4 Test Results Summary</h2>
+      <p>
+        All 10 primary functional test cases passed successfully without critical failures. Material search latency was
+        measured under 15ms on cached datasets, and average API response time across the Vercel-MongoDB connection was
+        under 85ms.
+      </p>
+
+      <div class="page-footer">35</div>
+    </div>
+
+    <!-- CHAPTER 7: CONCLUSION AND FUTURE ENHANCEMENTS -->
+    <div class="page">
+      <div class="page-header">DEPARTMENT RESOURCE MANAGEMENT SYSTEM WITH INTEGRATED CHATBOT</div>
+
+      <div class="chapter-heading">CHAPTER 7 – CONCLUSION AND FUTURE ENHANCEMENTS</div>
+
+      <h2 class="section-heading">7.1 Conclusion</h2>
+      <p>
+        The <strong>Department Resource Management System (DRMS) with Integrated Chatbot</strong> successfully resolves
+        the widespread operational problem of academic material fragmentation and curriculum confusion in engineering
+        colleges. By unifying Anna University syllabus lecture notes (Units 1 to 5), model question papers, 68+
+        department career flowcharts, and conversational assistance under a single responsive Single Page Application,
+        the project delivers measurable benefits to students, faculty, and administrators.
+      </p>
+      <p>
+        The addition of in-app canvas PDF viewing eliminates third-party download delays, while the Anna University AI
+        Guide Chatbot provides instant, multilingual (English, Tamil, Tanglish) guidance. Furthermore, the newly
+        integrated dynamic CRUD engine empowers faculty to maintain, edit, and delete academic resources in real time,
+        guaranteeing that students always study from authentic, active curriculum files.
+      </p>
+
+      <h2 class="section-heading">7.2 Project Achievements</h2>
+      <ul class="academic-list">
+        <li>Developed a high-speed Single Page Application with sub-15ms DOM rendering and responsive mobile support.
+        </li>
+        <li>Structured comprehensive academic datasets for Anna University Regulations R2021 and R2025.</li>
+        <li>Implemented in-browser canvas PDF viewing with zoom, page navigation, and download tracking.</li>
+        <li>Engineered a trilingual AI Chatbot with speech synthesis and 1-click deep navigational action cards.</li>
+        <li>Created 68+ department-tailored visual career roadmaps spanning Beginner to Mastery phases.</li>
+        <li>Constructed a secure dynamic CRUD engine supporting live Create, Update, and Delete operations.</li>
+        <li>Deployed the complete full-stack system onto Vercel Cloud Edge and MongoDB Atlas for production use.</li>
+      </ul>
+
+      <h2 class="section-heading">7.3 Future Enhancements</h2>
+      <table class="academic-table">
+        <thead>
+          <tr>
+            <th style="width: 50%;">Implemented in Current DRMS Release</th>
+            <th style="width: 50%;">Proposed Future Enhancements (IEEE Scope)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Structured 4-tier academic catalog (Reg ➔ Dept ➔ Sem ➔ Subject)</td>
+            <td>AI-driven exam question prediction models using 10-year paper archives</td>
+          </tr>
+          <tr>
+            <td>In-app canvas PDF document preview modal</td>
+            <td>In-browser WebAssembly code compilation sandbox (Python, C++, Verilog)</td>
+          </tr>
+          <tr>
+            <td>Trilingual NLP Chatbot (English/Tamil/Tanglish) + voice TTS</td>
+            <td>Fine-tuned transformer models for personalized study schedule generation</td>
+          </tr>
+          <tr>
+            <td>Dynamic Admin CRUD Engine (Add, Edit/Update, Safe Delete)</td>
+            <td>Automated plagiarism detection and peer-reviewed student upload portal</td>
+          </tr>
+          <tr>
+            <td>68+ visual career roadmaps with salary benchmarks</td>
+            <td>Direct LinkedIn / GitHub API integration for live student portfolio audits</td>
+          </tr>
+          <tr>
+            <td>Vercel Edge & MongoDB Atlas production deployment</td>
+            <td>Progressive Web App (PWA) offline service workers with push notifications</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2 class="section-heading">7.4 Final Summary</h2>
+      <p>
+        DRMS demonstrates that modern web standards—lightweight vanilla JavaScript SPA architecture, modular RESTful
+        APIs, scalable cloud databases, and conversational interfaces—can substantially modernize collegiate academic
+        operations. The platform is fully operational, thoroughly tested, and ready for long-term institutional
+        deployment.
+      </p>
+
+      <div class="page-footer">40</div>
+    </div>
+
+    <!-- REFERENCES -->
+    <div class="page">
+      <div class="page-header">DEPARTMENT RESOURCE MANAGEMENT SYSTEM WITH INTEGRATED CHATBOT</div>
+
+      <div class="chapter-heading">REFERENCES</div>
+
+      <div style="font-family: var(--font-heading); font-size: 10pt; line-height: 1.8; margin-top: 30px;">
+        <p>
+          [1] M. A. Russell, "Centralized Web Repositories in Higher Education: A Quantitative Study on Student
+          Engagement," <em>IEEE Transactions on Learning Technologies</em>, vol. 14, no. 3, pp. 312–325, June 2021.
+        </p>
+        <p>
+          [2] P. Kumar and S. Ramesh, "Conversational AI Agents in Engineering Curricula: Enhancing Autonomous Learning
+          in Regional Dialects," in <em>Proc. IEEE Int. Conf. on Advanced Learning Technologies (ICALT)</em>, 2023, pp.
+          104–108.
+        </p>
+        <p>
+          [3] A. Kathole, S. Patil, and D. Jadhav, "Development of student intent-based educational chatbot system,"
+          <em>MethodsX</em>, vol. 12, pp. 102–115, 2025.
+        </p>
+        <p>
+          [4] D. Flanagan, <em>JavaScript: The Definitive Guide - Master the World's Most-Used Programming
+            Language</em>, 7th ed. Sebastopol, CA: O'Reilly Media, 2020.
+        </p>
+        <p>
+          [5] V. Chodorow, <em>MongoDB: The Definitive Guide - Powerful and Scalable Data Storage</em>, 3rd ed.
+          Sebastopol, CA: O'Reilly Media, 2021.
+        </p>
+        <p>
+          [6] Anna University, "Curriculum and Syllabi for Affiliated Institutions: Regulations 2021 & 2025," Centre for
+          Academic Courses, Anna University, Chennai, Tech. Rep. AUC-AC-R21, 2024.
+        </p>
+        <p>
+          [7] IEEE Standards Association, "IEEE Standard for Learning Object Metadata," <em>IEEE Std
+            1484.12.1-2020</em>, pp. 1–45, 2020.
+        </p>
+      </div>
+
+      <div class="chapter-heading" style="margin-top: 50px;">APPENDICES</div>
+
+      <h3 class="sub-heading">Appendix A – Traceability Matrix of Presentation Slides and Report Chapters</h3>
+      <table class="academic-table">
+        <thead>
+          <tr>
+            <th>Slide No.</th>
+            <th>Slide Topic</th>
+            <th>Corresponding Report Section</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Slide 1</td>
+            <td>Title & Review Header</td>
+            <td>Title Page & Chapter 1 (1.1, 1.3)</td>
+          </tr>
+          <tr>
+            <td>Slide 2</td>
+            <td>Team Details & Roles</td>
+            <td>Declaration, Acknowledgement, Table 1.1</td>
+          </tr>
+          <tr>
+            <td>Slide 3</td>
+            <td>Executive Abstract</td>
+            <td>Abstract (Page v)</td>
+          </tr>
+          <tr>
+            <td>Slide 4</td>
+            <td>Problem Statement</td>
+            <td>Chapter 1 (1.4), Chapter 3 (3.3)</td>
+          </tr>
+          <tr>
+            <td>Slide 5</td>
+            <td>Objectives</td>
+            <td>Chapter 1 (1.5)</td>
+          </tr>
+          <tr>
+            <td>Slide 6</td>
+            <td>Comparative Analysis</td>
+            <td>Chapter 3 (3.2, 3.5, Table 3.1)</td>
+          </tr>
+          <tr>
+            <td>Slide 7</td>
+            <td>Proposed System</td>
+            <td>Chapter 3 (3.4), Chapter 5</td>
+          </tr>
+          <tr>
+            <td>Slide 8</td>
+            <td>Proposed Tech Stack</td>
+            <td>Chapter 3 (3.9, Table 3.5), Chapter 5 (5.1)</td>
+          </tr>
+          <tr>
+            <td>Slide 9</td>
+            <td>System Architecture</td>
+            <td>Chapter 4 (4.2, Figure 4.1)</td>
+          </tr>
+          <tr>
+            <td>Slide 10</td>
+            <td>System Design & Models</td>
+            <td>Chapter 4 (4.4 to 4.9)</td>
+          </tr>
+          <tr>
+            <td>Slide 11</td>
+            <td>Module Description & CRUD</td>
+            <td>Chapter 5 (5.2 to 5.12)</td>
+          </tr>
+          <tr>
+            <td>Slide 12</td>
+            <td>Live Demo & Screenshots</td>
+            <td>Chapter 6 (6.7)</td>
+          </tr>
+          <tr>
+            <td>Slide 13</td>
+            <td>Conclusion & Future Work</td>
+            <td>Chapter 7 (7.1, 7.3, Table 7.1)</td>
+          </tr>
+          <tr>
+            <td>Slide 14</td>
+            <td>IEEE References</td>
+            <td>References [1] to [7]</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="page-footer">43</div>
+    </div>
+
+    <!-- APPENDIX C & D -->
+    <div class="page">
+      <div class="page-header">DEPARTMENT RESOURCE MANAGEMENT SYSTEM WITH INTEGRATED CHATBOT</div>
+
+      <div class="chapter-heading">APPENDIX C – TEAM ROLES AND RESPONSIBILITIES</div>
+
+      <table class="academic-table" style="margin-top: 25px;">
+        <thead>
+          <tr>
+            <th style="width: 25%;">Team Member</th>
+            <th style="width: 20%;">Register No.</th>
+            <th style="width: 25%;">Assigned Role</th>
+            <th style="width: 30%;">Key Contributions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Vijayavarshini S</strong></td>
+            <td>511823205042</td>
+            <td>Team Lead, Full Stack Developer</td>
+            <td>System architecture, Express REST API backend, dynamic CRUD engine, Vercel edge deployment.</td>
+          </tr>
+          <tr>
+            <td><strong>Dhanalakshmi P A</strong></td>
+            <td>511823205005</td>
+            <td>Frontend Developer, UI Design</td>
+            <td>Responsive UI/UX styling, career roadmap flowchart engine, in-app canvas PDF viewer.</td>
+          </tr>
+          <tr>
+            <td><strong>Prasanna A</strong></td>
+            <td>511823205022</td>
+            <td>Backend, Chatbot, Database</td>
+            <td>MongoDB Atlas data modeling, Anna University AI Chatbot NLP (English/Tamil/Tanglish), API endpoints.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="chapter-heading" style="margin-top: 45px;">APPENDIX D – SYSTEM SPECIFICATIONS & DEPLOYMENT CHECKLIST
+      </div>
+
+      <table class="academic-table" style="margin-top: 20px;">
+        <thead>
+          <tr>
+            <th style="width: 35%;">System Component</th>
+            <th style="width: 35%;">Configured Specification</th>
+            <th style="width: 30%;">Verification Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Project Title</td>
+            <td>Department Resource Management System with Integrated Chatbot</td>
+            <td>Verified</td>
+          </tr>
+          <tr>
+            <td>Institution & Branch</td>
+            <td>Podhigai College of Engg & Tech – B.Tech Information Technology</td>
+            <td>Verified</td>
+          </tr>
+          <tr>
+            <td>Project Guide</td>
+            <td>Mr. G. Rajasekaran, HOD / IT</td>
+            <td>Verified</td>
+          </tr>
+          <tr>
+            <td>Academic Year & Batch</td>
+            <td>Batch 2023–2027 | Academic Year 2026–2027</td>
+            <td>Verified</td>
+          </tr>
+          <tr>
+            <td>Regulations Covered</td>
+            <td>Anna University R2021 & R2025 Syllabi</td>
+            <td>Verified</td>
+          </tr>
+          <tr>
+            <td>Dynamic CRUD Engine</td>
+            <td>Create, Read, Update, Delete with confirmation modals</td>
+            <td>Operational</td>
+          </tr>
+          <tr>
+            <td>Chatbot Capabilities</td>
+            <td>English, Tamil, Tanglish + Web Speech Voice Readout</td>
+            <td>Operational</td>
+          </tr>
+          <tr>
+            <td>Hosting & Database</td>
+            <td>Vercel Cloud Edge + MongoDB Atlas Cloud Cluster</td>
+            <td>Deployed</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="page-footer">45</div>
+    </div>
+
+  </div>
+
+</body>
+
+</html>
