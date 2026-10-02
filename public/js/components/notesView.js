@@ -441,18 +441,21 @@ window.NotesView = {
                     <!-- Verified Academic Repositories Integration -->
                     <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; padding: 10px 14px; background: var(--bg-surface-elevated); border-radius: var(--radius-sm); border: 1px dashed var(--border-color); align-items: center;">
                       <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted);">🌐 Direct Academic Portals:</span>
-                      <a href="https://onlinecourses.nptel.ac.in/explorer?q=${encodeURIComponent(currentSubject.name)}" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(37,99,235,0.08); color: #2563eb; text-decoration: none; font-size: 0.72rem; padding: 4px 8px; border-radius: 4px;">
+                      <button type="button" class="btn btn-sm direct-academic-portal-btn" data-portal="nptel" style="background: rgba(37,99,235,0.08); color: #2563eb; border: 1px solid rgba(37,99,235,0.3); font-size: 0.75rem; font-weight: 700; padding: 5px 11px; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
                         🇮🇳 NPTEL Lectures ↗
-                      </a>
-                      <a href="https://ndl.iitkgp.ac.in/result?q=${encodeURIComponent(currentSubject.name)}" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(5,150,105,0.08); color: #059669; text-decoration: none; font-size: 0.72rem; padding: 4px 8px; border-radius: 4px;">
+                      </button>
+                      <button type="button" class="btn btn-sm direct-academic-portal-btn" data-portal="ndli" style="background: rgba(5,150,105,0.08); color: #059669; border: 1px solid rgba(5,150,105,0.3); font-size: 0.75rem; font-weight: 700; padding: 5px 11px; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
                         🏛️ NDLI Repository ↗
-                      </a>
-                      <a href="https://openlibrary.org/search?q=${encodeURIComponent(currentSubject.name)}" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(217,119,6,0.08); color: #d97706; text-decoration: none; font-size: 0.72rem; padding: 4px 8px; border-radius: 4px;">
+                      </button>
+                      <button type="button" class="btn btn-sm direct-academic-portal-btn" data-portal="textbooks" style="background: rgba(217,119,6,0.08); color: #d97706; border: 1px solid rgba(217,119,6,0.3); font-size: 0.75rem; font-weight: 700; padding: 5px 11px; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
                         📖 Open Library E-Books ↗
-                      </a>
-                      <a href="https://cac.annauniv.edu" target="_blank" rel="noopener noreferrer" class="badge" style="background: rgba(124,58,237,0.08); color: #7c3aed; text-decoration: none; font-size: 0.72rem; padding: 4px 8px; border-radius: 4px;">
+                      </button>
+                      <button type="button" class="btn btn-sm direct-academic-portal-btn" data-portal="cac" style="background: rgba(124,58,237,0.08); color: #7c3aed; border: 1px solid rgba(124,58,237,0.3); font-size: 0.75rem; font-weight: 700; padding: 5px 11px; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
                         🎓 Anna University CAC ↗
-                      </a>
+                      </button>
+                      <button type="button" class="btn btn-sm direct-academic-portal-btn" data-portal="drive" style="background: rgba(14,165,233,0.08); color: #0284c7; border: 1px solid rgba(14,165,233,0.3); font-size: 0.75rem; font-weight: 700; padding: 5px 11px; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
+                        ☁️ Cloud Vault (Drive) ↗
+                      </button>
                     </div>
 
                     <!-- 12 SUBJECT RESOURCE TABS (SECTION 12 OF USER PROMPT) -->
@@ -1448,8 +1451,63 @@ window.NotesView = {
     document.body.removeChild(a);
     URL.revokeObjectURL(blobUrl);
 
+    // Open Interactive PDF Viewer Modal so student can immediately read, print, and copy notes
+    if (window.PdfViewerModal) {
+      if (pdfType === 'syllabus') {
+        const syl = window.AcademicNotesCatalog?.getCompleteSyllabus(subject);
+        window.PdfViewerModal.open({
+          title: `${name} — Complete Curriculum Syllabus`,
+          fileName: filename,
+          subjectName: name,
+          subjectCode: code,
+          unit: 'Syllabus',
+          description: `Anna University ${reg} official curriculum document.`,
+          topics: (allNotes || []).map(u => `Unit ${u.unit}: ${u.title}`),
+          detailedNotes: (allNotes || []).map(u => ({
+            topic: `Unit ${u.unit}: ${u.title}`,
+            explanation: u.description || `Topics covered: ${(u.topics || []).join(', ')}`,
+            keyPoints: u.topics || []
+          })),
+          uploadedBy: 'Centre for Academic Courses (CAC)'
+        });
+      } else if (pdfType && pdfType.startsWith('unit')) {
+        const uNum = parseInt(pdfType.replace('unit', '')) || 1;
+        const note = (allNotes || []).find(n => n.unit === uNum) || allNotes[0];
+        window.PdfViewerModal.open({
+          title: note?.title || `${name} - Unit ${uNum}`,
+          fileName: filename,
+          subjectName: name,
+          subjectCode: code,
+          unit: uNum,
+          description: note?.description,
+          topics: note?.topics,
+          detailedNotes: note?.detailedNotes,
+          partA: note?.partA,
+          partB: note?.partB,
+          uploadedBy: 'Anna University Faculty Board'
+        });
+      } else if (pdfType === 'pyqs') {
+        const pyq = window.AcademicNotesCatalog?.getPreviousYearQuestions(subject);
+        const p = pyq?.papers?.[0];
+        if (p) {
+          window.PdfViewerModal.open({
+            title: `${name} — End-Semester Examination Question Paper`,
+            fileName: filename,
+            subjectName: name,
+            subjectCode: code,
+            unit: p.session,
+            description: `Official Anna University Examination Question Paper • QP Code: ${p.qpCode}`,
+            uploadedBy: 'Office of Controller of Examinations (ACOE)',
+            qpCode: p.qpCode,
+            questions: p.questions,
+            analysis: p.analysis
+          });
+        }
+      }
+    }
+
     if (window.Toast) {
-      window.Toast.show(`✅ Downloaded ${filename}!`, 'success');
+      window.Toast.show(`✅ Opened & Downloaded ${filename}!`, 'success');
     }
   },
 
@@ -1585,6 +1643,24 @@ window.NotesView = {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
         actions.downloadResource(btn.dataset.pdftype);
+      });
+    });
+
+    // Direct Academic Portals Handler (NPTEL, NDLI, Textbooks, CAC, Drive)
+    container.querySelectorAll('.direct-academic-portal-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const portal = btn.dataset.portal;
+        const ctx = actions.getCurrentContext ? actions.getCurrentContext() : {};
+        const subject = ctx.subject;
+        if (window.AcademicPortalsModal) {
+          window.AcademicPortalsModal.open(portal, subject);
+        } else if (portal === 'textbooks') {
+          actions.setResourceType('textbooks');
+          renderContent();
+        } else if (window.Toast) {
+          window.Toast.info(`Opening ${portal.toUpperCase()} portal...`);
+        }
       });
     });
 

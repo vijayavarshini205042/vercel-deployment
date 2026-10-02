@@ -216,22 +216,22 @@ window.QuestionPapersView = {
               <span class="badge badge-success" style="font-size: 0.72rem;">100% Free Solved Papers & Question Banks</span>
             </div>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;">
-              <a href="https://onlinecourses.nptel.ac.in/explorer?q=${encodeURIComponent(currentSubject ? currentSubject.name || currentSubject.code : currentDeptCode + ' engineering')}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; padding: 10px 14px; border-radius: var(--radius-md); background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(37, 99, 235, 0.25); color: #2563eb; font-weight: 600; font-size: 0.82rem; display: flex; align-items: center; justify-content: space-between;">
-                <span>🇮🇳 NPTEL / SWAYAM QP Archive</span>
+              <button type="button" class="btn btn-secondary qp-academic-portal-btn" data-portal="nptel" style="padding: 10px 14px; border-radius: var(--radius-md); background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(37, 99, 235, 0.25); color: #2563eb; font-weight: 700; font-size: 0.82rem; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+                <span>🇮🇳 NPTEL / SWAYAM Video Portal</span>
                 <span>↗</span>
-              </a>
-              <a href="https://ndl.iitkgp.ac.in/result?q=${encodeURIComponent(currentSubject ? currentSubject.code + ' question paper' : currentDeptCode + ' question paper')}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; padding: 10px 14px; border-radius: var(--radius-md); background: rgba(5, 150, 105, 0.08); border: 1px solid rgba(5, 150, 105, 0.25); color: #059669; font-weight: 600; font-size: 0.82rem; display: flex; align-items: center; justify-content: space-between;">
+              </button>
+              <button type="button" class="btn btn-secondary qp-academic-portal-btn" data-portal="ndli" style="padding: 10px 14px; border-radius: var(--radius-md); background: rgba(5, 150, 105, 0.08); border: 1px solid rgba(5, 150, 105, 0.25); color: #059669; font-weight: 700; font-size: 0.82rem; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
                 <span>🏛️ National Digital Library (NDLI)</span>
                 <span>↗</span>
-              </a>
-              <a href="https://openlibrary.org/search?q=${encodeURIComponent(currentSubject ? currentSubject.name || currentSubject.code : currentDeptCode + ' engineering')}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; padding: 10px 14px; border-radius: var(--radius-md); background: rgba(217, 119, 6, 0.08); border: 1px solid rgba(217, 119, 6, 0.25); color: #d97706; font-weight: 600; font-size: 0.82rem; display: flex; align-items: center; justify-content: space-between;">
-                <span>📖 Open Library Academic Repository</span>
+              </button>
+              <button type="button" class="btn btn-secondary qp-academic-portal-btn" data-portal="textbooks" style="padding: 10px 14px; border-radius: var(--radius-md); background: rgba(217, 119, 6, 0.08); border: 1px solid rgba(217, 119, 6, 0.25); color: #d97706; font-weight: 700; font-size: 0.82rem; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+                <span>📖 Open Library Prescribed Texts</span>
                 <span>↗</span>
-              </a>
-              <a href="https://cac.annauniv.edu" target="_blank" rel="noopener noreferrer" style="text-decoration: none; padding: 10px 14px; border-radius: var(--radius-md); background: rgba(124, 58, 237, 0.08); border: 1px solid rgba(124, 58, 237, 0.25); color: #7c3aed; font-weight: 600; font-size: 0.82rem; display: flex; align-items: center; justify-content: space-between;">
-                <span>🎓 Anna University CAC Curriculum & Model QPs</span>
+              </button>
+              <button type="button" class="btn btn-secondary qp-academic-portal-btn" data-portal="cac" style="padding: 10px 14px; border-radius: var(--radius-md); background: rgba(124, 58, 237, 0.08); border: 1px solid rgba(124, 58, 237, 0.25); color: #7c3aed; font-weight: 700; font-size: 0.82rem; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+                <span>🎓 Anna University CAC Curriculum</span>
                 <span>↗</span>
-              </a>
+              </button>
             </div>
           </div>
 
@@ -404,6 +404,17 @@ window.QuestionPapersView = {
           let analysisItem = (window.PYQAnalysisData || []).find(p => p.qpCode === qpCode || p.subjectCode === subCode);
 
           this.openAnalysisModal(qp, analysisItem);
+        });
+      });
+
+      // Direct Academic Portals Handler (NPTEL, NDLI, Textbooks, CAC)
+      container.querySelectorAll('.qp-academic-portal-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const portal = btn.getAttribute('data-portal');
+          if (window.AcademicPortalsModal) {
+            window.AcademicPortalsModal.open(portal, currentSubject);
+          }
         });
       });
 
