@@ -7,3 +7,4 @@ uploads/*
 *.zip
 scratch/
 zip_extract_temp/
+DRMS_Cloud_Vault/

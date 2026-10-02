@@ -58,9 +58,9 @@ window.QuestionPapersView = {
 
       // Filter question papers
       let allQPs = window.AppFallbackData.questionPapers.filter(qp => {
-        const matchesSubject = selectedSubjectId ? (qp.subjectId === selectedSubjectId || qp.subjectCode === currentSubject?.code) : true;
-        const matchesDept = qp.deptCode ? qp.deptCode.toUpperCase() === currentDeptCode.toUpperCase() : true;
-        const matchesReg = qp.regCode ? qp.regCode.toUpperCase() === currentReg.toUpperCase() : true;
+        const matchesSubject = selectedSubjectId ? (qp.subjectId === selectedSubjectId || qp.subjectCode === currentSubject?.code || (currentSubject?.code && qp.id?.toLowerCase().includes(currentSubject.code.toLowerCase()))) : true;
+        const matchesDept = selectedSubjectId ? true : (qp.deptCode ? (qp.deptCode.toUpperCase() === currentDeptCode.toUpperCase() || qp.deptCode.toUpperCase() === 'COMMON') : true);
+        const matchesReg = selectedSubjectId ? true : (qp.regCode ? qp.regCode.toUpperCase() === currentReg.toUpperCase() : true);
         const matchesSem = selectedSem === 'all' || qp.semester === selectedSem;
         const matchesYear = selectedYear === 'all' || (qp.academicYear && qp.academicYear.includes(selectedYear));
         const matchesSearch = !searchQuery || 
@@ -83,7 +83,11 @@ window.QuestionPapersView = {
           const matchesSem = selectedSem === 'all' || s.semester === selectedSem;
           return matchesDept && matchesReg && matchesSem;
         });
-        subjectsToGenerate = deptSubjects.length > 0 ? deptSubjects : (window.AppFallbackData?.subjects || []).filter(s => s.deptCode && s.deptCode.toUpperCase() === currentDeptCode.toUpperCase());
+        subjectsToGenerate = deptSubjects.length > 0 ? deptSubjects : (window.AppFallbackData?.subjects || []).filter(s => {
+          const matchesDept = s.deptCode && s.deptCode.toUpperCase() === currentDeptCode.toUpperCase();
+          const matchesSem = selectedSem === 'all' || s.semester === selectedSem;
+          return matchesDept && matchesSem;
+        });
       }
 
       // Generate complete, authentic Anna University 100-mark question papers with full solutions for all subjects
