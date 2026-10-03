@@ -82,9 +82,23 @@ window.NotesView = {
       const user = window.appState ? (window.appState.state?.user || window.appState.user) : null;
       const isAdmin = user && user.role === 'admin';
 
-      const allSubjects = (window.AppFallbackData?.subjects || []).filter(s => 
+      let allSubjects = (window.AppFallbackData?.subjects || []).filter(s => 
         s.deptCode === currentDeptCode && s.regCode === currentReg && s.semester === selectedSem
       );
+
+      // Auto-fallback to first available semester if selected semester is empty under this regulation (e.g. R2025 Sem 1 & 2)
+      if (allSubjects.length === 0) {
+        const availableSems = [...new Set((window.AppFallbackData?.subjects || [])
+          .filter(s => s.deptCode === currentDeptCode && s.regCode === currentReg)
+          .map(s => s.semester)
+        )].sort((a, b) => a - b);
+        if (availableSems.length > 0 && !availableSems.includes(selectedSem)) {
+          selectedSem = availableSems[0];
+          allSubjects = (window.AppFallbackData?.subjects || []).filter(s => 
+            s.deptCode === currentDeptCode && s.regCode === currentReg && s.semester === selectedSem
+          );
+        }
+      }
 
       // Auto-select first subject in current semester if none selected or subject not in this semester
       if ((!selectedSubjectId || !allSubjects.some(s => s.id === selectedSubjectId || s.code === selectedSubjectId)) && allSubjects.length > 0) {
@@ -434,6 +448,9 @@ window.NotesView = {
                         </button>
                         <button class="btn btn-sm btn-secondary quick-pdf-download-btn" data-pdftype="model" style="font-size: 0.78rem; font-weight: 600;">
                           📝 Model Questions.pdf
+                        </button>
+                        <button class="btn btn-sm btn-primary quick-pdf-download-btn" data-pdftype="vault-bundle" style="font-size: 0.78rem; font-weight: 700; background: linear-gradient(135deg, #0284c7, #0369a1); border: none; display: inline-flex; align-items: center; gap: 4px;">
+                          ☁️ Subject Cloud Vault Bundle (.txt)
                         </button>
                       </div>
                     </div>
@@ -1439,6 +1456,44 @@ window.NotesView = {
           (u.partB || []).map((pb, i) => ` Q${i + 1}: ${pb.q}\n Solution Outline:\n${pb.solutionOutline}`).join('\n\n')
         ).join('\n\n========================================================================\n\n') +
         `\n========================================================================\n`;
+    } else if (pdfType === 'vault-bundle') {
+      filename = `${code}_Complete_Cloud_Vault_Bundle.txt`;
+      const syl = window.AcademicNotesCatalog?.getCompleteSyllabus(subject);
+      const pyq = window.AcademicNotesCatalog?.getPreviousYearQuestions(subject);
+      const p = pyq?.papers?.[0];
+      content = `========================================================================\n` +
+        `ANNA UNIVERSITY CHENNAI — COMPLETE CLOUD VAULT SUBJECT BUNDLE\n` +
+        `Course Code & Name : ${code} — ${name}\n` +
+        `Regulation         : ${reg} • Semester: ${subject.semester || 1} • Credits: ${subject.credits || 3}\n` +
+        `Cloud Archive      : DRMS Cloud Vault (Google Drive Verified)\n` +
+        `========================================================================\n\n` +
+        `SECTION 1: COMPLETE SYLLABUS & PRESCRIBED TEXTBOOKS\n` +
+        (syl?.courseObjectives ? 'Objectives:\n' + syl.courseObjectives.map(o => `  • ${o}`).join('\n') + '\n\n' : '') +
+        `Prescribed Textbooks:\n` +
+        (syl?.textbooks || []).map((t, i) => `  ${i + 1}. ${t.author}, "${t.title}" (${t.publisher || 'Publisher'}).`).join('\n') +
+        `\n\n========================================================================\n` +
+        `SECTION 2: COMPLETE 5-UNIT LECTURE NOTES & DERIVATIONS\n` +
+        (allNotes || []).map(u => 
+          `\n--- UNIT ${u.unit}: ${u.title} ---\n` +
+          `Scope: ${u.description || ''}\n` +
+          `Topics:\n` + (u.topics || []).map(t => `  - ${t}`).join('\n') + `\n\n` +
+          `Detailed Lecture Theory:\n` +
+          (u.detailedNotes || []).map(dn => `[${dn.topic}]\n${dn.explanation}`).join('\n\n') + `\n\n` +
+          `Part A 2-Marks:\n` +
+          (u.partA || []).map(pa => `Q: ${pa.q}\nA: ${pa.a}`).join('\n')
+        ).join('\n\n========================================================================\n\n') +
+        `\n\n========================================================================\n` +
+        `SECTION 3: SOLVED 100-MARK ANNA UNIVERSITY EXAMINATION QUESTION PAPER\n` +
+        `Session: ${p?.session || 'End-Semester Exam'} • QP Code: ${p?.qpCode || 'AU'}\n\n` +
+        `PART A (10 x 2 = 20 Marks):\n` +
+        (p?.questions?.partA || []).map(q => `Q${q.qNo}. ${q.question}\nAnswer: ${q.answer}`).join('\n\n') + `\n\n` +
+        `PART B (5 x 13 = 65 Marks):\n` +
+        (p?.questions?.partB || []).map(q => `Q${q.qNo}. ${q.question}\nSolution:\n${q.solutionOutline}`).join('\n\n') + `\n\n` +
+        `PART C (1 x 15 = 15 Marks):\n` +
+        `Q16. ${p?.questions?.partC?.question || ''}\nSolution:\n${p?.questions?.partC?.solutionOutline || ''}\n` +
+        `\n========================================================================\n` +
+        `Anna University Academic Portal & Cloud Vault • Controller of Examinations\n` +
+        `========================================================================\n`;
     }
 
     const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });

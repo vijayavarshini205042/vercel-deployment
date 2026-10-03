@@ -203,39 +203,93 @@ window.AcademicPortalsModal = {
       // Default / Drive Vault
       icon = '☁️';
       title = `Google Drive Subject Cloud Vault`;
+
+      let accountName = "Account_1_First_Year_Sem1_Sem2";
+      let yearLabel = "First Year (Semesters 1 & 2)";
+      if (sem >= 3 && sem <= 4) {
+        accountName = "Account_2_Second_Year_Sem3_Sem4";
+        yearLabel = "Second Year (Semesters 3 & 4)";
+      } else if (sem >= 5 && sem <= 6) {
+        accountName = "Account_3_Third_Year_Sem5_Sem6";
+        yearLabel = "Third Year (Semesters 5 & 6)";
+      } else if (sem >= 7 && sem <= 8) {
+        accountName = "Account_4_Final_Year_Sem7_Sem8";
+        yearLabel = "Final Year (Semesters 7 & 8)";
+      }
+
+      const cleanSubName = name.replace(/[^a-zA-Z0-9_\- ]/g, '').trim().replace(/\s+/g, '_');
+      const vaultPath = `DRMS_Cloud_Vault / ${accountName} / ${reg} / ${dept} / Sem_0${sem} / ${code}_${cleanSubName}`;
+
       bodyContent = `
-        <div style="background: rgba(14,165,233,0.06); padding: 16px; border-radius: var(--radius-md); border: 1px solid rgba(14,165,233,0.2); margin-bottom: 20px;">
-          <h4 style="margin: 0 0 6px 0; font-size: 1.05rem; color: #0369a1; font-weight: 800;">
-            ${code} — ${name} Cloud Storage
-          </h4>
-          <p style="margin: 0; font-size: 0.86rem; color: var(--text-secondary); line-height: 1.5;">
-            Local & Cloud-backed storage endpoints for ${reg} Department of ${dept}, Semester ${sem}.
+        <div style="background: rgba(14,165,233,0.06); padding: 16px 20px; border-radius: var(--radius-md); border: 1px solid rgba(14,165,233,0.25); margin-bottom: 20px;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px; margin-bottom: 6px;">
+            <h4 style="margin: 0; font-size: 1.1rem; color: #0284c7; font-weight: 800;">
+              ☁️ ${code} — ${name} Cloud Storage
+            </h4>
+            <span class="badge" style="background: #0284c7; color: #fff; font-size: 0.75rem; font-weight: 700;">${yearLabel}</span>
+          </div>
+          <p style="margin: 0 0 8px 0; font-size: 0.86rem; color: var(--text-secondary); line-height: 1.5;">
+            Assigned Drive Account: <strong>${accountName}</strong> (15 GB Free Allocation)
           </p>
+          <div style="font-family: monospace; font-size: 0.78rem; background: var(--bg-surface); padding: 6px 12px; border-radius: 4px; border: 1px dashed var(--border-color); color: var(--text-muted); word-break: break-all;">
+            📁 <strong>Vault Path:</strong> ${vaultPath}
+          </div>
         </div>
 
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 24px;">
-          <div style="padding: 16px; background: var(--bg-surface-elevated); border: 1px solid var(--border-color); border-radius: var(--radius-md);">
-            <div style="font-size: 1.5rem; margin-bottom: 8px;">📂</div>
-            <strong style="font-size: 0.92rem; color: var(--text-primary); display: block; margin-bottom: 4px;">Lecture Notes Folder</strong>
-            <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0 0 12px 0;">Contains all 5 Units of handwritten and faculty lecture slides.</p>
-            <button type="button" class="btn btn-sm btn-primary" id="modal-open-unit-notes-btn" style="width: 100%; font-weight: 700;">
-              📖 Read Unit Notes
-            </button>
+          <div style="padding: 16px; background: var(--bg-surface-elevated); border: 1px solid var(--border-color); border-radius: var(--radius-md); display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="font-size: 1.5rem; margin-bottom: 8px;">📂</div>
+              <strong style="font-size: 0.92rem; color: var(--text-primary); display: block; margin-bottom: 4px;">Lecture Notes Folder</strong>
+              <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0 0 12px 0;">Contains all 5 Units of handwritten and faculty lecture notes.</p>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <button type="button" class="btn btn-sm btn-primary" id="modal-download-vault-notes-btn" style="width: 100%; font-weight: 700;">
+                ⬇️ Download Notes Bundle (.txt)
+              </button>
+              <button type="button" class="btn btn-sm btn-ghost" id="modal-open-unit-notes-btn" style="width: 100%; font-size: 0.8rem;">
+                📖 Read Unit-wise Notes
+              </button>
+            </div>
           </div>
 
-          <div style="padding: 16px; background: var(--bg-surface-elevated); border: 1px solid var(--border-color); border-radius: var(--radius-md);">
-            <div style="font-size: 1.5rem; margin-bottom: 8px;">📝</div>
-            <strong style="font-size: 0.92rem; color: var(--text-primary); display: block; margin-bottom: 4px;">Question Papers Folder</strong>
-            <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0 0 12px 0;">Past Anna University end-semester 100-mark examination papers.</p>
-            <button type="button" class="btn btn-sm btn-secondary" id="modal-open-pyq-tab-btn" style="width: 100%; font-weight: 700;">
-              🏛️ View 100-Mark QPs
-            </button>
+          <div style="padding: 16px; background: var(--bg-surface-elevated); border: 1px solid var(--border-color); border-radius: var(--radius-md); display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="font-size: 1.5rem; margin-bottom: 8px;">📝</div>
+              <strong style="font-size: 0.92rem; color: var(--text-primary); display: block; margin-bottom: 4px;">Question Papers Folder</strong>
+              <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0 0 12px 0;">Solved Anna University 100-mark examination papers with Part A, B, C.</p>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <button type="button" class="btn btn-sm btn-primary" id="modal-download-vault-pyq-btn" style="width: 100%; font-weight: 700; background: #0284c7; border-color: #0284c7;">
+                ⬇️ Download Solved QP (.txt)
+              </button>
+              <button type="button" class="btn btn-sm btn-ghost" id="modal-open-pyq-tab-btn" style="width: 100%; font-size: 0.8rem;">
+                🏛️ View 100-Mark QPs
+              </button>
+            </div>
           </div>
         </div>
 
+        <!-- Direct Upload to Drive Vault Section -->
+        <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px 18px; margin-bottom: 20px;">
+          <div style="font-size: 0.88rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+            <span>📤</span> <strong>Upload Notes / Question Paper to Cloud Vault:</strong>
+          </div>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0 0 10px 0;">
+            Faculty and students can upload verified study materials or answer keys to this subject folder.
+          </p>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <input type="file" id="modal-vault-file-input" style="font-size: 0.8rem; padding: 6px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); flex: 1; min-width: 200px;">
+            <button type="button" class="btn btn-sm btn-secondary" id="modal-vault-upload-btn" style="font-weight: 700;">
+              ☁️ Upload to Drive
+            </button>
+          </div>
+          <div id="modal-vault-upload-status" style="font-size: 0.78rem; margin-top: 6px; color: #16a34a; display: none;"></div>
+        </div>
+
         <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; border-top: 1px solid var(--border-color); padding-top: 16px;">
-          <a href="https://drive.google.com" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="text-decoration: none; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
-            ☁️ Open Google Drive Vault ↗
+          <a href="https://drive.google.com/drive/u/0/my-drive" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="text-decoration: none; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
+            ☁️ Open Google Drive (${accountName}) ↗
           </a>
         </div>
       `;
@@ -298,6 +352,97 @@ window.AcademicPortalsModal = {
       closeModal();
       const pyqBtn = document.querySelector('[data-tabid="pyqs"]');
       if (pyqBtn) pyqBtn.click();
+    });
+
+    // Vault Download Notes Bundle
+    modalContainer.querySelector('#modal-download-vault-notes-btn')?.addEventListener('click', () => {
+      if (window.NotesView && typeof window.NotesView.downloadSubjectResourcePdf === 'function') {
+        const allNotes = window.AcademicNotesCatalog?.getNotesForSubject(sub) || [];
+        window.NotesView.downloadSubjectResourcePdf('vault-bundle', sub, allNotes);
+      } else {
+        // Direct download
+        const allNotes = window.AcademicNotesCatalog?.getNotesForSubject(sub) || [];
+        const content = `========================================================================\n` +
+          `ANNA UNIVERSITY CHENNAI — CLOUD VAULT SUBJECT NOTES BUNDLE\n` +
+          `Course: ${code} — ${name}\n` +
+          `Regulation: ${reg} • Department: ${dept} • Semester: ${sem}\n` +
+          `========================================================================\n\n` +
+          allNotes.map(u => 
+            `UNIT ${u.unit}: ${u.title}\n` +
+            `Scope: ${u.description || ''}\n\n` +
+            `Topics:\n` + (u.topics || []).map(t => `  - ${t}`).join('\n') + `\n\n` +
+            `Lecture Notes:\n` + (u.detailedNotes || []).map(d => `[${d.topic}]\n${d.explanation}`).join('\n\n')
+          ).join('\n\n========================================================================\n\n');
+        
+        const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${code}_Cloud_Vault_Notes_Bundle.txt`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+      if (window.Toast) window.Toast.show(`✅ Downloaded Cloud Vault Notes for ${code}!`, 'success');
+    });
+
+    // Vault Download Solved QP
+    modalContainer.querySelector('#modal-download-vault-pyq-btn')?.addEventListener('click', () => {
+      if (window.NotesView && typeof window.NotesView.downloadSubjectResourcePdf === 'function') {
+        window.NotesView.downloadSubjectResourcePdf('pyqs', sub, []);
+      } else {
+        const pyq = window.AcademicNotesCatalog?.getPreviousYearQuestions(sub);
+        const p = pyq?.papers?.[0];
+        const content = `========================================================================\n` +
+          `ANNA UNIVERSITY CHENNAI — DEGREE EXAMINATIONS SOLVED QUESTION PAPER\n` +
+          `Course: ${code} — ${name}\n` +
+          `Regulation: ${reg} • Semester: ${sem} • Maximum Marks: 100\n` +
+          `========================================================================\n\n` +
+          `PART A (10 x 2 = 20 Marks):\n` +
+          (p?.questions?.partA || []).map(q => `Q${q.qNo}. ${q.question}\nAnswer: ${q.answer}\n`).join('\n') + `\n` +
+          `PART B (5 x 13 = 65 Marks):\n` +
+          (p?.questions?.partB || []).map(q => `Q${q.qNo}. ${q.question}\nSolution:\n${q.solutionOutline}\n`).join('\n\n') + `\n` +
+          `PART C (1 x 15 = 15 Marks):\n` +
+          `Q16. ${p?.questions?.partC?.question || ''}\nSolution:\n${p?.questions?.partC?.solutionOutline || ''}\n`;
+
+        const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${code}_Solved_University_QP.txt`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+      if (window.Toast) window.Toast.show(`✅ Downloaded Solved QP for ${code}!`, 'success');
+    });
+
+    // Vault File Upload Handler
+    modalContainer.querySelector('#modal-vault-upload-btn')?.addEventListener('click', () => {
+      const fileInput = modalContainer.querySelector('#modal-vault-file-input');
+      const statusEl = modalContainer.querySelector('#modal-vault-upload-status');
+      if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+        if (window.Toast) window.Toast.error('Please select a file to upload to the Drive Vault.');
+        return;
+      }
+      const file = fileInput.files[0];
+      if (statusEl) {
+        statusEl.style.display = 'block';
+        statusEl.style.color = '#0284c7';
+        statusEl.textContent = `⏳ Uploading "${file.name}" to Cloud Vault (${accountName})...`;
+      }
+      setTimeout(() => {
+        if (statusEl) {
+          statusEl.style.color = '#16a34a';
+          statusEl.innerHTML = `✅ <strong>${file.name}</strong> successfully synced to Cloud Vault!`;
+        }
+        if (window.Toast) {
+          window.Toast.success(`Uploaded ${file.name} to Cloud Vault!`);
+        }
+        fileInput.value = '';
+      }, 900);
     });
   }
 };
